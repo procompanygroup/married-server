@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  
+  @php
+  $sitedataCtrlr=new App\Http\Controllers\Web\SiteDataController();
+$mainarr= $sitedataCtrlr->Fillfordash();
+@endphp
 @include('admin.layouts.head')
-
-<body class="g-sidenav-show rtl bg-gray-200">
+@include('admin.layouts.header')
   @include('admin.layouts.sidebar')
-  @include('admin.layouts.header')
+
 @yield('content')
 @include('admin.layouts.footer')
 

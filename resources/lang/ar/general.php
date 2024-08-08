@@ -19,7 +19,8 @@ return [
   'name' => 'الاسم',
   'manage Accounts' => 'إدارة حسابات المستخدمين',
  
- 
+  'managers' =>'المدراء',
+  'new-manager' =>'مدير جديد',
   'cpanel' => 'لوحة تحكم',
   'welcome_name' => 'اهلا بك سيد :Name  المحترم',
   'login' => 'تسجيل دخول',

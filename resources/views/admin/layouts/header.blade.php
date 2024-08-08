@@ -1,40 +1,61 @@
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg overflow-x-hidden">
-    <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
-        navbar-scroll="true">
-        <div class="container-fluid py-1 px-3">
-            @yield('main-search')
-            <nav aria-label="breadcrumb">
-
-                <h6 class="font-weight-bolder mb-0">@yield('breadcrumb')</h6>
-            </nav>
-            <div class="collapse navbar-collapse mt-sm-0 mt-2 px-0" id="navbar">
+<body class="hold-transition sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+      <!-- Navbar -->
+      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+          </li>
+          
+        </ul>
+    
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+          
+          
+        
+          <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+              <img src="{{auth()->user()->image_path}}" class="user-image img-circle elevation-2" alt="User Image">
+              <span class="d-none d-md-inline">{{auth()->user()->name}}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <!-- User image -->
+              <li class="user-header bg-primary">
+                <img src="{{auth()->user()->image_path}}" class="img-circle elevation-2" alt="User Image">
+    
+                <p>
+                    {{auth()->user()->full_name}}
+                  <small>{{auth()->user()->role}}</small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+              <li class="user-body">
+                <div class="row">
+               
+                </div>
+                <!-- /.row -->
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <a href="{{route('user.editprofile',auth()->user()->id)}}" class="btn btn-default btn-flat">الملف الشخصي</a>
               
-                <ul class="navbar-nav me-auto ms-0 justify-content-end">
+                <form method="POST" action="{{ route('logout') }}" class="btn btn-default btn-flat float-right">
+                    @csrf
+                    <a href="{{route('logout')}}"  onclick="event.preventDefault();  this.closest('form').submit();" >تسجيل خروج</a>
+            </form>
 
-                    <li class="nav-item d-xl-none pe-3 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
-                            <div class="sidenav-toggler-inner">
-                                <i class="sidenav-toggler-line"></i>
-                                <i class="sidenav-toggler-line"></i>
-                                <i class="sidenav-toggler-line"></i>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item d-flex align-items-center">
-                        <form method="POST" action="{{ route('logout') }}" class="btn btn-default btn-flat float-right">
-                            @csrf
-                        <a href="{{route('logout')}}" class="nav-link text-body font-weight-bold px-0 logout" onclick="event.preventDefault();  this.closest('form').submit();">
-                            <i class="fa fa-user me-sm-1"></i>
-                            <span class="d-sm-inline d-none">تسجيل خروج</span>
-                        </a>
-                    </form>                        
-
-                    </li>
-                    @yield('main-li')
-
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- End Navbar -->
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+              <i class="fas fa-expand-arrows-alt"></i>
+            </a>
+          </li>
+        
+        </ul>
+      </nav>
+      <!-- /.navbar -->

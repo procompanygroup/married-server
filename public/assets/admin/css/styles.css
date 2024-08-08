@@ -1,0 +1,10 @@
+/* تعديلات عامة */
+body {
+ 
+  font-family: 'NotoKufiArabic','Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* نوع الخط */
+ 
+}
+@font-face {
+      font-family: NotoKufiArabic;
+      src:   url('../fonts/NotoKufiArabic-VariableFont_wght.ttf');
+      }

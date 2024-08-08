@@ -835,10 +835,13 @@ class SiteDataController extends Controller
         )->where('category', 'site-info')->get();
         $titlerow = $List->where('category', 'site-info')->where('dep', 'title')->first();
         $title = $titlerow->value1;
+        // $desc = $titlerow->value2;
+        // $meta = $titlerow->value3;
         $logorow = $List->where('category', 'site-info')->where('dep', 'logo')->first();
-        $favicon = $strgCtrlr->getPath($logorow->value1, $path);
+        $iconrow = $List->where('category', 'site-info')->where('dep', 'icon')->first();
+        $favicon = $strgCtrlr->getPath($iconrow->value1, $path);
         $favicon = ($favicon == '' ? $strgCtrlr->DefaultPath('image') : $favicon);
-        $logo = $strgCtrlr->getPath($logorow->value2, $path);
+        $logo = $strgCtrlr->getPath($logorow->value1, $path);
         $logo = ($logo == '' ? $strgCtrlr->DefaultPath('image') : $logo);
         $mainarr = [
             "title" => $title,

@@ -153,7 +153,7 @@ class UserController extends Controller
       }
       User::find($id)->update([
         //'user_name'=>$formdata['user_name'],
-      //  'name' => $formdata['name'],
+        'name' => $formdata['name'],
      //   'first_name' => $formdata['first_name'],
       //  'last_name' => $formdata['last_name'],
         'email' => $formdata['email'],
