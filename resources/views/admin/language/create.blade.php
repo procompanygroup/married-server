@@ -102,7 +102,7 @@
                             <div class="form-group row">
                                 <div class="col-sm-2 col-form-label"></div>
                                 <div class="col-sm-10">                                     
-                                    <button type="submit" type="submit" name="btn_update" id="btn_update"
+                                    <button type="submit"   name="btn_update" id="btn_update"
                                         class="btn btn-primary btn-submit">{{ __('general.save',[],'ar') }}</button>
                                     <a class="btn btn-danger float-right " href="{{ route('language.index') }}">{{ __('general.cancel',[],'ar') }}</a>
                                 </div>

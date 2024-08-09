@@ -1,62 +1,92 @@
 @extends('admin.layouts.layout')
-@section('breadcrumb')
-     Footer
+
+@section('page-title')
+    الاعدادات
 @endsection
 @section('content')
-    <div class="container">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-white" role="alert">
-                {{ $message }}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1></h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ url('/admin') }}">الرئيسية</a></li>
+                            <li class="breadcrumb-item active"> الاعدادات العامة </li>
+                            <li class="breadcrumb-item active"><a href="{{url('admin/setting/footer')}}">Footer</a></li>
+                            <li class="breadcrumb-item active">جديد</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <!-- Default box -->
+            <!-- Horizontal Form -->
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title"></h3>
+                    <div class="card-tools">                    
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
+                            title="Collapse">
+                            <i class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- form start -->
+                <div class="card-body  row">
+                    <div class="col-lg-12"> 
+                        <form action="{{ url('admin/setting/storefooter') }}" id="footer-form" method="POST"
+                        enctype="multipart/form-data">
+                                @csrf
+                                <!-- name start -->
+                                <div class="form-group row">
+                                    <label for="name" class="col-sm-3 col-form-label">الوصف</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control " name="name" id="name"
+                                            placeholder="الوصف" value="">
+                                        <span id="name-error" class="error invalid-feedback"></span>
+                                    </div>
+                                </div>
+                                <!-- name end -->
+                                <!-- name start -->
+                                <div class="form-group row">
+                                    <label for="code" class="col-sm-3 col-form-label">الكود</label>
+                                    <div class="col-sm-9">
+                                        <textarea class="form-control" name="code"></textarea>
+                                        <span id="code-error" class="error invalid-feedback"></span>
+                                    </div>
+                                </div>
+                                <!-- name end -->
+                                <div class="form-group row">
+                                    <div class="col-sm-2 col-form-label"></div>
+                                    <div class="col-sm-10" style="text-align: center;">
+                                        <button type="submit" id="btn"
+                                            class="btn btn-primary btn-submit">{{ __('general.save', [], 'ar') }}</button>
+                                    </div>
+                                </div>
+                            </form>                      
+                    </div>                  
+                </div>
             </div>
-        @endif
+               <!-- /.card-body -->
+            <div class="card-footer">
+            </div>
+            <!-- /.card-footer -->
     </div>
-
-
-    @if (count($errors) > 0)
-        <ul>
-            @foreach ($errors->all() as $item)
-                <li class="text-danger">
-                    {{ $item }}
-                </li>
-            @endforeach
-        </ul>
-    @endif
-
-    <div class="row backgroundW p-4 m-3">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/admin') }}">الرئيسية</a></li>
-                <li class="breadcrumb-item"><a href="{{url('admin/setting/footer')}}"> Footer</a></li>
-                <li class="breadcrumb-item">جديد</li>
-            </ol>
-        </nav>
-        <div class="form-group btn-create  justify-content-end" style="display: flex">
-            <a href="{{ url('admin/setting/createfooter') }}" class="btn btn-primary">جديد</a>
-        </div>
-        @php 
-$i=0;
-        @endphp
-       
-        <form action="{{ url('admin/setting/storefooter') }}" id="footer-form" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            <div class="form-group mb-3">
-                <label for="name">الوصف</label>
-                <input type="text" class="form-controll"  name="name" value="">
-            </div>
-            <div class="form-group mb-3">
-                <label for="code">الكود</label>
-                <textarea class="form-controll" name="code"></textarea>
-            </div>
-            <div class="form-group">
-                <button type="submit" id="btn" class="btn btn-primary btn-submit">حفظ</button>
-            </div>
-        </form>
-      
+    <!-- /.card -->
+    </section>
+    <!-- /.content -->
     </div>
-
-    </main>
+    <!-- /.content-wrapper -->
+    <!-- /.card -->
 @endsection
 @section('js')
-    <script src="{{ URL::asset('assets/admin/js/settinginfo.js') }}"></script>
+    <script src="{{ URL::asset('assets/admin/js/custom/settinginfo.js') }}"></script>
+@endsection
+@section('css')
 @endsection

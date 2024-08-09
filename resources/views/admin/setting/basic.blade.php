@@ -1,106 +1,232 @@
 @extends('admin.layouts.layout')
-@section('breadcrumb')
-    معلومات الموقع
+ 
+@section('page-title')
+الاعدادات
 @endsection
 @section('content')
-    <div class="container">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-white" role="alert">
-                {{ $message }}
-            </div>
-        @endif
-    </div>
-
-
-    @if (count($errors) > 0)
-        <ul>
-            @foreach ($errors->all() as $item)
-                <li class="text-danger">
-                    {{ $item }}
-                </li>
-            @endforeach
-        </ul>
-    @endif
-
-    <div class="row backgroundW p-4 m-3">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/admin') }}">الرئيسية</a></li>
-                <li class="breadcrumb-item"><a href="{{ url('admin/setting/general') }}">معلومات الموقع</a></li>
-
+     <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1></h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{{ url('/admin') }}">الرئيسية</a></li>
+              <li class="breadcrumb-item active">  الاعدادات العامة </li>
+              <li class="breadcrumb-item active">معلومات الموقع</li>
             </ol>
-        </nav>
-        <form action="{{ url('admin/setting/updateinfo', [$titlerow->id]) }}" id="title-form" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            <div class="form-group mb-3">
-                <label for="exampleFormControlInput1">الاسم</label>
-                <input type="text" class="form-controll" name="name" value="{{ $titlerow->value1 }}">
-            </div>
-            <div class="form-group">
-                <button type="submit" id="btn-title" class="btn btn-primary btn-submit">حفظ</button>
-            </div>
-        </form>
-
-        <div class="card-body  row">
-            <div class="col-lg-8">
-                <form action="{{ url('admin/setting/updateinfo', [$iconrow->id]) }}" id="icon-form" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <div class="form-group mb-3">
-                        <label for="icon_input">Icon</label>
-                        <input type="file" class="form-controll" name="icon_input" id="icon_input">
-                    </div>
-                      <div class="form-group">
-                        <button type="submit" id="btn-icon" class="btn btn-primary btn-submit">حفظ</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-lg-4">
-                <img alt="" id="faviconshow" class="rounded img-thumbnail wd-100p float-sm-right  mg-t-10 mg-sm-t-0"
-                    src="{{ $favicon }}">
-            </div>
+          </div>
         </div>
+      </div><!-- /.container-fluid -->
+    </section>
+        <!-- Main content -->
+        <section class="content">
+            <!-- Default box -->
+            <!-- Horizontal Form -->
+            <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title"></h3>        
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i class="fas fa-minus"></i></button>                     
+                  </div>
+                </div>
+                <!-- form start -->
+                <div class="card-body  row">
+                    <div class="col-lg-8">
+                        <form action="{{ url('admin/setting/updateinfo', [$titlerow->id]) }}" id="title-form" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                           
+                            <!-- name start -->
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-3 col-form-label">الاسم</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control " name="name" id="name"
+                                    placeholder="* الاسم" value="{{ $titlerow->value1 }}">
+                                    <span id="name-error" class="error invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <!-- name end -->
+                           
+                      
 
-        <div class="card-body  row">
-            <div class="col-lg-8">
-                <form action="{{ url('admin/setting/updateinfo', [$logorow->id]) }}" id="logo-form" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <div class="form-group mb-3">
-                        <label for="logo_input">شعار الموقع</label>
-                        <input type="file" class="form-controll" name="logo_input" id="logo_input">
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-form-label"></div>
+                                <div class="col-sm-10">                                     
+                                    <button type="submit"   name="btn-title" id="btn-title"
+                                        class="btn btn-primary btn-submit">{{ __('general.save',[],'ar') }}</button>
+                                
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                     <div class="form-group">
-                        <button type="submit" id="btn-logo" class="btn btn-primary btn-submit">حفظ</button>
+                    <div class="col-lg-4  sm-3  ">
+                         
                     </div>
-                </form>
+                </div>
             </div>
-            <div class="col-lg-4">
-                <img alt="" id="logoshow" class="rounded img-thumbnail wd-100p float-sm-right  mg-t-10 mg-sm-t-0"
-                    src="{{ $logo }}">
-            </div>
-        </div>
 
-        <form action="{{ url('admin/setting/updateinfo', [$facerow->id]) }}" id="face-form" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            <div class="form-group mb-3">
-                <label for="name">حساب الفايسبوك</label>
-                <input type="text" class="form-controll" name="face" value="{{ $facerow->value1 }}">
-                <label for="name">حساب التويتر</label>
-                <input type="text" class="form-controll" name="twitter" value="{{ $twitterrow->value1 }}">
+            <!-- first_name end -->
+            <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title"></h3>        
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i class="fas fa-minus"></i></button>                     
+                  </div>
+                </div>
+                <!-- form start -->
+                <div class="card-body  row">
+                    <div class="col-lg-8">
+                        <form action="{{ url('admin/setting/updateinfo', [$iconrow->id]) }}" id="icon-form" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                        
+                           
+                            <div class="form-group">
+                                <!-- <label for="customFile">Custom File</label> -->
+                                <div class="form-group row">
+                                    <label for="icon_input" class="col-sm-3 col-form-label">Icon</label>
+                                    <div class="col-sm-9">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input"name="icon_input" id="icon_input">
+                                            <label class="custom-file-label" id="image_label" for="icon_input">{{ __('general.choose image',[],'ar') }}</label>
+                                            <span id="icon_input-error" class="error invalid-feedback"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>   
+                               <div class="form-group row">
+                                <div class="col-sm-2 col-form-label"></div>
+                                <div class="col-sm-10">                                     
+                                    <button type="submit"   name="btn-icon" id="btn-icon"
+                                        class="btn btn-primary btn-submit">{{ __('general.save',[],'ar') }}</button>
+                                
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-4  sm-3  ">
+                        <img alt="" id="faviconshow" style="float: left !important;"
+                            class="rounded img-thumbnail wd-100p float-sm-right  mg-t-10 mg-sm-t-0" src="{{ $favicon }}" >
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <button type="submit" id="btn-submit" class="btn btn-primary btn-submit" >حفظ</button>
+            <!-- /.card-body -->
+             <!-- first_name end -->
+             <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title"></h3>        
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i class="fas fa-minus"></i></button>                     
+                  </div>
+                </div>
+                <!-- form start -->
+                <div class="card-body  row">
+                    <div class="col-lg-8">
+                        <form action="{{ url('admin/setting/updateinfo', [$logorow->id]) }}" id="logo-form" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                        
+                           
+                            <div class="form-group">
+                                <!-- <label for="customFile">Custom File</label> -->
+                                <div class="form-group row">
+                                    <label for="logo_input" class="col-sm-3 col-form-label">شعار الموقع</label>
+                                    <div class="col-sm-9">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input"name="logo_input" id="logo_input">
+                                            <label class="custom-file-label" id="logo_input_label" for="logo_input">{{ __('general.choose image',[],'ar') }}</label>
+                                            <span id="logo_input-error" class="error invalid-feedback"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>   
+                               <div class="form-group row">
+                                <div class="col-sm-2 col-form-label"></div>
+                                <div class="col-sm-10">                                     
+                                    <button type="submit"    id="btn-logo"
+                                        class="btn btn-primary btn-submit">{{ __('general.save',[],'ar') }}</button>
+                                
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-4  sm-3  ">
+                        <img alt="" id="logoshow" style="float: left !important;"
+                            class="rounded img-thumbnail wd-100p float-sm-right  mg-t-10 mg-sm-t-0" src="{{ $logo }}" >
+                    </div>
+                </div>
             </div>
-        </form>
+
+            <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title"></h3>        
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i class="fas fa-minus"></i></button>                     
+                  </div>
+                </div>
+                <!-- form start -->
+                <div class="card-body  row">
+                    <div class="col-lg-8">
+                        <form action="{{ url('admin/setting/updateinfo', [$facerow->id]) }}" id="face-form" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                           
+                            <!-- name start -->
+                            <div class="form-group row">
+                                <label for="face" class="col-sm-3 col-form-label">حساب الفايسبوك</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control " name="face" id="face"
+                                    placeholder=" حساب الفايسبوك" value="{{ $facerow->value1 }}">
+                                    <span id="face-error" class="error invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <!-- name end -->
+                            <div class="form-group row">
+                                <label for="twitter" class="col-sm-3 col-form-label">حساب التويتر</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control " name="twitter" id="twitter"
+                                    placeholder=" حساب التويتر" value="{{ $twitterrow->value1 }}">
+                                    <span id="twitter-error" class="error invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-form-label"></div>
+                                <div class="col-sm-10">                                     
+                                    <button type="submit"    id="btn-social"
+                                        class="btn btn-primary btn-submit">{{ __('general.save',[],'ar') }}</button>
+                                
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-4  sm-3  ">
+                         
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+            </div>
+            <!-- /.card-footer -->
     </div>
-
-    </main>
-
-
+    <!-- /.card -->
+    </section>
+    <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- /.card -->
 @endsection
 @section('js')
-    <script src="{{ URL::asset('assets/admin/js/settinginfo.js') }}"></script>
+<script src="{{ URL::asset('assets/admin/js/custom/settinginfo.js') }}"></script>
+@endsection
+@section('css')
 @endsection
