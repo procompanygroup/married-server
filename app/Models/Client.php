@@ -89,27 +89,14 @@ class Client extends Authenticatable
                 $conv = __('general.male',['ar']);
             } else {
                 $conv = __('general.female',['ar']);
-            }
-    
+            }    
         }
           
              return  $conv;
       }
 
       //
-     public function clientsocials(): HasMany
-     {
-         return $this->hasMany(ClientSocial::class,'client_id');
-     }
-     //
-     public function answersclients(): HasMany
-     {
-         return $this->hasMany(AnswersClient::class);
-     }
-     public function clientpoints(): HasMany
-     {
-         return $this->hasMany(ClientPoint::class,'client_id');
-     }
+   
      public function pointtrans(): HasMany
      {
          return $this->hasMany(PointTrans::class,'client_id');
@@ -118,7 +105,10 @@ class Client extends Authenticatable
      {
          return $this->belongsTo(Language::class,'lang_id')->withDefault();
      }
-
+     public function clientoptions(): HasMany
+     {
+         return $this->hasMany(OptionValue::class,'property_id');
+     }
 
 
     public function generateCode(){

@@ -58,13 +58,7 @@ class StorageController extends Controller
 
     $this->pdfpath['categories'] = 'images/categories/pdf';
     $this->pdfpath['posts'] = 'images/posts/pdf';
-    //messages
-    $this->path['messages'] = 'images/messages';
-    $this->vidpath['messages'] = 'images/messages/video';
-    $this->soundpath['messages'] = 'images/messages/sound';
-  //questions
-  $this->path['questions'] = 'images/questions';
-  $this->path['answers'] = 'images/answers';
+    $this->path['properties'] = 'images/properties';
     //value
  
     //answer
@@ -269,6 +263,12 @@ public function AnswerPath()
      $url =  $this->getlocalpath($this->path['answers']);      
   
   return $url;
+}
+public function PropertyPath()
+{  
+  $url = "";   
+   $url =  $this->getlocalpath($this->path['properties']);
+        return $url;
 }
  /*
   public static function CalcPercentVal($percent,$total)

@@ -64,20 +64,10 @@ class Category extends Model
         return $this->hasMany(MediaPost::class,'category_id');
     }
 //
-    public function clientpoints(): HasMany
-    {
-        return $this->hasMany(ClientPoint::class,'category_id');
-    }
+    
     public function pointtrans(): HasMany
     {
         return $this->hasMany(PointTrans::class,'category_id');
     }
-    public function questions(): HasMany
-    {
-        return $this->hasMany(Question::class,'category_id');
-    }
-    public function answersclients(): HasMany
-    {
-        return $this->hasMany(AnswersClient::class,'category_id');
-    }
+    
 }

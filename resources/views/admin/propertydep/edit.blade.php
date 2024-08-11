@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
  
 @section('page-title')
-الصفحات الثابتة 
+الترجمة
 @endsection
 @section('content')
      <!-- Content Wrapper. Contains page content -->
@@ -16,7 +16,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ url('/admin') }}">الرئيسية</a></li>
-              <li class="breadcrumb-item active"><a href="{{url('/admin/page')}}">الصفحات الثابتة </a></li>
+              <li class="breadcrumb-item active"><a href="{{url('admin/propdep')}}">المجموعات</a></li>
               <li class="breadcrumb-item active">تعديل</li>
             </ol>
           </div>
@@ -36,53 +36,40 @@
                 <!-- form start -->
                 <div class="card-body  row">
                     <div class="col-lg-8">
-                        <form action="{{ url('admin/page/update', $category->id) }}" class="form-horizontal" id="page-form" method="POST">
+                      <form class="form-horizontal" name="create_form" method="POST" action="{{ url('admin/propdep/update',$item->id) }}"
+                        enctype="multipart/form-data" id="create_form">
                             @csrf 
                             <!-- Email start -->
                             <div class="form-group row">
-                                <label for="title" class="col-sm-3 col-form-label">العنوان</label>
+                                <label for="name" class="col-sm-3 col-form-label">الاسم</label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="title"class="form-control"   id="title"
-                                    placeholder="* النص" value="{{ $category->title }}">
-                                    <span id="title-error" class="error invalid-feedback"></span>
+                                    <input type="text" name="name"class="form-control"   id="name"
+                                    placeholder="* الاسم" value="{{ $item->name }}">
+                                    <span id="name-error" class="error invalid-feedback"></span>
                                 </div>
                             </div>
                             <!-- Email end -->
-                            <div class="form-group row">
-                                <label for="slug" class="col-sm-3 col-form-label">Slug</label>
-                                <div class="col-sm-9">
-                                    <input type="text" name="slug"class="form-control"   id="slug"
-                                    placeholder="* Slug" value="{{ $category->slug }}">
-                                    <span id="slug-error" class="error invalid-feedback"></span>
-                                </div>
-                            </div>
                             <!-- name start -->
-                            
+                          
                             <!-- name end -->
-                            
+                         
+ 
+
                             <div class="form-group row">
-                                <label for="status" class="col-sm-2 col-form-label">الحالة</label>
-                                <div class="col-sm-10 custom-control custom-switch ">
-                                    <input type="checkbox" class="custom-control-input" id="status" name="status"
-                                    value="1"  @if ($category->status  == '1') @checked(true) @endif >
-                                    <label class="custom-control-label" for="status" id="status_lbl">مفعل</label>
-                                    <span id="status-error" class="error invalid-feedback"></span>
-                                </div>
-                            </div>
-                              <div class="form-group row">
                                 <div class="col-sm-2 col-form-label"></div>
                                 <div class="col-sm-10">                                     
                                     <button type="submit"  name="btn_save" 
                                         class="btn btn-primary btn-submit">{{ __('general.save',[],'ar') }}</button>
-                                    <a class="btn btn-danger float-right " href="{{url('admin/page')}}">{{ __('general.cancel',[],'ar') }}</a>
+                                    <a class="btn btn-danger float-right " href="{{url('admin/propdep')}}">{{ __('general.cancel',[],'ar') }}</a>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="col-lg-4  sm-3  ">
                     </div>
-                   
-                    <hr> 
+                    
+                  </div>
+                    <hr > 
            
                    <!--translation && media -->
                    <div class="col-12 col-sm-12">
@@ -106,10 +93,7 @@
 
                                   @foreach ($lang_list as $lang)
                                   <li class="nav-item">
-                                    <a class="nav-link @once active @endonce" 
-                                    id="lang-{{$lang->id}}-tab" data-toggle="pill" 
-                                    href="#lang-{{$lang->id}}" role="tab" aria-controls="lang-{{$lang->id}}" 
-                                    aria-selected="true">{{$lang->name}}</a>
+                                    <a class="nav-link @once active @endonce" id="lang-{{$lang->id}}-tab" data-toggle="pill" href="#lang-{{$lang->id}}" role="tab" aria-controls="lang-{{$lang->id}}" aria-selected="true">{{$lang->name}}</a>
                                   </li>
                                   @endforeach
                                   
@@ -119,24 +103,23 @@
                                 <div class="tab-content" id="trans-tabs-four-tabContent">
                                   @foreach ($lang_list as $lang)
                                   <div class="tab-pane fade @once show active @endonce " id="lang-{{$lang->id}}" role="tabpanel" aria-labelledby="lang-{{$lang->id}}-tab">
-                                     
-                                    <form class="form-horizontal"
-                                        name="update_trans_form-{{ $lang->id }}" method="POST"
-                                        action="{{ route('langcategory.update', $category->id) }}"
-                                        enctype="multipart/form-data"
-                                        id="update_trans_form-{{ $lang->id }}">
+                                    <form class="form-horizontal" name="update_trans_form-{{$lang->id}}" method="POST" action="{{route('langpost.updatepropdep', $item->id)}}" 
+                                      enctype="multipart/form-data" id="update_trans_form-{{$lang->id}}">
                                       @csrf
+          
                                       <div class="form-group row">
-                                          <label for="title_trans" class="col-sm-2 col-form-label">العنوان</label>
+                                          <label for="title_trans" class="col-sm-2 col-form-label">الاسم</label>
                                           <div class="col-sm-10">
                                               <input type="text" class="form-control" name="title_trans" id="title_trans"
                                                   placeholder="* Title" value="@if($lang->langposts->first()){{$lang->langposts->first()->title_trans }}@endif">
           
                                               <span id="title_trans-error" class="error invalid-feedback"></span>
+          
                                           </div>
-                                      </div>                                      
+                                      </div>
+                                        
                                       <div class="form-group row">
-                                          <label for="content_trans" class="col-sm-2 col-form-label">المحتوى</label>
+                                          <label for="content_trans" class="col-sm-2 col-form-label">الوصف</label>
                                           <div class="col-sm-10">
                                             <textarea class="textarea" name="content_trans"  id="content_trans" rows="10"  placeholder="Place the translation here"
                                             style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">@if($lang->langposts->first()){{$lang->langposts->first()->content_trans}}@endif</textarea>
@@ -200,7 +183,7 @@
 
 <script src="{{ URL::asset('assets/admin/js/custom/validate.js') }}"></script> 
 <script src="{{ URL::asset('assets/admin//plugins/summernote/summernote-bs4.min.js')}}"></script>
-<script src="{{ URL::asset('assets/admin/js/custom/trans.js') }}"></script>
+<script src="{{ URL::asset('assets/admin/js/custom/property.js') }}"></script>
 <script>
  
     $(function() {

@@ -5,21 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class LangPost extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'lang_posts';
     protected $fillable = [
         'lang_id',
         'category_id',
         'post_id',
-        'level_id',
+        'dep_id',
+        'property_id',
+        'optionvalue_id',
         'main_table',
         'title_trans',
         'content_trans',
         'notes',
-        'name',           
+        'name',
     ];
 
     public function post(): BelongsTo
@@ -32,6 +35,20 @@ class LangPost extends Model
     }
     public function language(): BelongsTo
     {
-        return $this->belongsTo(Language::class,'lang_id')->withDefault();
+        return $this->belongsTo(Language::class, 'lang_id')->withDefault();
     }
+    public function propertydep(): BelongsTo
+    {
+        return $this->belongsTo(PropertyDep::class,'dep_id')->withDefault();
+    }
+    public function property(): BelongsTo
+    {
+        return $this->belongsTo(Property::class,'property_id')->withDefault();
+    }
+    public function optionvalue(): BelongsTo
+    {
+        return $this->belongsTo(OptionValue::class,'optionvalue_id')->withDefault();
+    }
+   
+
 }

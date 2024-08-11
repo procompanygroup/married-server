@@ -24,7 +24,7 @@
 {{-- <script src="{{ URL::asset('assets/admin/js/custom/resumable.min.js') }}"></script> --}}
 @yield('js')
 </body>
-</html>
+ 
 
 
 

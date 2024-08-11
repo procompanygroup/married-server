@@ -151,6 +151,36 @@
                  
                 </ul>
               </li>
+              <li class="nav-item  ">
+                <a href="#" class="nav-link ">                   
+                  <i class="nav-icon far fa fa-user" aria-hidden="true"  ></i>
+                  <p>
+                    المواصفات
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href= "{{url('admin/propdep')}}" class="nav-link ">
+                      <i class="far fa fa-list-alt nav-icon"></i>
+                      <p>المجموعات</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href= "{{url('admin/property')}}" class="nav-link ">
+                      <i class="far fa fa-list-alt nav-icon"></i>
+                      <p>الخصائص</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href= "{{url('admin/option')}}" class="nav-link ">
+                      <i class="far fa fa-list-alt nav-icon"></i>
+                      <p>القيم</p>
+                    </a>
+                  </li>
+                 
+                </ul>
+              </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

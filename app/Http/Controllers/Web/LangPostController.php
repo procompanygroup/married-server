@@ -119,7 +119,78 @@ class LangPostController extends Controller
         
     }
     
+//propertyDep
+public function updatepropdep(UpdateLangPostRequest $request,$id)
+{
+    
+        $formdata = $request->all();
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
 
+      return response()->json($validator);
+
+    } else {   
+       //$id is project_id
+       /*
+'project_id',
+    'lang_id',
+    'title_trans',
+    'content_trans',
+       */
+      $lang_id=  $formdata['lang_id'];
+      $LangPost = LangPost::updateOrCreate(
+        ['dep_id' => $id, 'lang_id' =>  $lang_id],
+        [
+        'title_trans' =>$formdata['title_trans'], 
+        'content_trans' =>$formdata['content_trans']
+        ]
+    );
+   return response()->json("ok");
+         }
+   
+    
+    
+}
+
+public function updateprop(UpdateLangPostRequest $request,$id)
+{
+    
+        $formdata = $request->all();
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
+
+      return response()->json($validator);
+
+    } else {   
+       //$id is project_id
+       /*
+'project_id',
+    'lang_id',
+    'title_trans',
+    'content_trans',
+       */
+      $lang_id=  $formdata['lang_id'];
+      $LangPost = LangPost::updateOrCreate(
+        ['property_id' => $id, 'lang_id' =>  $lang_id],
+        [
+        'title_trans' =>$formdata['title_trans'], 
+        'content_trans' =>$formdata['content_trans']
+        ]
+    );
+   return response()->json("ok");
+         }
+   
+    
+    
+}
     /**
      * Remove the specified resource from storage.
      */

@@ -247,131 +247,131 @@ class ClientController extends Controller
     }
 
   }
-  public function myscore($lang)
-  {
-    if (Auth::guard('client')->check()) {
-      $client_id = Auth::guard('client')->user()->id;
-      //$client=Client::find($client_id);
-//clpointmodel= ClientPoint::where('client_id',$client_id)->where('category_id',$category_id)->orderByDesc('created_at')->first();
+//   public function myscore($lang)
+//   {
+//     if (Auth::guard('client')->check()) {
+//       $client_id = Auth::guard('client')->user()->id;
+//       //$client=Client::find($client_id);
+// //clpointmodel= ClientPoint::where('client_id',$client_id)->where('category_id',$category_id)->orderByDesc('created_at')->first();
 
-      //return response()->json($this->getsocial($id));  
-      $sitedctrlr = new SiteDataController();
-      $transarr = $sitedctrlr->FillTransData($lang);
-      $defultlang = $transarr['langs']->first();
-      //$catlist=Category::with()->where('status',1);  
-      $catlist = $sitedctrlr->getquescatbyloc('cats', $defultlang->id);
-      $catarr = [];
+//       //return response()->json($this->getsocial($id));  
+//       $sitedctrlr = new SiteDataController();
+//       $transarr = $sitedctrlr->FillTransData($lang);
+//       $defultlang = $transarr['langs']->first();
+//       //$catlist=Category::with()->where('status',1);  
+//       $catlist = $sitedctrlr->getquescatbyloc('cats', $defultlang->id);
+//       $catarr = [];
 
-      foreach ($catlist as $catrow) {
-        $clpointmodel = ClientPoint::where('client_id', $client_id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
-        $newarr['category'] = $catrow;
-        if ($clpointmodel) {
-          $newarr['level'] = $clpointmodel->level->value;
-          $clpointlist = ClientPoint::where('client_id', $client_id)->where('category_id', $catrow['category_id'])->get()->sum(function ($q) {
-            return $q->points_sum + $q->gift_sum;
-          });
-          $newarr['points'] = $clpointlist;
-        } else {
-          $newarr['level'] = 0;
-          $newarr['points'] = 0;
-        }
-        //add row to list
-        $catarr[] = $newarr;
-      }
-      // return dd($catarr);
-      $translate = $sitedctrlr->getbycode($defultlang->id, ['my-score','header','public-score','home_page']);//chang
-      return view(
-        "site.client.score",
-        [
-          "cat_score" => $catarr,
-          'transarr' => $transarr,
-          'lang' => $lang,
-          'defultlang' => $defultlang,
-          'translate' => $translate,
-          'sitedataCtrlr' => $sitedctrlr
-        ]
-      );
-    } else {
-      return redirect()->route('login.client');
-    }
+//       foreach ($catlist as $catrow) {
+//         $clpointmodel = ClientPoint::where('client_id', $client_id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
+//         $newarr['category'] = $catrow;
+//         if ($clpointmodel) {
+//           $newarr['level'] = $clpointmodel->level->value;
+//           $clpointlist = ClientPoint::where('client_id', $client_id)->where('category_id', $catrow['category_id'])->get()->sum(function ($q) {
+//             return $q->points_sum + $q->gift_sum;
+//           });
+//           $newarr['points'] = $clpointlist;
+//         } else {
+//           $newarr['level'] = 0;
+//           $newarr['points'] = 0;
+//         }
+//         //add row to list
+//         $catarr[] = $newarr;
+//       }
+//       // return dd($catarr);
+//       $translate = $sitedctrlr->getbycode($defultlang->id, ['my-score','header','public-score','home_page']);//chang
+//       return view(
+//         "site.client.score",
+//         [
+//           "cat_score" => $catarr,
+//           'transarr' => $transarr,
+//           'lang' => $lang,
+//           'defultlang' => $defultlang,
+//           'translate' => $translate,
+//           'sitedataCtrlr' => $sitedctrlr
+//         ]
+//       );
+//     } else {
+//       return redirect()->route('login.client');
+//     }
 
-  }
+//   }
 
-  public function scores($lang)
-  {
-    $sitedctrlr = new SiteDataController();
-    $transarr = $sitedctrlr->FillTransData($lang);
-    $defultlang = $transarr['langs']->first();
-    //total all
-    $grouplist = ClientPoint::groupBy('client_id', 'category_id')->select(
-      'id',
-      'category_id',
-      'client_id',
-    )
-      ->addSelect(DB::raw('SUM(points_sum + gift_sum) as cat_sum'))->get();
+  // public function scores($lang)
+  // {
+  //   $sitedctrlr = new SiteDataController();
+  //   $transarr = $sitedctrlr->FillTransData($lang);
+  //   $defultlang = $transarr['langs']->first();
+  //   //total all
+  //   $grouplist = ClientPoint::groupBy('client_id', 'category_id')->select(
+  //     'id',
+  //     'category_id',
+  //     'client_id',
+  //   )
+  //     ->addSelect(DB::raw('SUM(points_sum + gift_sum) as cat_sum'))->get();
 
-    //this month list
-    $nowmonth = Carbon::now()->format('m');
-    // return $nowmonth;
-    $monthlist = AnswersClient::whereMonth('created_at', $nowmonth)->groupBy('client_id', 'category_id')->
-      select('id', 'category_id', 'client_id')
-      ->addSelect(DB::raw('SUM(points) as cat_sum'))->get();
-    //   return  $monthlist;
-    $catlist = $sitedctrlr->getquescatbyloc('cats', $defultlang->id);
-    $catarr = [];
+  //   //this month list
+  //   $nowmonth = Carbon::now()->format('m');
+  //   // return $nowmonth;
+  //   $monthlist = AnswersClient::whereMonth('created_at', $nowmonth)->groupBy('client_id', 'category_id')->
+  //     select('id', 'category_id', 'client_id')
+  //     ->addSelect(DB::raw('SUM(points) as cat_sum'))->get();
+  //   //   return  $monthlist;
+  //   $catlist = $sitedctrlr->getquescatbyloc('cats', $defultlang->id);
+  //   $catarr = [];
 
-    foreach ($catlist as $catrow) {
-      $newarr['category'] = $catrow;
-      //total score
-      $highrow = $grouplist->where('category_id', $catrow['category_id'])->sortByDesc('cat_sum')->first();
-      if ($highrow) {
-        $newarr['total_score']['cat_score'] = $highrow['cat_sum'];
-        $client = Client::find($highrow['client_id']);
-        $clpointmodel = ClientPoint::where('client_id', $client->id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
+  //   foreach ($catlist as $catrow) {
+  //     $newarr['category'] = $catrow;
+  //     //total score
+  //     $highrow = $grouplist->where('category_id', $catrow['category_id'])->sortByDesc('cat_sum')->first();
+  //     if ($highrow) {
+  //       $newarr['total_score']['cat_score'] = $highrow['cat_sum'];
+  //       $client = Client::find($highrow['client_id']);
+  //       $clpointmodel = ClientPoint::where('client_id', $client->id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
 
-        $newarr['total_score']['level'] = $clpointmodel->level->value;
-        $newarr['total_score']['client_name'] = $client->name;
-      } else {
-        $newarr['total_score']['cat_score'] = 0;
-        $newarr['total_score']['client_name'] = "-";
-        $newarr['total_score']['level'] = 0;
-      }
-      //current month score
-      $monthrow = $monthlist->where('category_id', $catrow['category_id'])->sortByDesc('cat_sum')->first();
-      if ($monthrow) {
-        $newarr['month_score']['cat_score'] = $monthrow['cat_sum'];
-        $client = Client::find($monthrow['client_id']);
-        $clpointmodel = ClientPoint::where('client_id', $client->id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
+  //       $newarr['total_score']['level'] = $clpointmodel->level->value;
+  //       $newarr['total_score']['client_name'] = $client->name;
+  //     } else {
+  //       $newarr['total_score']['cat_score'] = 0;
+  //       $newarr['total_score']['client_name'] = "-";
+  //       $newarr['total_score']['level'] = 0;
+  //     }
+  //     //current month score
+  //     $monthrow = $monthlist->where('category_id', $catrow['category_id'])->sortByDesc('cat_sum')->first();
+  //     if ($monthrow) {
+  //       $newarr['month_score']['cat_score'] = $monthrow['cat_sum'];
+  //       $client = Client::find($monthrow['client_id']);
+  //       $clpointmodel = ClientPoint::where('client_id', $client->id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
 
-        $newarr['month_score']['level'] = $clpointmodel->level->value;
-        $newarr['month_score']['client_name'] = $client->name;
-      } else {
-        $newarr['month_score']['cat_score'] = 0;
-        $newarr['month_score']['client_name'] = "-";
-        $newarr['month_score']['level'] = 0;
-      }
-      $catarr[] = $newarr;
-    }
-    // return  $catarr;
+  //       $newarr['month_score']['level'] = $clpointmodel->level->value;
+  //       $newarr['month_score']['client_name'] = $client->name;
+  //     } else {
+  //       $newarr['month_score']['cat_score'] = 0;
+  //       $newarr['month_score']['client_name'] = "-";
+  //       $newarr['month_score']['level'] = 0;
+  //     }
+  //     $catarr[] = $newarr;
+  //   }
+  //   // return  $catarr;
 
-    //high balance client
-    $firstclient = Client::orderByDesc('total_balance')->select('id', 'name', 'image', 'total_balance')->take(3)->get();
-    // return dd($catarr);
-    $translate = $sitedctrlr->getbycode($defultlang->id, ['footer-menu','public-score','home_page','sort-places']);//chang
-    return view(
-      "site.content.score",
-      [
-        "category_score" => $catarr,
-        "first_client" => $firstclient,
-        'transarr' => $transarr,
-        'lang' => $lang,
-        'defultlang' => $defultlang,
-        'translate' => $translate,
-        'sitedataCtrlr' => $sitedctrlr
-      ]
-    );
+  //   //high balance client
+  //   $firstclient = Client::orderByDesc('total_balance')->select('id', 'name', 'image', 'total_balance')->take(3)->get();
+  //   // return dd($catarr);
+  //   $translate = $sitedctrlr->getbycode($defultlang->id, ['footer-menu','public-score','home_page','sort-places']);//chang
+  //   return view(
+  //     "site.content.score",
+  //     [
+  //       "category_score" => $catarr,
+  //       "first_client" => $firstclient,
+  //       'transarr' => $transarr,
+  //       'lang' => $lang,
+  //       'defultlang' => $defultlang,
+  //       'translate' => $translate,
+  //       'sitedataCtrlr' => $sitedctrlr
+  //     ]
+  //   );
 
-  }
+  // }
 
    
  
@@ -539,8 +539,7 @@ class ClientController extends Controller
         //delete   MediaPost records
         // ClientSocial::where('client_id',$id)->delete();
         // MessageModel::where('sender_id',$id)->orWhere('recipient_id',$id)->delete();
-        AnswersClient::where('client_id', $id)->delete();
-        ClientPoint::where('client_id', $id)->delete();
+      
         PointTrans::where('client_id', $id)->delete();
         Client::find($id)->delete();
         Auth::guard('client')->logout();

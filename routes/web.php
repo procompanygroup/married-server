@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Web\QuestionController;
+ 
+use App\Http\Controllers\Web\OptionValueController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
@@ -17,17 +18,18 @@ use App\Http\Controllers\Web\MediaPostController;
 use App\Http\Controllers\Web\MailController;
 use App\Http\Controllers\Web\ClientController;
 //use  App\Http\Controllers\Web\ClientAuthController;
-use App\Http\Controllers\Web\MessageController;
+ 
 use App\Http\Controllers\Web\SocialController;
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\Web\CategoryQuesController;
-use App\Http\Controllers\Web\LevelController;
+ 
+ 
 use App\Http\Controllers\Web\TranslateController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Web\PasswordController;
 use App\Http\Controllers\Web\ClientPasswordResetController;
-use App\Http\Controllers\Web\AnswerController;
+ use App\Http\Controllers\Web\PropertyController;
+ use App\Http\Controllers\Web\PropertyDepController;
  
 
 //site
@@ -79,7 +81,7 @@ Route::get('/cashclear', function () {
 
 Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin');
-    Route::any('/search', [QuestionController::class, 'search']);
+    // Route::any('/search', [QuestionController::class, 'search']);
     
     Route::middleware('role.admin:admin')->group(function () {
         Route::resource('user', UserController::class, ['except' => ['update']]);
@@ -91,11 +93,11 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
         });
         ////////////////social///////////////////////
 
-        Route::resource('social', SocialController::class, ['except' => ['update']]);
-        Route::prefix('social')->group(function () {
-            Route::post('/update/{id}', [SocialController::class, 'update'])->name('social.update');
+        // Route::resource('social', SocialController::class, ['except' => ['update']]);
+        // Route::prefix('social')->group(function () {
+        //     Route::post('/update/{id}', [SocialController::class, 'update'])->name('social.update');
 
-        });
+        // });
         /////////////////////////////////////////
         Route::resource('language', LanguageController::class, ['except' => ['update']]);
         Route::prefix('language')->group(function () {
@@ -145,34 +147,34 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             Route::delete('/delfooter/{id}', [SettingController::class, 'delfooter']);
             //question
             //
-            Route::get('/question', [SettingController::class, 'quessetting']);
-            Route::post('/question/{id}', [SettingController::class, 'quesupdate']);
+            // Route::get('/question', [SettingController::class, 'quessetting']);
+            // Route::post('/question/{id}', [SettingController::class, 'quesupdate']);
         });
         //questions
         //category
-        Route::resource('categoryques', CategoryQuesController::class, ['except' => ['update']]);
-        Route::prefix('categoryques')->group(function () {
-            Route::post('/update/{id}', [CategoryQuesController::class, 'update'])->name('categoryques.update');
-            Route::get('/sort/{loc}', [LocationController::class, 'sortpage']);
-        });
+        // Route::resource('categoryques', CategoryQuesController::class, ['except' => ['update']]);
+        // Route::prefix('categoryques')->group(function () {
+        //     Route::post('/update/{id}', [CategoryQuesController::class, 'update'])->name('categoryques.update');
+        //     Route::get('/sort/{loc}', [LocationController::class, 'sortpage']);
+        // });
       
         //Level
-        Route::resource('level', LevelController::class, ['except' => ['update']]);
-        Route::prefix('level')->group(function () {
-            Route::post('/update/{id}', [LevelController::class, 'update'])->name('level.update');
+        // Route::resource('level', LevelController::class, ['except' => ['update']]);
+        // Route::prefix('level')->group(function () {
+        //     Route::post('/update/{id}', [LevelController::class, 'update'])->name('level.update');
 
-        });
+        // });
         //questions route
-        Route::resource('question', QuestionController::class, ['except' => ['update']]);
-        Route::prefix('question')->group(function () {
-            Route::post('/update/{id}', [QuestionController::class, 'update'])->name('question.update');
-            Route::any('/search', [QuestionController::class, 'search']);
-            Route::get('result/{id}', [QuestionController::class, 'results']);
-        });
-        Route::prefix('answer')->group(function () {
-            Route::post('/destroy/{id}', [AnswerController::class,'destroyans']);
+        // Route::resource('question', QuestionController::class, ['except' => ['update']]);
+        // Route::prefix('question')->group(function () {
+        //     Route::post('/update/{id}', [QuestionController::class, 'update'])->name('question.update');
+        //     Route::any('/search', [QuestionController::class, 'search']);
+        //     Route::get('result/{id}', [QuestionController::class, 'results']);
+        // });
+        // Route::prefix('answer')->group(function () {
+        //     Route::post('/destroy/{id}', [AnswerController::class,'destroyans']);
              
-        });
+        // });
         //footer
         Route::prefix('post')->group(function () {
             Route::post('/update/{id}', [PostController::class, 'update'])->name('post.update');
@@ -190,7 +192,9 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
         Route::prefix('langpost')->group(function () {
             Route::post('/update/{id}', [LangPostController::class, 'update'])->name('langpost.update');
             Route::post('/updatecategory/{id}', [LangPostController::class, 'updatelangcategory'])->name('langcategory.update');
-
+            Route::post('/updatepropdep/{id}', [LangPostController::class, 'updatepropdep'])->name('langpost.updatepropdep');
+            Route::post('/updateprop/{id}', [LangPostController::class, 'updateprop'])->name('langpost.updateprop');
+        
         });
 
         //category menu
@@ -249,6 +253,28 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
         // Route::post('/upload', [TranslateController::class, 'uploadLargeFiles'])->name('post.upload');;
 
     });
+
+    //married
+    Route::prefix('property')->group(function () {
+        // Route::post('/update/{id}', [TranslateController::class, 'update'])->name('post.update');    
+        Route::get('/', [PropertyController::class, 'index']);
+        Route::get('/create', [PropertyController::class, 'create']);
+        Route::post('/store', [PropertyController::class, 'store']);
+        Route::post('/update/{id}', [PropertyController::class, 'update']);
+        Route::delete('/destroy/{id}', [PropertyController::class, 'destroy']);
+        Route::get('/edit/{id}', [PropertyController::class, 'edit']);
+        
+    });
+    Route::resource('propdep', PropertyDepController::class, ['except' => ['update']]);
+    Route::prefix('propdep')->group(function () {
+        Route::post('/update/{id}', [PropertyDepController::class, 'update']);
+});
+Route::resource('option', OptionValueController::class, ['except' => ['update']]);
+Route::prefix('option')->group(function () {
+    Route::post('/update/{id}', [OptionValueController::class, 'update']);
+});
+
+    //
     Route::middleware('role.admin:admin-super')->group(function () {
     });
 
@@ -267,11 +293,11 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
 
     //
     Route::get('{lang}/page/{slug}', [HomeController::class, 'showpage']);
-    Route::get('{lang}/questions', [QuestionController::class, 'getquestions']);
+    // Route::get('{lang}/questions', [QuestionController::class, 'getquestions']);
 
     Route::prefix('{lang}')->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
-        Route::get('/scores', [ClientController::class, 'scores']);
+        // Route::get('/scores', [ClientController::class, 'scores']);
         //Route::get('/{slug}', [ClientController::class, 'send_message']);
         
 
@@ -288,7 +314,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
     Route::get('/vote/{slug}', [HomeController::class, 'getques']);
 });
  //vote
- Route::post('/addvote/{slug}', [AnswerController::class, 'addvote']);
+//  Route::post('/addvote/{slug}', [AnswerController::class, 'addvote']);
 
     Route::resource('verify', CodeController::class);
     //can only logout without verify
@@ -301,7 +327,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
         Route::post('u/delete', [ClientController::class, 'destroy']);
         Route::get('/balanceinfo', [ClientController::class, 'balanceinfo']);
        
-        Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
+        // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
         
       //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
         Route::prefix('{lang}')->group(function () {
@@ -311,7 +337,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             Route::post('/update', [ClientController::class, 'update'])->name('client.update');
             Route::post('/pull', [ClientController::class, 'pull']);
             //my score
-            Route::get('/myscore', [ClientController::class, 'myscore']);
+            // Route::get('/myscore', [ClientController::class, 'myscore']);
            
       //      Route::post('/send', [QuestionController::class, 'sendquiz']);
            // Route::post('/checkans', [QuestionController::class, 'checkanswer']);
