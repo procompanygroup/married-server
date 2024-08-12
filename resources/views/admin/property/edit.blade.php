@@ -66,8 +66,7 @@
                           <div class="form-group row">
                               <label for="type" class="col-sm-3 col-form-label">نوع البيانات</label>
                               <div class="col-sm-9">
-                                  <select class="form-control " name="type" id="type" placeholder="* المجموعة"
-                                      value="">
+                                  <select class="form-control " name="type" id="type" placeholder="* المجموعة" >
                                       <option value="0">اختر نوع البيانات</option>
                                       <option value="string" @if ($item->type=='string') @selected(true)  @endif >نص</option>
                                       <option value="integer" @if ($item->type=='integer') @selected(true)  @endif >رقم</option>
@@ -87,7 +86,7 @@
                           </div>
 
                           <div class="form-group row">
-                              <label for="status" class="col-sm-2 col-form-label">متعدد القيم</label>
+                              <label for="is_multivalue" class="col-sm-2 col-form-label">متعدد القيم</label>
                               <div class="col-sm-10 custom-control custom-switch ">
                                   <input type="checkbox" class="custom-control-input" id="is_multivalue"
                                       name="is_multivalue"   value="{{ $item->is_multivalue }}" @if ( $item->is_multivalue=='1') @checked(true) @endif>

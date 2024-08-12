@@ -117,7 +117,7 @@
                                     <button type="submit" name="btn_save"
                                         class="btn btn-primary btn-submit">{{ __('general.save', [], 'ar') }}</button>
                                     <a class="btn btn-danger float-right "
-                                        href="{{ url('admin/setting/translate') }}">{{ __('general.cancel', [], 'ar') }}</a>
+                                        href="{{ url('admin/option') }}">{{ __('general.cancel', [], 'ar') }}</a>
                                 </div>
                             </div>
                         </form>

@@ -191,6 +191,37 @@ public function updateprop(UpdateLangPostRequest $request,$id)
     
     
 }
+
+
+public function updateoption(UpdateLangPostRequest $request,$id)
+{
+    
+        $formdata = $request->all();
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
+
+      return response()->json($validator);
+
+    } else {   
+     
+      $lang_id=  $formdata['lang_id'];
+      $LangPost = LangPost::updateOrCreate(
+        ['optionvalue_id' => $id, 'lang_id' =>  $lang_id],
+        [
+        'title_trans' =>$formdata['title_trans'], 
+        'content_trans' =>$formdata['content_trans']
+        ]
+    );
+   return response()->json("ok");
+         }
+   
+    
+    
+}
     /**
      * Remove the specified resource from storage.
      */

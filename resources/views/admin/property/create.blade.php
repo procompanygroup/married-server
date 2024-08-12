@@ -90,7 +90,7 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="status" class="col-sm-2 col-form-label">متعدد القيم</label>
+                                <label for="is_multivalue" class="col-sm-2 col-form-label">متعدد القيم</label>
                                 <div class="col-sm-10 custom-control custom-switch ">
                                     <input type="checkbox" class="custom-control-input" id="is_multivalue"
                                         name="is_multivalue" value="1" checked>

@@ -8,6 +8,8 @@ use App\Models\OptionValue;
 use App\Models\Property;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Option\StoreOptionRequest;
+use App\Models\Language;
+use App\Models\LangPost;
 class OptionValueController extends Controller
 {
     /**
@@ -76,15 +78,52 @@ $type= $formdata['type'];
      */
     public function edit(string $id)
     {
-        //
+        $item = OptionValue::find($id);
+        $List = Property::with('propertydep')->where('is_multivalue', 1)->get();
+        $lang_list = Language::orderByDesc('is_default')->with(
+            [
+                'langposts' => function ($q) use ($id) {
+                    $q->where('optionvalue_id', $id);
+                }
+            ]
+        )->get();
+        return view('admin.optionvalue.edit', ["item" => $item, 'lang_list' => $lang_list,'property_list' => $List]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreOptionRequest $request, string $id)
     {
-        //
+        $formdata = $request->all();
+
+        $validator = Validator::make(
+            $formdata,
+            $request->rules(),
+            $request->messages()
+        );
+        if ($validator->fails()) {
+            return response()->json($validator);
+        } else {
+//$prop=Property::find($formdata['property_id']);
+$type= $formdata['type'];
+            $newObj =  OptionValue::find($id);
+         
+            $newObj->name = $formdata['name'];
+            $newObj->is_active = isset($formdata["is_active"]) ? 1 : 0;
+            $newObj->type = $formdata['type'];
+      
+            $newObj->notes = $formdata['notes'];
+            $newObj->property_id = $formdata['property_id'];
+            if($type=='string'){
+                $newObj->value = $formdata['op_val'];
+            }else if($type=='integer'){
+                $newObj->value_int = $formdata['op_val'];
+            }
+                 $newObj->save();
+          
+            return response()->json("ok");
+        }
     }
 
     /**
@@ -92,6 +131,12 @@ $type= $formdata['type'];
      */
     public function destroy(string $id)
     {
-        //
+       
+        $item = OptionValue::find($id);
+        if (!($item === null)) {  
+        LangPost::where('optionvalue_id', $id)->delete();
+        OptionValue::find($id)->delete();
+        }
+        return redirect()->back();
     }
 }

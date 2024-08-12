@@ -194,6 +194,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             Route::post('/updatecategory/{id}', [LangPostController::class, 'updatelangcategory'])->name('langcategory.update');
             Route::post('/updatepropdep/{id}', [LangPostController::class, 'updatepropdep'])->name('langpost.updatepropdep');
             Route::post('/updateprop/{id}', [LangPostController::class, 'updateprop'])->name('langpost.updateprop');
+            Route::post('/updateoption/{id}', [LangPostController::class, 'updateoption'])->name('langpost.updateoption');
         
         });
 

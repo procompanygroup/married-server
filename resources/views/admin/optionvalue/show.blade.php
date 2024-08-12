@@ -67,12 +67,12 @@
                   <td>{{ $item->property->propertydep->name}}</td>
                                    
                   
-                  <td>    <a class="btn btn-info btn-sm" href="{{url('admin/option/edit', $item->id)}}">
+                  <td>    <a class="btn btn-info btn-sm" href="{{route('option.edit', $item->id)}}">
                               <i class="fas fa-pencil-alt">
                               </i>
                               تعديل
                           </a>
-                          <form action="{{url('admin/option/destroy', $item->id)}}" method="POST" class="d-inline">
+                          <form action="{{url('admin/option', $item->id)}}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="button" id="del-{{$item->id}}" class="btn btn-danger btn-sm delete"  data-toggle="modal" data-target="#modal-delete"   title="حذف">   <i class="fas fa-trash">
