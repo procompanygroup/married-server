@@ -33,7 +33,7 @@ class ClientOption extends Model
     }
     public function optionvalue(): BelongsTo
     {
-        return $this->belongsTo(Property::class,'option_id')->withDefault();
+        return $this->belongsTo(OptionValue::class,'option_id')->withDefault();
     }
     public function country(): BelongsTo
     {

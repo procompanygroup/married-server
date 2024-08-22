@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Web\PropertyController;
 use App\Http\Controllers\Web\ClientOptionController;
- 
+
 // use App\Http\Controllers\Web\MessageController;
 // use URL;
 //use Illuminate\Support\Facades\Session;
@@ -57,8 +57,8 @@ class ClientController extends Controller
   }
   public function pullops($id)
   {
-    $client=Client::find($id);
-    $op_list = PointTrans::with('client')->where('client_id',$id)->orderByDesc('created_at')->paginate(100);
+    $client = Client::find($id);
+    $op_list = PointTrans::with('client')->where('client_id', $id)->orderByDesc('created_at')->paginate(100);
     return view('admin.client.pull', [
       'op_list' => $op_list,
       'client' => $client,
@@ -76,19 +76,19 @@ class ClientController extends Controller
    */
   public function show($id)
   {
-    $lang='ar';
+    $lang = 'ar';
     $client = Client::find($id);
-   $cntryjson=  'assets/site/js/countries/' . $lang . '/countries.json' ;
-   $countries = json_decode(File::get($cntryjson), true);
-   $countries =collect( $countries );
-   $client_country=$countries->where('alpha2',$client->country)->first();
-   if($client_country){
-    $client->country_conv=$client_country['name'];
-   }else{
-    $client->country_conv='-';
-   }
+    $cntryjson = 'assets/site/js/countries/' . $lang . '/countries.json';
+    $countries = json_decode(File::get($cntryjson), true);
+    $countries = collect($countries);
+    $client_country = $countries->where('alpha2', $client->country)->first();
+    if ($client_country) {
+      $client->country_conv = $client_country['name'];
+    } else {
+      $client->country_conv = '-';
+    }
 
-  // return $client_country;
+    // return $client_country;
     return view('admin.client.show', [
       'client' => $client,
     ]);
@@ -96,39 +96,39 @@ class ClientController extends Controller
   /**
    * Show the form for creating a new resource.
    */
-  public function create($lang,$gender)
+  public function create($lang, $gender)
   {
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
-$probctrlr=new PropertyController();
-$propgroup=$probctrlr->propgroup($lang);
-$nowyear = Carbon::now()->format('Y');
+    $probctrlr = new PropertyController();
+    $propgroup = $probctrlr->propgroup($lang);
+    $nowyear = Carbon::now()->format('Y');
 
-//return response()->json(  ) ;
-    $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
-if($gender=='male'){
-  return view('site.client.register-male', [
-    'transarr' => $transarr,
-    'lang' => $lang,
-    'defultlang' => $defultlang,
-    'register' => $register,
-    'sitedataCtrlr' => $sitedctrlr,
-    'prop_group'=>$propgroup,
-'nowyear'=>$nowyear,
-  ]);
-}else{
-  return view('site.client.register-female', [
-    'transarr' => $transarr,
-    'lang' => $lang,
-    'defultlang' => $defultlang,
-    'register' => $register,
-    'sitedataCtrlr' => $sitedctrlr,
-    'prop_group'=>$propgroup,
-    'nowyear'=>$nowyear,
-  ]);
-}
-   
+    //return response()->json(  ) ;
+    $register = $sitedctrlr->getbycode($defultlang->id, ['register', 'register-error']);
+    if ($gender == 'male') {
+      return view('site.client.register-male', [
+        'transarr' => $transarr,
+        'lang' => $lang,
+        'defultlang' => $defultlang,
+        'register' => $register,
+        'sitedataCtrlr' => $sitedctrlr,
+        'prop_group' => $propgroup,
+        'nowyear' => $nowyear,
+      ]);
+    } else {
+      return view('site.client.register-female', [
+        'transarr' => $transarr,
+        'lang' => $lang,
+        'defultlang' => $defultlang,
+        'register' => $register,
+        'sitedataCtrlr' => $sitedctrlr,
+        'prop_group' => $propgroup,
+        'nowyear' => $nowyear,
+      ]);
+    }
+
   }
   public function befor_reg($lang)
   {
@@ -136,7 +136,7 @@ if($gender=='male'){
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
 
-   // $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
+    // $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
 
     return view('site.client.befor-register', [
       'transarr' => $transarr,
@@ -148,15 +148,15 @@ if($gender=='male'){
   }
   public function befor_reg_check(BeforRequest $request)
   {
-    $formData= $request->all();
-   $gender=  $formData['data']['gender'];
+    $formData = $request->all();
+    $gender = $formData['data']['gender'];
 
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData();
-     $defultlang = $transarr['langs']->first();
-     $lang= $defultlang->code;
-   // $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
-   return response()->json( $gender);
+    $defultlang = $transarr['langs']->first();
+    $lang = $defultlang->code;
+    // $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
+    return response()->json($gender);
     // return view('site.client.register', [
     //   'lang' => $lang,
     //   'defultlang' => $defultlang,
@@ -169,11 +169,11 @@ if($gender=='male'){
   public function check_email(CheckMailRequest $request)
   {
     //CheckMailRequest
-  //  $formData= $request->all();
-  //  $email=  $formData['data']['email'];
- 
-   return response()->json("ok");
-   
+    //  $formData= $request->all();
+    //  $email=  $formData['data']['email'];
+
+    return response()->json("ok");
+
   }
 
   public function showlogin($lang)
@@ -182,7 +182,7 @@ if($gender=='male'){
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
 
-    $login = $sitedctrlr->getbycode($defultlang->id, ['login','register-error','register']);
+    $login = $sitedctrlr->getbycode($defultlang->id, ['login', 'register-error', 'register']);
 
     return view('site.client.login', [
       'transarr' => $transarr,
@@ -201,10 +201,10 @@ if($gender=='male'){
     //new code
     //return redirect()->intended(Route('mymessages',false));
     $client = Client::find(auth()->guard('client')->user()->id);
-    $code = $client->code;    
-    if($code != null){
+    $code = $client->code;
+    if ($code != null) {
       return response()->json("verify");
-    }else{
+    } else {
       return response()->json("ok");
     }
   }
@@ -213,7 +213,7 @@ if($gender=='male'){
    */
   public function store(StoreClientRequest $request, $lang)//StoreClientRequest
   {
-    StoreClientRequest::$lang=$lang;
+    StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
@@ -227,80 +227,82 @@ if($gender=='male'){
       return response()->json($validator);
     } else {
       //  $lang= $formdata["lang"];
-    //  $sitedctrlr = new SiteDataController();
-     // $transarr = $sitedctrlr->FillTransData($lang);
-   //   $defultlang = $transarr['langs']->first();
-   
+      //  $sitedctrlr = new SiteDataController();
+      // $transarr = $sitedctrlr->FillTransData($lang);
+      //   $defultlang = $transarr['langs']->first();
 
-    
+
+
       $newObj = new Client;
       //  $slug=   Str::slug($formdata['name']);
       $newObj->name = $formdata['name'];
-       $newObj->first_name = $formdata['first_name'];
+      $newObj->first_name = $formdata['first_name'];
       // $newObj->last_name = $formdata['last_name'];
       $newObj->email = $formdata['email'];
       $newObj->password = bcrypt($formdata['password']);
-      $birthdate= Carbon::create($formdata["birthdate"])->format('Y-m-d');
-      $newObj->birthdate =  $birthdate;
-     $newObj->mobile = $formdata['mobile'];
-     $newObj->gender = $formdata['gender'];
+      $birthdate = Carbon::create($formdata["birthdate"])->format('Y-m-d');
+      $newObj->birthdate = $birthdate;
+      $newObj->mobile = $formdata['mobile'];
+      $newObj->gender = $formdata['gender'];
       // $newObj->role = 'admin';
       //   $newObj->is_active = $formdata['is_active'];
       // $newObj->user_name=$slug;
       $newObj->is_active = 1;
-  //    $newObj->lang_id = $defultlang->id;
+      //    $newObj->lang_id = $defultlang->id;
       $newObj->save();
- //wife_num   
- $clientopctrlr=new ClientOptionController();
-if( $formdata['gender']=='male'){
-  $clientopctrlr->addmultiop($newObj->id,$formdata['wife_num']);
-  $clientopctrlr->addmultiop($newObj->id,$formdata['family_status']);
-  //beard
-$clientopctrlr->addmultiop($newObj->id,$formdata['beard']);
-}else{
-  $clientopctrlr->addmultiop($newObj->id,$formdata['wife_num_female']);
-  $clientopctrlr->addmultiop($newObj->id,$formdata['family_status_female']);
-  //veil
-$clientopctrlr->addmultiop($newObj->id,$formdata['veil']);
-}
- 
- 
- 
+      //wife_num   
+      $clientopctrlr = new ClientOptionController();
+      if ($formdata['gender'] == 'male') {
+        $clientopctrlr->addmultiop($newObj->id, $formdata['wife_num']);
+        $clientopctrlr->addmultiop($newObj->id, $formdata['family_status']);
+        //beard
+        $clientopctrlr->addmultiop($newObj->id, $formdata['beard']);
+      } else {
+        $clientopctrlr->addmultiop($newObj->id, $formdata['wife_num_female']);
+        $clientopctrlr->addmultiop($newObj->id, $formdata['family_status_female']);
+        //veil
+        $clientopctrlr->addmultiop($newObj->id, $formdata['veil']);
+      }
 
 
-//children_num
-$clientopctrlr->addopgenerated($newObj->id,$formdata['children_num'],'children_num');
-//residence + city
-$clientopctrlr->addopcountry_city($newObj->id,'residence',$formdata['residence'],$formdata['city']);
- //nationality
- $clientopctrlr->addopcountry_city($newObj->id,'nationality',$formdata['nationality']);
- //weight
-$clientopctrlr->addopgenerated($newObj->id,$formdata['weight'],'weight');
- //height
- $clientopctrlr->addopgenerated($newObj->id,$formdata['height'],'height');
-//skin
- $clientopctrlr->addmultiop($newObj->id,$formdata['skin']);
-//religiosity
-$clientopctrlr->addmultiop($newObj->id,$formdata['religiosity']);
-//prayer
-$clientopctrlr->addmultiop($newObj->id,$formdata['prayer']);
-//smoking
-$clientopctrlr->addmultiop($newObj->id,$formdata['smoking']);
 
-//education
-$clientopctrlr->addmultiop($newObj->id,$formdata['education']);
-//financial
-$clientopctrlr->addmultiop($newObj->id,$formdata['financial']);
-//job
-$clientopctrlr->addopgenerated($newObj->id,$formdata['job'],'job');
-//income
-$clientopctrlr->addmultiop($newObj->id,$formdata['income']);
-//health
-$clientopctrlr->addmultiop($newObj->id,$formdata['health']);
-//partner
-$clientopctrlr->addopgenerated($newObj->id,$formdata['partner'],'partner');
- //about_me
-$clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
+
+
+      //children_num
+      $clientopctrlr->addopgenerated($newObj->id, $formdata['children_num'], 'children_num');
+      //residence + city
+      $clientopctrlr->addopcountry_city($newObj->id, 'residence', $formdata['residence'], $formdata['city']);
+      //nationality
+      $clientopctrlr->addopcountry_city($newObj->id, 'nationality', $formdata['nationality']);
+      //weight
+      $clientopctrlr->addopgenerated($newObj->id, $formdata['weight'], 'weight');
+      //height
+      $clientopctrlr->addopgenerated($newObj->id, $formdata['height'], 'height');
+      //skin
+      $clientopctrlr->addmultiop($newObj->id, $formdata['skin']);
+      $clientopctrlr->addmultiop($newObj->id, $formdata['body']);
+      //religiosity
+      $clientopctrlr->addmultiop($newObj->id, $formdata['religiosity']);
+      //prayer
+      $clientopctrlr->addmultiop($newObj->id, $formdata['prayer']);
+      //smoking
+      $clientopctrlr->addmultiop($newObj->id, $formdata['smoking']);
+
+      //education
+      $clientopctrlr->addmultiop($newObj->id, $formdata['education']);
+      $clientopctrlr->addmultiop($newObj->id, $formdata['work']);
+      //financial
+      $clientopctrlr->addmultiop($newObj->id, $formdata['financial']);
+      //job
+      $clientopctrlr->addopgenerated($newObj->id, $formdata['job'], 'job');
+      //income
+      $clientopctrlr->addmultiop($newObj->id, $formdata['income']);
+      //health
+      $clientopctrlr->addmultiop($newObj->id, $formdata['health']);
+      //partner
+      $clientopctrlr->addopgenerated($newObj->id, $formdata['partner'], 'partner');
+      //about_me
+      $clientopctrlr->addopgenerated($newObj->id, $formdata['about_me'], 'about_me');
       if ($request->hasFile('image')) {
         $file = $request->file('image');
         // $filename= $file->getClientOriginalName();
@@ -309,20 +311,20 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
       }
 
       event(new Registered($newObj));
-         // insert code in data
-                $client = Client::where('email',  $formdata['email'])->first();
-                $client->generateCode();          // from Client model
-                                // send mail
-                $client->notify(new Code());
-       Auth::guard('client')->login($newObj);
+      // insert code in data
+      $client = Client::where('email', $formdata['email'])->first();
+      $client->generateCode();          // from Client model
+      // send mail
+      $client->notify(new Code());
+      Auth::guard('client')->login($newObj);
       // make login after register
       //  return redirect()->route('site.home');
       return response()->json("ok");
-     
+
+    }
   }
-  }
-  
-   
+
+
 
   /**
    * Show the form for editing the specified resource.
@@ -331,28 +333,27 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
   {
     if (Auth::guard('client')->check()) {
       $id = Auth::guard('client')->user()->id;
-      $client = Client::find($id);
-      $client->birthdateStr = (string) Carbon::create($client->birthdate)->format('Y-m-d');
-      //return response()->json($this->getsocial($id));  
+      $propctrler = new PropertyController();
+      $client = (object) $propctrler->clientwithprop($id, $lang);    
+      $propgroup = $propctrler->propgroup($lang);
+      $birthdateStr = (string) Carbon::create($client->client->birthdate)->format('d-m-Y');
+      Carbon::setLocale('ar');
+      $user_reg_date = $client->client->created_at->translatedFormat('l jS F Y - H:m');
+
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
-
       $defultlang = $transarr['langs']->first();
-      // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile', 'register']);
-
-      $profile = $sitedctrlr->getbycode($defultlang->id, ['profile','register-error']);
-
-
+      $nowyear = Carbon::now()->format('Y');
       return view(
         "site.content.edit-profile",
         [
           "client" => $client,
-          'transarr' => $transarr,
           'lang' => $lang,
           'defultlang' => $defultlang,
-          'profile' => $profile,
-          'sitedataCtrlr' => $sitedctrlr
-
+          'birthdateStr' => $birthdateStr,
+          'user_reg_date' => $user_reg_date,
+          'prop_group' => $propgroup,
+          'nowyear' => $nowyear,
         ]
       );
 
@@ -375,20 +376,20 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
       $defultlang = $transarr['langs']->first();
       // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile', 'register']);
 
-     // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile','register-error']);
+      // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile','register-error']);
       Carbon::setLocale('ar');
-     $user_reg_date= auth()->guard('client')->user()->created_at->translatedFormat('l jS F Y - H:m');
+      $user_reg_date = auth()->guard('client')->user()->created_at->translatedFormat('l jS F Y - H:m');
 
       return view(
         "site.content.profile",
         [
           "client" => $client,
-         // 'transarr' => $transarr,
+          // 'transarr' => $transarr,
           'lang' => $lang,
           'defultlang' => $defultlang,
-'user_reg_date'=>$user_reg_date,
-       //  'profile' => $profile,
-         // 'sitedataCtrlr' => $sitedctrlr
+          'user_reg_date' => $user_reg_date,
+          //  'profile' => $profile,
+          // 'sitedataCtrlr' => $sitedctrlr
 
         ]
       );
@@ -398,14 +399,14 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
     }
 
   }
-//   public function myscore($lang)
+  //   public function myscore($lang)
 //   {
 //     if (Auth::guard('client')->check()) {
 //       $client_id = Auth::guard('client')->user()->id;
 //       //$client=Client::find($client_id);
 // //clpointmodel= ClientPoint::where('client_id',$client_id)->where('category_id',$category_id)->orderByDesc('created_at')->first();
 
-//       //return response()->json($this->getsocial($id));  
+  //       //return response()->json($this->getsocial($id));  
 //       $sitedctrlr = new SiteDataController();
 //       $transarr = $sitedctrlr->FillTransData($lang);
 //       $defultlang = $transarr['langs']->first();
@@ -413,7 +414,7 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
 //       $catlist = $sitedctrlr->getquescatbyloc('cats', $defultlang->id);
 //       $catarr = [];
 
-//       foreach ($catlist as $catrow) {
+  //       foreach ($catlist as $catrow) {
 //         $clpointmodel = ClientPoint::where('client_id', $client_id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
 //         $newarr['category'] = $catrow;
 //         if ($clpointmodel) {
@@ -446,7 +447,7 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
 //       return redirect()->route('login.client');
 //     }
 
-//   }
+  //   }
 
   // public function scores($lang)
   // {
@@ -524,14 +525,14 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
 
   // }
 
-   
- 
+
+
   /**
    * Update the specified resource in storage.
    */
-  public function update(UpdateClientRequest $request,$lang)
+  public function update(UpdateClientRequest $request, $lang)
   {
-    StoreClientRequest::$lang=$lang;
+    StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
@@ -567,9 +568,9 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
       return response()->json("ok");
     }
   }
-  public function updatepass(UpdatePassRequest $request,$lang)
+  public function updatepass(UpdatePassRequest $request, $lang)
   {
-    StoreClientRequest::$lang=$lang;
+    StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
@@ -592,9 +593,9 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
     }
   }
   //pull balance
-  public function pull(PullRequest $request,$lang)
+  public function pull(PullRequest $request, $lang)
   {
-    StoreClientRequest::$lang=$lang;
+    StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
@@ -617,8 +618,8 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
         } else {
           //get client
           $clint = Client::find($id);
-          $balance_before=$clint->balance;
-          $balance_after= $balance_before-$pull_points;
+          $balance_before = $clint->balance;
+          $balance_after = $balance_before - $pull_points;
           //add record
           $transObj = new PointTrans();
           $transObj->type = 'p';
@@ -628,14 +629,14 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
           $transObj->pointsrate = $set_arr['pointsrate'];
           $transObj->cash = $this->CalcCash($pull_points, $set_arr['pointsrate']);
           $transObj->balance_before = $balance_before;
-          $transObj->balance_after =  $balance_after;
+          $transObj->balance_after = $balance_after;
           $transObj->status = 'confirm';
-          $transObj->save();  
+          $transObj->save();
           //update client balance
-         
-        //  $clint->balance -= $pull_points;
-        $clint->balance =  $balance_after;       
-           $clint->save();   
+
+          //  $clint->balance -= $pull_points;
+          $clint->balance = $balance_after;
+          $clint->save();
         }
         //  return redirect()->back();
         return response()->json("ok");
@@ -652,11 +653,11 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
       $clint = Client::find($id);
       $setctrl = new SettingController();
       $set_arr = $setctrl->getquessetting();
-      $resArr=[
-        'pointsrate'=>$set_arr['pointsrate'],
-        'minpoints'=>$set_arr['minpoints'],
-        'balance'=> $clint->balance,
-    ];
+      $resArr = [
+        'pointsrate' => $set_arr['pointsrate'],
+        'minpoints' => $set_arr['minpoints'],
+        'balance' => $clint->balance,
+      ];
     }
     return response()->json($resArr);
 
@@ -690,7 +691,7 @@ $clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
         //delete   MediaPost records
         // ClientSocial::where('client_id',$id)->delete();
         // MessageModel::where('sender_id',$id)->orWhere('recipient_id',$id)->delete();
-      
+
         PointTrans::where('client_id', $id)->delete();
         Client::find($id)->delete();
         Auth::guard('client')->logout();

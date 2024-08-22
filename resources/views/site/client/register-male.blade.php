@@ -211,7 +211,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 form-group"><label>لون البشرة <sup>*</sup></label>
-                                        <div class="dropdown bootstrap-select std_select std_select_big required"><select
+                                        <div class="dropdown bootstrap-select std_select std_select_big required">
+                                            <select
                                                 name="skin" id="skin"
                                                 class="form-control std_select std_select_big required mobile-device">
                                                 <option value="0">إختر ..</option>
@@ -416,12 +417,14 @@
                             <div class="signup-form__content" id="signup-step5">
                                 <h2>البيانات السرية</h2>
                                 <div class="row">
-                                    <div class="form-group col-md-6"><label>الاسم الكامل <sup>*</sup></label> <input
-                                            class="form-control  " name="first_name" id="first_name" value=""
+                                    <div class="form-group col-md-6"><label>الاسم الكامل <sup>*</sup></label> 
+                                        <input class="form-control  " name="first_name" id="first_name" value=""
                                             placeholder="اسمك الكامل"></div>
-                                    <div class="form-group col-md-6"><label>رقم الجوال <sup>*</sup></label> <input
+                                    <div class="form-group col-md-6"><label>رقم الجوال <sup>*</sup></label> 
+                                        <input
                                             class="form-control " name="mobile" id="mobile" value=""
-                                            placeholder="إدخل رقم هاتفك"></div>
+                                            placeholder="إدخل رقم هاتفك">
+                                        </div>
                                     <div class="col-md-12">
                                         <div class="signup-form__rules signup-form__rules--data">
                                             <h3>حول اسمك الكامل و رقم جوالك :</h3>

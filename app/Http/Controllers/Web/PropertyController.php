@@ -17,6 +17,7 @@ use App\Http\Requests\Property\StorePropertyRequest;
 use App\Models\Language;
 use App\Models\LangPost;
 use App\Models\Country;
+use App\Models\Client;
 use App\Http\Controllers\Web\CountryController;
 class PropertyController extends Controller
 {
@@ -234,7 +235,7 @@ class PropertyController extends Controller
             "name" => $item->name,
             "is_active" => $item->is_active,
             "type" => $item->type,
-            'tr_title' => $item->langposts->first()? $item->langposts->first()->title_trans: $item->name,
+            'tr_title' => $item->langposts->first() ? $item->langposts->first()->title_trans : $item->name,
             'optionsvalues' => $optionsvalues,
         ];
 
@@ -312,4 +313,140 @@ class PropertyController extends Controller
         ];
         return $groupArr;
     }
+
+
+    public function clientwithprop($client_id, $lang)
+    {
+        $client = Client::with(
+            [
+                'clientoptions' => function ($q) {
+                    $q->with([
+                        'property:id,name,is_active,type,is_multivalue,notes',
+                        'optionvalue:id,name,is_active,value,value_int,notes,property_id,type',
+                        'country:id,name_ar,code',
+                        'city:id,name_en,name_ar,code,country_id'
+                    ])->select(
+                            'id',
+                            'client_id',
+                            'property_id',
+                            'option_id',
+                            'val_str',
+                            'val_int',
+                            'val_date',
+                            'notes',
+                            'type',
+                            'country_id',
+                            'city_id'
+                        );
+                }
+            ]
+        )->find($client_id);
+        $clientArr = $this->client_prop_map($client, $lang);
+        return $clientArr;
+    }
+
+    public function client_prop_map($client, $lang)
+    {
+        // $wife_num=$client->clientoptions()->with('optionvalue','property')->wherehas('property', function ($query) {
+        //     $query->where('name', 'wife_num');
+        // })->first();
+       // $wife_num = $this->client_prop_filter($client->clientoptions, 'wife_num');
+        $clientoptions=$this->client_prop_list($client->clientoptions);
+        $countrytoptions=$this->country_prop_list($client->clientoptions);
+        $clientArr = [
+            'client' => $client->withoutRelations(),
+            'wife_num' =>  $this->client_prop_filter($clientoptions, 'wife_num'),
+            'family_status' =>  $this->client_prop_filter($clientoptions, 'family_status'),
+            'children_num' =>  $this->client_prop_filter($clientoptions, 'children_num'),            
+            
+            'residence' => $this->country_prop_filter($countrytoptions, 'residence'),
+            'nationality' =>  $this->country_prop_filter($countrytoptions, 'nationality'),
+            
+            'weight' => $this->client_prop_filter($clientoptions, 'weight'),
+            'height' => $this->client_prop_filter($clientoptions, 'height'),
+
+            'skin' =>  $this->client_prop_filter($clientoptions, 'skin'),
+            'body' => $this->client_prop_filter($clientoptions, 'body'),
+            'religiosity' => $this->client_prop_filter($clientoptions, 'religiosity'),
+            'prayer' => $this->client_prop_filter($clientoptions, 'prayer'),
+            'smoking' => $this->client_prop_filter($clientoptions, 'smoking'),
+            'beard' => $this->client_prop_filter($clientoptions, 'beard'),
+            'education' => $this->client_prop_filter($clientoptions, 'education'),
+            'work' => $this->client_prop_filter($clientoptions, 'work'),
+            'income' => $this->client_prop_filter($clientoptions, 'income'),
+            'financial' => $this->client_prop_filter($clientoptions, 'financial'),
+            'job' => $this->client_prop_filter($clientoptions, 'job'),
+            
+            'health' => $this->client_prop_filter($clientoptions, 'health'),
+            'partner' => $this->client_prop_filter($clientoptions, 'partner'),
+            'about_me' => $this->client_prop_filter($clientoptions, 'about_me'),
+
+            'wife_num_female' => $this->client_prop_filter($clientoptions, 'wife_num_female'),
+            'family_status_female' =>$this->client_prop_filter($clientoptions, 'family_status_female'),
+            'veil' => $this->client_prop_filter($clientoptions, 'veil'),
+        ];
+        return $clientArr;
+    }
+
+    public function client_prop_list($clientoptions )
+    {
+        $proplist = $clientoptions->map(function ($clientoption)   {
+
+            return  [
+                "id" => $clientoption->id,
+                "property_id" => $clientoption->property_id,
+                "option_id" => $clientoption->option_id,
+                "name" => $clientoption->property->name,          
+                "option_name"=>$clientoption->optionvalue->name,
+                "type" => $clientoption->type,
+                'val' => $clientoption->type == 'integer' ? $clientoption->val_int : $clientoption->val_str,
+            ];
+        
+        });
+        return  $proplist; 
+ 
+    }
+
+    public function client_prop_filter($clientoptions, $property_name){
+        $arr=$clientoptions->where('name',$property_name)->first();
+        if($arr){
+            return  (object)$arr;
+        }else{
+            return (object)[
+                "id" => 0,
+                "property_id" => 0,
+                "option_id" =>0,
+                "name" => $property_name,          
+                "option_name"=>"",
+                "type" => "",
+                'val' =>"",
+            ];
+        }
+        
+    }
+    public function country_prop_filter($clientoptions, $property_name)
+    {
+        return  (object)$clientoptions->where('name',$property_name)->first();
+    }
+    public function country_prop_list($clientoptions)
+    {
+
+        $proplist = $clientoptions->where('country_id','>',0)->map(function ($clientoption)   {
+
+            return  [
+                "id" => $clientoption->id,              
+                "property_id" => $clientoption->property_id,
+                "country_id" => $clientoption->country_id,
+                "city_id"=> $clientoption->city_id,
+                "name" => $clientoption->property->name,
+                "country_name" => $clientoption->country->name_ar,          
+                "city_name"=>$clientoption->city->name_ar,
+                "type" => $clientoption->type,
+                'val' => $clientoption->type == 'integer' ? $clientoption->val_int : $clientoption->val_str,
+            ];
+        
+        });
+        return  $proplist; 
+    }
+
 }

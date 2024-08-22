@@ -66,7 +66,7 @@ class Client extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends= ['image_path','full_name','birthdateStr','gender_conv','country_conv'];
+    protected $appends= ['image_path' ,'gender_conv'];
     public function getImagePathAttribute(){
         $conv="";
         $strgCtrlr = new StorageController(); 
@@ -108,7 +108,7 @@ class Client extends Authenticatable
      }
      public function clientoptions(): HasMany
      {
-         return $this->hasMany(OptionValue::class,'property_id');
+         return $this->hasMany(ClientOption::class,'client_id');
      }
 
 
