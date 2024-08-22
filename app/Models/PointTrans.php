@@ -25,10 +25,10 @@ class PointTrans extends Model
         'status',
     ];
 
-    public function level(): BelongsTo
-    {
-        return $this->belongsTo(Level::class)->withDefault();
-    }
+    // public function level(): BelongsTo
+    // {
+    //     return $this->belongsTo(Level::class)->withDefault();
+    // }
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class)->withDefault();

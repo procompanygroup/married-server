@@ -16,6 +16,8 @@ use File;
 use App\Http\Requests\Property\StorePropertyRequest;
 use App\Models\Language;
 use App\Models\LangPost;
+use App\Models\Country;
+use App\Http\Controllers\Web\CountryController;
 class PropertyController extends Controller
 {
     /**
@@ -118,7 +120,7 @@ class PropertyController extends Controller
             ]);
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
-                $this->storeImage($file,$id);
+                $this->storeImage($file, $id);
             }
             return response()->json("ok");
         }
@@ -131,19 +133,19 @@ class PropertyController extends Controller
     {
         $item = Property::find($id);
         if (!($item === null)) {
-          //delete image
-          $oldimagename = $item->image;
-          $strgCtrlr = new StorageController();
+            //delete image
+            $oldimagename = $item->image;
+            $strgCtrlr = new StorageController();
             $path = $strgCtrlr->path['properties'];
-         Storage::delete("public/" . $path . '/' . $oldimagename);
-        
-         $opctrlr=new OptionValueController();
-     $optilist=   OptionValue::where('property_id', $id)->get();
-     foreach($optilist as $optrow){
-        $opctrlr->destroy($optrow->id);
-     }
-        LangPost::where('property_id', $id)->delete();
-        Property::find($id)->delete();
+            Storage::delete("public/" . $path . '/' . $oldimagename);
+
+            $opctrlr = new OptionValueController();
+            $optilist = OptionValue::where('property_id', $id)->get();
+            foreach ($optilist as $optrow) {
+                $opctrlr->destroy($optrow->id);
+            }
+            LangPost::where('property_id', $id)->delete();
+            Property::find($id)->delete();
         }
         return redirect()->back();
     }
@@ -189,5 +191,125 @@ class PropertyController extends Controller
 
 
         return 1;
+    }
+    public function byname(string $name, $lang)
+    {
+        //  $List = PropertyDep::get();
+        $item = Property::where('name', $name)->with([
+            'langposts' => function ($q) use ($lang) {
+                $q->wherehas('language', function ($query) use ($lang) {
+                    $query->where('code', $lang);
+                });
+            },
+            'optionsvalues' => function ($q) use ($lang) {
+                $q->with([
+                    'langposts' => function ($query) use ($lang) {
+                        $query->wherehas('language', function ($query) use ($lang) {
+                            $query->where('code', $lang);
+
+                        });
+                    }
+                ])->where('is_active', 1)
+                ;
+            }
+
+        ])->first();
+
+        return $item;
+        //  return view('admin.property.edit', ["item" => $item, 'lang_list' => $lang_list, 'dep_list' => $List]);
+    }
+
+    public function propmap(Property $item)
+    {
+        $optionsvalues = $item->optionsvalues->map(function ($optionsvalue) {
+            return [
+                "id" => $optionsvalue->id,
+                "name" => $optionsvalue->name,
+                "value" => $optionsvalue->type == "integer" ? $optionsvalue->value_int : $optionsvalue->value,
+                "tr_title" => $optionsvalue->langposts->first() ? $optionsvalue->langposts->first()->title_trans : $optionsvalue->name,
+            ];
+        });
+        $itemArr = [
+            "id" => $item->id,
+            "name" => $item->name,
+            "is_active" => $item->is_active,
+            "type" => $item->type,
+            'tr_title' => $item->langposts->first()? $item->langposts->first()->title_trans: $item->name,
+            'optionsvalues' => $optionsvalues,
+        ];
+
+        return collect($itemArr);
+    }
+
+    public function propgroup($lang)
+    {
+        $countryctrlr = new CountryController();
+        $countries = $countryctrlr->getAll();
+        $prop = $this->byname('wife_num', $lang);
+        $wife_num = $this->propmap($prop);
+
+        $prop = $this->byname('family_status', $lang);
+        $family_status = $this->propmap($prop);
+
+        $prop = $this->byname('skin', $lang);
+        $skin = $this->propmap($prop);
+        $prop = $this->byname('body', $lang);
+        $body = $this->propmap($prop);
+
+        $prop = $this->byname('religiosity', $lang);
+        $religiosity = $this->propmap($prop);
+        $prop = $this->byname('prayer', $lang);
+        $prayer = $this->propmap($prop);
+        $prop = $this->byname('smoking', $lang);
+        $smoking = $this->propmap($prop);
+
+        $prop = $this->byname('beard', $lang);
+        $beard = $this->propmap($prop);
+
+        $prop = $this->byname('education', $lang);
+        $education = $this->propmap($prop);
+
+        $prop = $this->byname('work', $lang);
+        $work = $this->propmap($prop);
+        $prop = $this->byname('income', $lang);
+        $income = $this->propmap($prop);
+
+        $prop = $this->byname('financial', $lang);
+        $financial = $this->propmap($prop);
+
+        $prop = $this->byname('health', $lang);
+        $health = $this->propmap($prop);
+
+        $prop = $this->byname('wife_num_female', $lang);
+        $wife_num_female = $this->propmap($prop);
+
+        $prop = $this->byname('family_status_female', $lang);
+        $family_status_female = $this->propmap($prop);
+
+        $prop = $this->byname('veil', $lang);
+        $veil = $this->propmap($prop);
+
+
+        $groupArr = [
+            'wife_num' => $wife_num,
+            'family_status' => $family_status,
+            'countries' => $countries,
+            'skin' => $skin,
+            'body' => $body,
+            'religiosity' => $religiosity,
+            'prayer' => $prayer,
+            'smoking' => $smoking,
+            'beard' => $beard,
+            'education' => $education,
+            'work' => $work,
+            'income' => $income,
+            'financial' => $financial,
+            'health' => $health,
+            'wife_num_female' => $wife_num_female,
+            'family_status_female' => $family_status_female,
+            'veil' => $veil,
+
+        ];
+        return $groupArr;
     }
 }

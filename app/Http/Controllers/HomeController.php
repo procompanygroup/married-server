@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Web\AnswerController;
+// use App\Http\Controllers\Web\AnswerController;
 use App\Models\Category;
-use App\Models\Question;
+// use App\Models\Question;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Web\SiteDataController;
 use App\Models\Language;
 
-
+use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
     /**
@@ -36,12 +36,7 @@ class HomeController extends Controller
     
     public function index(Request $request, $lang=null)
     {
-
-         // if($lang=='admin'){
-         //    return redirect()->route('admin');  
-         // }else if($lang=='login'){
-         //    return redirect()->route('login');  
-         // }
+ 
          $formdata=$request->all();
       
          $sitedctrlr=new SiteDataController();
@@ -49,10 +44,7 @@ class HomeController extends Controller
          $transarr=$sitedctrlr->FillTransData($lang);
       // $transarr['langs']->select('code')->get();
       // return  $sitedctrlr->getlangscod()  ;
-      //
-      
-      
-      if(isset($formdata['lang']))
+       if(isset($formdata['lang']))
       {
          $lang=$formdata['lang'];
       } 
@@ -66,13 +58,6 @@ class HomeController extends Controller
          // $homearr= $sitedctrlr->gethomedata( $defultlang->id);
          // $catlist= $sitedctrlr-> getquescatbyloc('cats',$defultlang->id);
 
-         $items = Question::where('lang_id', $defultlang->id)->where('status', 1)->paginate(100);
-         // dd($items);
-
-         return view('site.home',['lang'=>$lang, 'transarr'=>$transarr,'defultlang'=>$defultlang, 'active_item'=>$active,'questions'=>$items,
-         'home_page'=>$home_page,'sitedataCtrlr'=>$sitedctrlr,
-      ]);
-
       }else{
 
       $transarr=$sitedctrlr->FillTransData();
@@ -81,15 +66,15 @@ class HomeController extends Controller
       // $catlist= $sitedctrlr-> getquescatbyloc('cats',$defultlang->id);
       $home_page=$sitedctrlr->getbycode($defultlang->id,['home_page']);
       //$homearr= $sitedctrlr->gethomedata( $defultlang->id);
-      
-      $items = Question::where('lang_id', $defultlang->id)->where('status', 1)->paginate(100);
-      // dd($items);
-
-      return view('site.home',['transarr'=>$transarr,'lang'=>$lang, 'defultlang'=>$defultlang,'active_item'=>$active,'questions'=>$items,
-         'home_page'=>$home_page,'sitedataCtrlr'=>$sitedctrlr,
-      ]);
+       
       }
-      
+      if(Auth::guard('client')->check() && !(Auth::guard('client')->user()->code)) {
+     return redirect()->route('client.profile', $lang);
+      }else{
+         return view('site.home',['lang'=>$lang, 'transarr'=>$transarr,'defultlang'=>$defultlang, 'active_item'=>$active,
+         'home_page'=>$home_page,'sitedataCtrlr'=>$sitedctrlr]);
+      }
+  
     }
 
    
@@ -185,39 +170,39 @@ class HomeController extends Controller
 
 
 
-   public function getques($lang, $slug)
-   {
-      $sitedctrlr=new SiteDataController(); 
-      $answer_controller=new AnswerController();
-      $voted=0;
-      if(auth()->guard('client')->check()){
-         $client_id = auth()->guard('client')->user()->id;
-         $voted=$answer_controller->checkvoted( $client_id, $slug);
-      }  
-      $transarr=$sitedctrlr->FillTransData($lang);
-      $defultlang=$transarr['langs']->first();     
-      $quiz=$sitedctrlr->getbycode($defultlang->id,['quiz']);
-      $cat = Question::with('answers')->find($slug);     
-     // $cat= $sitedctrlr->getques($slug, $defultlang->id);
-           //  $ques = Question::find($id);
-     $type = $cat->type;
-    // $answer_controller = new AnswerController();
-     $result = $answer_controller->resultwithimg($slug);
-      return view('site.content.category',[ 'results'=>$result,'type'=>$type , 'catquis'=>$cat,'transarr'=>$transarr,'lang'=>$lang,'defultlang'=>$defultlang 
-      ,'quiz'=>$quiz,'sitedataCtrlr'=>$sitedctrlr,'voted'=>$voted]);   
-   }
+   // public function getques($lang, $slug)
+   // {
+   //    $sitedctrlr=new SiteDataController(); 
+   //    $answer_controller=new AnswerController();
+   //    $voted=0;
+   //    if(auth()->guard('client')->check()){
+   //       $client_id = auth()->guard('client')->user()->id;
+   //       $voted=$answer_controller->checkvoted( $client_id, $slug);
+   //    }  
+   //    $transarr=$sitedctrlr->FillTransData($lang);
+   //    $defultlang=$transarr['langs']->first();     
+   //    $quiz=$sitedctrlr->getbycode($defultlang->id,['quiz']);
+   //    $cat = Question::with('answers')->find($slug);     
+   //   // $cat= $sitedctrlr->getques($slug, $defultlang->id);
+   //         //  $ques = Question::find($id);
+   //   $type = $cat->type;
+   //  // $answer_controller = new AnswerController();
+   //   $result = $answer_controller->resultwithimg($slug);
+   //    return view('site.content.category',[ 'results'=>$result,'type'=>$type , 'catquis'=>$cat,'transarr'=>$transarr,'lang'=>$lang,'defultlang'=>$defultlang 
+   //    ,'quiz'=>$quiz,'sitedataCtrlr'=>$sitedctrlr,'voted'=>$voted]);   
+   // }
 
 
 
-   public function get_vote_results($id)
-   {
-      $ques = Question::find($id);
-      $type = $ques->type;
-      $answer_controller = new AnswerController();
-      $result = $answer_controller->resultwithimg($id);
+   // public function get_vote_results($id)
+   // {
+   //    $ques = Question::find($id);
+   //    $type = $ques->type;
+   //    $answer_controller = new AnswerController();
+   //    $result = $answer_controller->resultwithimg($id);
       
-      return view('site.content.result',['results'=>$result,'type'=>$type]);
-   }
+   //    return view('site.content.result',['results'=>$result,'type'=>$type]);
+   // }
 
 
 

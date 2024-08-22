@@ -1,0 +1,19 @@
+ <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 512 512"
+                                                style="enable-background:new 0 0 512 512" xml:space="preserve"
+                                                class="icon-add">
+                                                <g>
+                                                    <g id="ESSENTIAL_UI" data-name="ESSENTIAL UI">
+                                                        <path
+                                                            d="m256 0c-141.38 0-256 114.61-256 256s114.62 256 256 256 256-114.62 256-256-114.62-256-256-256z"
+                                                            fill="#4fb73b" data-original="#f9973e" class=""></path>
+                                                        <path
+                                                            d="m120.56 400.82c153.63 0 278.17-124.54 278.17-278.16a277.77 277.77 0 0 0 -14.28-88.14 254.83 254.83 0 0 0 -128.45-34.52c-141.38 0-256 114.62-256 256a254.81 254.81 0 0 0 36.57 131.91 278.14 278.14 0 0 0 83.99 12.91z"
+                                                            fill="#6bc94b" data-original="#fca84c" class=""></path>
+                                                        <path
+                                                            d="m405.44 256a28.36 28.36 0 0 1 -28.36 28.36h-92.72v92.72a28.36 28.36 0 0 1 -28.36 28.36 28.36 28.36 0 0 1 -28.36-28.36v-92.72h-92.72a28.36 28.36 0 0 1 -28.36-28.36 28.36 28.36 0 0 1 28.36-28.36h92.72v-92.72a28.36 28.36 0 0 1 28.36-28.36 28.36 28.36 0 0 1 28.36 28.36v92.72h92.72a28.36 28.36 0 0 1 28.36 28.36z"
+                                                            fill="#ffffff" data-original="#ffffff" class=""></path>
+                                                    </g>
+                                                </g>
+                                            </svg>

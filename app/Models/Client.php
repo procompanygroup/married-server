@@ -71,9 +71,10 @@ class Client extends Authenticatable
         $conv="";
         $strgCtrlr = new StorageController(); 
         if(is_null($this->image) ){
-            $conv =$strgCtrlr->DefaultPath('image'); 
+            
+            $conv =$strgCtrlr->DefaultPath($this->gender); 
         }else if($this->image==''){
-            $conv =$strgCtrlr->DefaultPath('image'); 
+            $conv =$strgCtrlr->DefaultPath($this->gender); 
         } else {
             $url = $strgCtrlr->ClientPath();
             $conv =  $url.$this->image;

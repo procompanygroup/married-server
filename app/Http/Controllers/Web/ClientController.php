@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\AnswersClient;
 // use App\Models\Category;
+use App\Models\ClientOption;
 use App\Models\ClientPoint;
+use App\Models\OptionValue;
 use App\Models\PointTrans;
 // use App\Models\SocialModel;
+use App\Models\Property;
 use Illuminate\Http\Request;
 use App\Models\Client;
 // use App\Models\ClientSocial;
@@ -29,12 +32,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Web\PropertyController;
+use App\Http\Controllers\Web\ClientOptionController;
+ 
 // use App\Http\Controllers\Web\MessageController;
 // use URL;
 //use Illuminate\Support\Facades\Session;
 // use Session;
 
 use App\Notifications\Code;
+use App\Http\Requests\Site\Register\BeforRequest;
+use App\Http\Requests\Site\Register\CheckMailRequest;
 class ClientController extends Controller
 {
   /**
@@ -88,22 +96,86 @@ class ClientController extends Controller
   /**
    * Show the form for creating a new resource.
    */
-  public function create($lang)
+  public function create($lang,$gender)
+  {
+    $sitedctrlr = new SiteDataController();
+    $transarr = $sitedctrlr->FillTransData($lang);
+    $defultlang = $transarr['langs']->first();
+$probctrlr=new PropertyController();
+$propgroup=$probctrlr->propgroup($lang);
+$nowyear = Carbon::now()->format('Y');
+
+//return response()->json(  ) ;
+    $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
+if($gender=='male'){
+  return view('site.client.register-male', [
+    'transarr' => $transarr,
+    'lang' => $lang,
+    'defultlang' => $defultlang,
+    'register' => $register,
+    'sitedataCtrlr' => $sitedctrlr,
+    'prop_group'=>$propgroup,
+'nowyear'=>$nowyear,
+  ]);
+}else{
+  return view('site.client.register-female', [
+    'transarr' => $transarr,
+    'lang' => $lang,
+    'defultlang' => $defultlang,
+    'register' => $register,
+    'sitedataCtrlr' => $sitedctrlr,
+    'prop_group'=>$propgroup,
+    'nowyear'=>$nowyear,
+  ]);
+}
+   
+  }
+  public function befor_reg($lang)
   {
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
 
-    $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
+   // $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
 
-    return view('site.client.register', [
+    return view('site.client.befor-register', [
       'transarr' => $transarr,
       'lang' => $lang,
       'defultlang' => $defultlang,
-      'register' => $register,
-      'sitedataCtrlr' => $sitedctrlr
+      // 'register' => $register,
+      // 'sitedataCtrlr' => $sitedctrlr
     ]);
   }
+  public function befor_reg_check(BeforRequest $request)
+  {
+    $formData= $request->all();
+   $gender=  $formData['data']['gender'];
+
+    $sitedctrlr = new SiteDataController();
+    $transarr = $sitedctrlr->FillTransData();
+     $defultlang = $transarr['langs']->first();
+     $lang= $defultlang->code;
+   // $register = $sitedctrlr->getbycode($defultlang->id, ['register','register-error']);
+   return response()->json( $gender);
+    // return view('site.client.register', [
+    //   'lang' => $lang,
+    //   'defultlang' => $defultlang,
+    // 'gender'=>
+    //   // 'register' => $register,
+    //   // 'sitedataCtrlr' => $sitedctrlr
+    // ]);
+  }
+
+  public function check_email(CheckMailRequest $request)
+  {
+    //CheckMailRequest
+  //  $formData= $request->all();
+  //  $email=  $formData['data']['email'];
+ 
+   return response()->json("ok");
+   
+  }
+
   public function showlogin($lang)
   {
     $sitedctrlr = new SiteDataController();
@@ -152,60 +224,102 @@ class ClientController extends Controller
     );
 
     if ($validator->fails()) {
-
       return response()->json($validator);
-      //return redirect()->with('errors',$validator)->json();
-      //   return response()->json($validator);
-      //  return redirect()
-      //  ->back()
-      //  ->withErrors($validator)
-      //  ->withInput();
-
     } else {
-
       //  $lang= $formdata["lang"];
-      $sitedctrlr = new SiteDataController();
-      $transarr = $sitedctrlr->FillTransData($lang);
-      $defultlang = $transarr['langs']->first();
+    //  $sitedctrlr = new SiteDataController();
+     // $transarr = $sitedctrlr->FillTransData($lang);
+   //   $defultlang = $transarr['langs']->first();
+   
+
+    
       $newObj = new Client;
       //  $slug=   Str::slug($formdata['name']);
       $newObj->name = $formdata['name'];
-      // $newObj->first_name = $formdata['first_name'];
+       $newObj->first_name = $formdata['first_name'];
       // $newObj->last_name = $formdata['last_name'];
       $newObj->email = $formdata['email'];
       $newObj->password = bcrypt($formdata['password']);
-      // $newObj->mobile = $formdata['mobile'];
+      $birthdate= Carbon::create($formdata["birthdate"])->format('Y-m-d');
+      $newObj->birthdate =  $birthdate;
+     $newObj->mobile = $formdata['mobile'];
+     $newObj->gender = $formdata['gender'];
       // $newObj->role = 'admin';
       //   $newObj->is_active = $formdata['is_active'];
       // $newObj->user_name=$slug;
       $newObj->is_active = 1;
-      $newObj->lang_id = $defultlang->id;
+  //    $newObj->lang_id = $defultlang->id;
       $newObj->save();
+ //wife_num   
+ $clientopctrlr=new ClientOptionController();
+if( $formdata['gender']=='male'){
+  $clientopctrlr->addmultiop($newObj->id,$formdata['wife_num']);
+  $clientopctrlr->addmultiop($newObj->id,$formdata['family_status']);
+  //beard
+$clientopctrlr->addmultiop($newObj->id,$formdata['beard']);
+}else{
+  $clientopctrlr->addmultiop($newObj->id,$formdata['wife_num_female']);
+  $clientopctrlr->addmultiop($newObj->id,$formdata['family_status_female']);
+  //veil
+$clientopctrlr->addmultiop($newObj->id,$formdata['veil']);
+}
+ 
+ 
+ 
 
+
+//children_num
+$clientopctrlr->addopgenerated($newObj->id,$formdata['children_num'],'children_num');
+//residence + city
+$clientopctrlr->addopcountry_city($newObj->id,'residence',$formdata['residence'],$formdata['city']);
+ //nationality
+ $clientopctrlr->addopcountry_city($newObj->id,'nationality',$formdata['nationality']);
+ //weight
+$clientopctrlr->addopgenerated($newObj->id,$formdata['weight'],'weight');
+ //height
+ $clientopctrlr->addopgenerated($newObj->id,$formdata['height'],'height');
+//skin
+ $clientopctrlr->addmultiop($newObj->id,$formdata['skin']);
+//religiosity
+$clientopctrlr->addmultiop($newObj->id,$formdata['religiosity']);
+//prayer
+$clientopctrlr->addmultiop($newObj->id,$formdata['prayer']);
+//smoking
+$clientopctrlr->addmultiop($newObj->id,$formdata['smoking']);
+
+//education
+$clientopctrlr->addmultiop($newObj->id,$formdata['education']);
+//financial
+$clientopctrlr->addmultiop($newObj->id,$formdata['financial']);
+//job
+$clientopctrlr->addopgenerated($newObj->id,$formdata['job'],'job');
+//income
+$clientopctrlr->addmultiop($newObj->id,$formdata['income']);
+//health
+$clientopctrlr->addmultiop($newObj->id,$formdata['health']);
+//partner
+$clientopctrlr->addopgenerated($newObj->id,$formdata['partner'],'partner');
+ //about_me
+$clientopctrlr->addopgenerated($newObj->id,$formdata['about_me'],'about_me');
       if ($request->hasFile('image')) {
-
         $file = $request->file('image');
         // $filename= $file->getClientOriginalName();
-
         $this->storeImage($file, $newObj->id);
         //  $this->storeImage( $file,2);
       }
-      event(new Registered($newObj));
 
+      event(new Registered($newObj));
          // insert code in data
                 $client = Client::where('email',  $formdata['email'])->first();
                 $client->generateCode();          // from Client model
-   
-
-                // send mail
+                                // send mail
                 $client->notify(new Code());
-
-
        Auth::guard('client')->login($newObj);
       // make login after register
       //  return redirect()->route('site.home');
       return response()->json("ok");
-    }
+     
+  }
   }
   
    
@@ -230,7 +344,7 @@ class ClientController extends Controller
 
 
       return view(
-        "site.client.edit",
+        "site.content.edit-profile",
         [
           "client" => $client,
           'transarr' => $transarr,
@@ -238,6 +352,43 @@ class ClientController extends Controller
           'defultlang' => $defultlang,
           'profile' => $profile,
           'sitedataCtrlr' => $sitedctrlr
+
+        ]
+      );
+
+    } else {
+      return redirect()->route('login.client');
+    }
+
+  }
+
+  public function showprofile($lang)
+  {
+    if (Auth::guard('client')->check()) {
+      $id = Auth::guard('client')->user()->id;
+      $client = Client::find($id);
+      $client->birthdateStr = (string) Carbon::create($client->birthdate)->format('Y-m-d');
+      //return response()->json($this->getsocial($id));  
+      $sitedctrlr = new SiteDataController();
+      $transarr = $sitedctrlr->FillTransData($lang);
+
+      $defultlang = $transarr['langs']->first();
+      // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile', 'register']);
+
+     // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile','register-error']);
+      Carbon::setLocale('ar');
+     $user_reg_date= auth()->guard('client')->user()->created_at->translatedFormat('l jS F Y - H:m');
+
+      return view(
+        "site.content.profile",
+        [
+          "client" => $client,
+         // 'transarr' => $transarr,
+          'lang' => $lang,
+          'defultlang' => $defultlang,
+'user_reg_date'=>$user_reg_date,
+       //  'profile' => $profile,
+         // 'sitedataCtrlr' => $sitedctrlr
 
         ]
       );

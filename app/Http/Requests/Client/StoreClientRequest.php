@@ -14,7 +14,7 @@ class StoreClientRequest extends FormRequest
         return true;
     }
     public static $lang="";
-protected   $minpass=8;
+protected   $minpass=6;
 protected   $maxpass=16;
 protected  $minMobileLength=10;
 protected $maxMobileLength=15;
@@ -27,11 +27,41 @@ protected $alphaAtexpr='/^[\pL\s\_\-\@\.\0-9]+$/u';
      // $this->lang=$lang;
        return[
          
-           'name'=>'required|string|between:1,100|regex:'.$this->alphaAtexpr,               
+           'name'=>'required|string|between:1,15|unique:clients,name|regex:'.$this->alphaAtexpr,               
          'email'=>'required|email|unique:clients,email',      
          'password'=>'required|between:'. $this->minpass.','. $this->maxpass,
-         'confirm_password' => 'same:password',         
-        'image'=>'nullable|file|image',   
+         'confirm_password' => 'same:password',  
+         'wife_num'=> 'sometimes|required|not_in:0',
+         'wife_num_female'=> 'sometimes|required|not_in:0',
+         'family_status'=> 'sometimes|required|not_in:0',
+         'family_status_female'=> 'sometimes|required|not_in:0',         
+         'veil'=> 'sometimes|required|not_in:0',
+         'beard'=> 'sometimes|required|not_in:0',
+         'birthdate'=> 'required|date',
+         'children_num'=> 'required|not_in:-1',
+         'residence'=> 'required|not_in:0',
+         'nationality'=> 'required|not_in:0',
+         'city'=> 'required|not_in:0',
+         'weight'=> 'required|not_in:0',
+         'height'=> 'required|not_in:0',
+         'skin'=> 'required|not_in:0',
+         'religiosity'=> 'required|not_in:0',
+         'prayer'=> 'required|not_in:0',
+         'smoking'=> 'required|not_in:0',
+       
+         'education'=> 'required|not_in:0',
+         'financial'=> 'required|not_in:0',
+         'job'=> 'required',
+         'income'=> 'required|not_in:0',
+         'health'=> 'required|not_in:0',
+         'partner'=> 'nullable|string|max:1000',
+         'about_me'=> 'nullable|string|max:1000',
+
+         'first_name'=> 'required|string|max:100',
+         'mobile'=> 'required|min:9|max:15',
+         'acceptConditions'=> 'required',
+         'gender'=>'required|in:male,female',
+      //  'image'=>'nullable|file|image',   
        ];   
     
     }

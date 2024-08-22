@@ -126,7 +126,10 @@ class StorageController extends Controller
   public function DefaultPath($type)
   { //image icon
     $url = "";
-    if ($type == "image") {
+    if($type == "male"||$type == "female"){
+      $url =  $this->getlocalpath($this->path['default']).$type.'.png';
+    } 
+    else if ($type == "image") {
 
       // if(File::exists(base_path('public\index.php')))  {
       //   $url = url(Storage::url($this->path['default'])) . '/' . $this->defaultimage;

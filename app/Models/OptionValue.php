@@ -28,4 +28,8 @@ class OptionValue extends Model
     {
         return $this->hasMany(OptionValue::class,'property_id');
     }
+    public function langposts(): HasMany
+    {
+        return $this->hasMany(LangPost::class,'optionvalue_id');
+    }
 }

@@ -30,6 +30,8 @@ use App\Http\Controllers\Web\PasswordController;
 use App\Http\Controllers\Web\ClientPasswordResetController;
  use App\Http\Controllers\Web\PropertyController;
  use App\Http\Controllers\Web\PropertyDepController;
+ use App\Http\Controllers\Web\CountryController;
+ 
  
 
 //site
@@ -295,15 +297,21 @@ Route::prefix('option')->group(function () {
     //
     Route::get('{lang}/page/{slug}', [HomeController::class, 'showpage']);
     // Route::get('{lang}/questions', [QuestionController::class, 'getquestions']);
+    Route::post('/befor-reg', [ClientController::class, 'befor_reg_check']);
+    Route::post('/checkmail', [ClientController::class, 'check_email']);
+//cities
+Route::get('/cities/{id}', [CountryController::class,'getCities']);
 
     Route::prefix('{lang}')->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
+        Route::get('/befor-reg', [ClientController::class, 'befor_reg']);
+    
         // Route::get('/scores', [ClientController::class, 'scores']);
         //Route::get('/{slug}', [ClientController::class, 'send_message']);
         
 
         Route::middleware('guest:client')->group(function () {
-            Route::get('/register', [ClientController::class, 'create'])->name('register.client');
+            Route::get('/register/{gender}', [ClientController::class, 'create'])->name('register.client');
             Route::post('/register', [ClientController::class, 'store']);
 
             Route::get('/login', [ClientController::class, 'showlogin'])->name('login.client');
@@ -334,9 +342,11 @@ Route::prefix('option')->group(function () {
         Route::prefix('{lang}')->group(function () {
             //account
             Route::post('/updatepass', [ClientController::class, 'updatepass'])->name('client.updatepass');
-            Route::get('/account', [ClientController::class, 'edit'])->name('client.account');
+            Route::get('/edit-profile', [ClientController::class, 'edit'])->name('client.account');
             Route::post('/update', [ClientController::class, 'update'])->name('client.update');
             Route::post('/pull', [ClientController::class, 'pull']);
+
+            Route::get('/profile', [ClientController::class, 'showprofile'])->name('client.profile');
             //my score
             // Route::get('/myscore', [ClientController::class, 'myscore']);
            

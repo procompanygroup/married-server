@@ -19,7 +19,8 @@ class ClientOption extends Model
         'val_date',
         'notes',
         'type',
-
+        'country_id',
+        'city_id',
     ];
 
     public function property(): BelongsTo
@@ -33,5 +34,13 @@ class ClientOption extends Model
     public function optionvalue(): BelongsTo
     {
         return $this->belongsTo(Property::class,'option_id')->withDefault();
+    }
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class,'country_id')->withDefault();
+    }
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class,'city_id')->withDefault();
     }
 }

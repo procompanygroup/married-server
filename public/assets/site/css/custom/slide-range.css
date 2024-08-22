@@ -1,0 +1,17 @@
+
+
+#slider-age  .slider-track {
+    height: 5px;
+   
+}
+#slider-age  .slider-selection {
+   background: #D8445E;
+   
+}
+.b-slide {
+    padding: 5px 10px;
+}
+#slider-age .slider-handle{
+    background: #D8445E;  
+    top: -2px;
+}

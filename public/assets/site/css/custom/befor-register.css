@@ -1,0 +1,200 @@
+.before-register {
+    margin: 0 auto;
+    max-width: 508px
+}
+
+.before-register a {
+    color: #da4761
+}
+
+.before-register p {
+    color: #324148;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 12px
+}
+
+.before-register p strong {
+    font-weight: 500
+}
+
+.before-register p em {
+    color: #0d7cab;
+    font-style: normal
+}
+
+.before-register h1 {
+    color: #324148;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 0;
+    padding-bottom: 20px;
+    padding-top: 20px
+}
+
+.before-register_icon {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    align-items: center;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: -3px 7px 20px 0 hsla(0,0%,72%,.21);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 136px;
+    justify-content: center;
+    margin: 22px auto 18px;
+    width: 136px
+}
+
+.before-register .btf-control {
+    margin: 30px 0
+}
+
+.block-oathed {
+    background: #fff;
+    border: 1px solid #ebd2d2;
+    border-radius: 10px;
+    color: #de566c;
+    padding: 12px 16px
+}
+
+input[type=checkbox][name=oathed].btf-checkbox+label.btf-label:before {
+    color: #de566c
+}
+
+input[type=checkbox][name=oathed].btf-checkbox:checked+label.btf-label:before {
+    color: #61a85e
+}
+
+[dir=ltr] input[type=checkbox][name=oathed].btf-checkbox+label.btf-label:before {
+    margin-right: 5px
+}
+
+[dir=rtl] input[type=checkbox][name=oathed].btf-checkbox+label.btf-label:before {
+    margin-left: 5px
+}
+
+.block-oathed input[type=checkbox].btf-checkbox+label.btf-label {
+    margin-top: 0!important
+}
+
+.before-register__gselect ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center
+}
+
+.before-register__gselect ul li {
+    display: inline-block;
+    margin: 0 6px;
+    vertical-align: top
+}
+
+.before-register__gselect ul li button {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    align-items: center;
+    background: #ffd8dd;
+    border: none;
+    border-radius: 14px;
+    box-shadow: -3px 7px 20px 0 hsla(0,0%,72%,.21);
+    color: #da4761;
+    display: block;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    font-size: 15px;
+    font-weight: 500;
+    height: auto;
+    justify-content: center;
+    line-height: normal;
+    padding: 15px 0;
+    text-decoration: none;
+    transition: .1s ease-in;
+    width: 140px
+}
+
+[dir=ltr] .before-register__gselect ul li button {
+    width: 182px
+}
+
+[dir=ltr] .before-register__gselect ul li button span {
+    display: block;
+    padding: 10px 20px 0
+}
+
+.before-register__gselect ul li button:hover {
+    background: #f6cfd4
+}
+
+.before-register__gselect ul li button figure {
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 60px;
+    justify-content: center;
+    margin: 0 0 5px;
+    position: relative
+}
+
+.before-register__gselect ul li button figure svg.icon-add {
+    position: absolute;
+    right: -5px;
+    top: 40px;
+    width: 24px
+}
+.before-register__gselect ul li button figure  .icon-add {
+    position: absolute;
+    right: -5px;
+    top: 40px;
+    width: 24px
+}
+
+.before-register__gselect ul li.male button {
+    background: #d2ecff;
+    color: #259acb
+}
+
+.before-register__gselect ul li.male button:hover {
+    background: #c0dff6
+}
+
+.before-register .checkbox--alt1 {
+    margin-bottom: 40px;
+    margin-top: 35px
+}
+
+@media only screen and (max-width: 767px) {
+    .before-register p strong br {
+        display:none
+    }
+}
+
+@media only screen and (min-width: 320px) and (max-width:479px) {
+    .before-register p br {
+        display:none
+    }
+
+    [dir=ltr] .before-register__gselect ul li {
+        margin-bottom: 15px
+    }
+
+    [dir=rtl] .before-register__gselect ul li button {
+        width: 125px
+    }
+}

@@ -37,12 +37,14 @@ class CodeController extends Controller
     public function store(Request $request)
     {
         $client = auth()->guard('client')->user();
+if($client){
+    if($request->input('code') == $client->code){
 
-        if($request->input('code') == $client->code){
-
-            $client->restCode();
-            return redirect()->route('site.home');
-        }
+        $client->restCode();
+        return redirect()->route('site.home');
+    }
+}
+      
 
         return redirect()->back()->withErrors(['code' => 'verify code incorrect']);
 
