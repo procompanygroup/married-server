@@ -623,6 +623,17 @@ footer a {
     margin-right: 0;
     vertical-align: middle
 }
+.one-box{
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+.btn-delete{
+  border-style:none;
+  color: red;
+   background-color:inherit;
+}
+ 
+ 
 
  
  

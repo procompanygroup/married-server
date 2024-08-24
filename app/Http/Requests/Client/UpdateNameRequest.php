@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
  
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Web\SiteDataController;
-class UpdatePassRequest extends FormRequest
+class UpdateNameRequest extends FormRequest
 {
     /**
      * Determine if the Clientis authorized to make this request.
@@ -16,31 +16,15 @@ class UpdatePassRequest extends FormRequest
     {
         return true;
     }
-    public static $lang="";
-protected   $minpass=6;
-protected   $maxpass=16; 
- 
- 
+    public static $lang=""; 
     public function rules(): array
-    {
-      
+    {      
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData( $this->lang);
        $defultlang = $transarr['langs']->first();
       $translate= $sitedctrlr->getbycode($defultlang->id, ['profile-error']);
-
-       return[      
-         'password'=>'required|between:'. $this->minpass.','. $this->maxpass,
-         'confirm_password' => 'same:password',
-      
-     
-        'old_password' => [
-         'required', function ($attribute, $value, $fail) use($sitedctrlr,$translate){
-             if (!Hash::check($value, Auth::guard('client')->user()->password)) {
-                 $fail($sitedctrlr->gettrans($translate,'incorrect-pass'));
-             }
-         },
-     ],
+       return[   
+        'name'=>'required|between:1,15|unique:clients,name,'.Auth::guard('client')->user()->id,        
        ];   
     
     }
@@ -55,14 +39,10 @@ public function messages(): array
   $transarr = $sitedctrlr->FillTransData( $this->lang);
    $defultlang = $transarr['langs']->first();
   $translate= $sitedctrlr->getbycode($defultlang->id, ['register-error']);
-   return[   
-   
-     'password.between'=>$sitedctrlr->gettrans($translate,'password-between'),
-    // 'address.between'=>'address charachters must be les than '.$maxlength,
-    'confirm_password.same' =>  $sitedctrlr->gettrans($translate,'input-same') ,
-   
-    
-     'password.required'=> $sitedctrlr->gettrans($translate,'required'),
+   return[       
+     'name.required,name.between'=> $sitedctrlr->gettrans($translate,'required'),
+     'name.between'=> 'الاسم يجب ان يكون اقل من 15 حرف',
+      'name.unique'=> 'اسم المستخدم غير متاح'
     ];
     
 }

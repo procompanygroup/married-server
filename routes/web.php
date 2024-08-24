@@ -342,7 +342,12 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         Route::prefix('{lang}')->group(function () {
             //account
             Route::post('/updatepass', [ClientController::class, 'updatepass'])->name('client.updatepass');
+            Route::post('/updatename', [ClientController::class, 'updatename'])->name('client.updatename');
+            Route::post('/updateemail', [ClientController::class, 'update_email'])->name('client.updateemail');
             Route::get('/edit-profile', [ClientController::class, 'edit'])->name('client.account');
+            Route::get('/edit-username', [ClientController::class, 'edit_username'])->name('client.edit_username');
+            Route::get('/edit-email', [ClientController::class, 'edit_email'])->name('client.edit_email');
+            Route::get('/edit-password', [ClientController::class, 'edit_password'])->name('client.edit_password');
             Route::post('/update', [ClientController::class, 'update'])->name('client.update');
             Route::post('/pull', [ClientController::class, 'pull']);
 

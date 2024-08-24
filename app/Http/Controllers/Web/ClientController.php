@@ -43,6 +43,10 @@ use App\Http\Controllers\Web\ClientOptionController;
 use App\Notifications\Code;
 use App\Http\Requests\Site\Register\BeforRequest;
 use App\Http\Requests\Site\Register\CheckMailRequest;
+
+use App\Http\Requests\Client\UpdateEmailRequest;
+use App\Http\Requests\Client\UpdateNameRequest;
+
 class ClientController extends Controller
 {
   /**
@@ -362,7 +366,72 @@ class ClientController extends Controller
     }
 
   }
+  public function edit_username($lang)
+  {
+    if (Auth::guard('client')->check()) {
+      $id = Auth::guard('client')->user()->id; 
+      $client = Client::find($id);       
+      $sitedctrlr = new SiteDataController();
+      $transarr = $sitedctrlr->FillTransData($lang);
+      $defultlang = $transarr['langs']->first();  
+      return view(
+        "site.content.edit-name",
+        [
+          "client" => $client,
+          'lang' => $lang,
+          'defultlang' => $defultlang,       
+        ]
+      );
+    } else {
+      return redirect()->route('login.client');
+    }
 
+  }
+  public function edit_email($lang)
+  {
+    if (Auth::guard('client')->check()) {
+      $id = Auth::guard('client')->user()->id; 
+      $client = Client::find($id);       
+      $sitedctrlr = new SiteDataController();
+      $transarr = $sitedctrlr->FillTransData($lang);
+      $defultlang = $transarr['langs']->first();  
+      return view(
+        "site.content.edit-email",
+        [
+          "client" => $client,
+          'lang' => $lang,
+          'defultlang' => $defultlang,       
+        ]
+      );
+    } else {
+      return redirect()->route('login.client');
+    }
+
+  }
+  
+  public function edit_password($lang)
+  {
+    if (Auth::guard('client')->check()) {
+      $id = Auth::guard('client')->user()->id; 
+      $client = Client::find($id);       
+      $sitedctrlr = new SiteDataController();
+      $transarr = $sitedctrlr->FillTransData($lang);
+      $defultlang = $transarr['langs']->first();  
+      return view(
+        "site.content.edit-password",
+        [
+          "client" => $client,
+          'lang' => $lang,
+          'defultlang' => $defultlang,       
+        ]
+      );
+    } else {
+      return redirect()->route('login.client');
+    }
+
+  }
+  
+  
   public function showprofile($lang)
   {
     if (Auth::guard('client')->check()) {
@@ -399,137 +468,7 @@ class ClientController extends Controller
     }
 
   }
-  //   public function myscore($lang)
-//   {
-//     if (Auth::guard('client')->check()) {
-//       $client_id = Auth::guard('client')->user()->id;
-//       //$client=Client::find($client_id);
-// //clpointmodel= ClientPoint::where('client_id',$client_id)->where('category_id',$category_id)->orderByDesc('created_at')->first();
-
-  //       //return response()->json($this->getsocial($id));  
-//       $sitedctrlr = new SiteDataController();
-//       $transarr = $sitedctrlr->FillTransData($lang);
-//       $defultlang = $transarr['langs']->first();
-//       //$catlist=Category::with()->where('status',1);  
-//       $catlist = $sitedctrlr->getquescatbyloc('cats', $defultlang->id);
-//       $catarr = [];
-
-  //       foreach ($catlist as $catrow) {
-//         $clpointmodel = ClientPoint::where('client_id', $client_id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
-//         $newarr['category'] = $catrow;
-//         if ($clpointmodel) {
-//           $newarr['level'] = $clpointmodel->level->value;
-//           $clpointlist = ClientPoint::where('client_id', $client_id)->where('category_id', $catrow['category_id'])->get()->sum(function ($q) {
-//             return $q->points_sum + $q->gift_sum;
-//           });
-//           $newarr['points'] = $clpointlist;
-//         } else {
-//           $newarr['level'] = 0;
-//           $newarr['points'] = 0;
-//         }
-//         //add row to list
-//         $catarr[] = $newarr;
-//       }
-//       // return dd($catarr);
-//       $translate = $sitedctrlr->getbycode($defultlang->id, ['my-score','header','public-score','home_page']);//chang
-//       return view(
-//         "site.client.score",
-//         [
-//           "cat_score" => $catarr,
-//           'transarr' => $transarr,
-//           'lang' => $lang,
-//           'defultlang' => $defultlang,
-//           'translate' => $translate,
-//           'sitedataCtrlr' => $sitedctrlr
-//         ]
-//       );
-//     } else {
-//       return redirect()->route('login.client');
-//     }
-
-  //   }
-
-  // public function scores($lang)
-  // {
-  //   $sitedctrlr = new SiteDataController();
-  //   $transarr = $sitedctrlr->FillTransData($lang);
-  //   $defultlang = $transarr['langs']->first();
-  //   //total all
-  //   $grouplist = ClientPoint::groupBy('client_id', 'category_id')->select(
-  //     'id',
-  //     'category_id',
-  //     'client_id',
-  //   )
-  //     ->addSelect(DB::raw('SUM(points_sum + gift_sum) as cat_sum'))->get();
-
-  //   //this month list
-  //   $nowmonth = Carbon::now()->format('m');
-  //   // return $nowmonth;
-  //   $monthlist = AnswersClient::whereMonth('created_at', $nowmonth)->groupBy('client_id', 'category_id')->
-  //     select('id', 'category_id', 'client_id')
-  //     ->addSelect(DB::raw('SUM(points) as cat_sum'))->get();
-  //   //   return  $monthlist;
-  //   $catlist = $sitedctrlr->getquescatbyloc('cats', $defultlang->id);
-  //   $catarr = [];
-
-  //   foreach ($catlist as $catrow) {
-  //     $newarr['category'] = $catrow;
-  //     //total score
-  //     $highrow = $grouplist->where('category_id', $catrow['category_id'])->sortByDesc('cat_sum')->first();
-  //     if ($highrow) {
-  //       $newarr['total_score']['cat_score'] = $highrow['cat_sum'];
-  //       $client = Client::find($highrow['client_id']);
-  //       $clpointmodel = ClientPoint::where('client_id', $client->id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
-
-  //       $newarr['total_score']['level'] = $clpointmodel->level->value;
-  //       $newarr['total_score']['client_name'] = $client->name;
-  //     } else {
-  //       $newarr['total_score']['cat_score'] = 0;
-  //       $newarr['total_score']['client_name'] = "-";
-  //       $newarr['total_score']['level'] = 0;
-  //     }
-  //     //current month score
-  //     $monthrow = $monthlist->where('category_id', $catrow['category_id'])->sortByDesc('cat_sum')->first();
-  //     if ($monthrow) {
-  //       $newarr['month_score']['cat_score'] = $monthrow['cat_sum'];
-  //       $client = Client::find($monthrow['client_id']);
-  //       $clpointmodel = ClientPoint::where('client_id', $client->id)->where('category_id', $catrow['category_id'])->orderByDesc('created_at')->first();
-
-  //       $newarr['month_score']['level'] = $clpointmodel->level->value;
-  //       $newarr['month_score']['client_name'] = $client->name;
-  //     } else {
-  //       $newarr['month_score']['cat_score'] = 0;
-  //       $newarr['month_score']['client_name'] = "-";
-  //       $newarr['month_score']['level'] = 0;
-  //     }
-  //     $catarr[] = $newarr;
-  //   }
-  //   // return  $catarr;
-
-  //   //high balance client
-  //   $firstclient = Client::orderByDesc('total_balance')->select('id', 'name', 'image', 'total_balance')->take(3)->get();
-  //   // return dd($catarr);
-  //   $translate = $sitedctrlr->getbycode($defultlang->id, ['footer-menu','public-score','home_page','sort-places']);//chang
-  //   return view(
-  //     "site.content.score",
-  //     [
-  //       "category_score" => $catarr,
-  //       "first_client" => $firstclient,
-  //       'transarr' => $transarr,
-  //       'lang' => $lang,
-  //       'defultlang' => $defultlang,
-  //       'translate' => $translate,
-  //       'sitedataCtrlr' => $sitedctrlr
-  //     ]
-  //   );
-
-  // }
-
-
-
-  /**
-   * Update the specified resource in storage.
-   */
+ 
   public function update(UpdateClientRequest $request, $lang)
   {
     StoreClientRequest::$lang = $lang;
@@ -547,22 +486,61 @@ class ClientController extends Controller
       return response()->json($validator);
     } else {
 
-
+      $clientopctrlr = new ClientOptionController();
+      $birthdate = Carbon::create($formdata["birthdate"])->format('Y-m-d');
       $id = Auth::guard('client')->user()->id;
       Client::find($id)->update([
-        'name' => $formdata['name'],
-        // 'desc' => $formdata['desc'],         
-        // 'birthdate' => $formdata['birthdate'], 
-        'gender' => $formdata['gender'],
-        'country' => $formdata['country'],
+        'first_name' => $formdata['first_name'],      
+        'birthdate' =>$birthdate, 
+        'mobile' => $formdata['mobile'], 
       ]);
+   
+                
+                $clientopctrlr->updateorcreate_opcountry($id,'residence',$formdata['residence'], $formdata['city']);
+                $clientopctrlr->updateorcreate_opcountry($id,'nationality',$formdata['nationality']);
+                if ($formdata['gender'] == 'male') {
+                  $clientopctrlr->updateorcreate_op($id,'wife_num', $formdata['wife_num']);
+                  $clientopctrlr->updateorcreate_op($id,'family_status', $formdata['family_status']);
+                  //beard
+                  $clientopctrlr->updateorcreate_op($id,'beard', $formdata['beard']);
+                } else {
+                  $clientopctrlr->updateorcreate_op($id,'wife_num_female', $formdata['wife_num_female']);
+                  $clientopctrlr->updateorcreate_op($id,'family_status_female', $formdata['family_status_female']);
+                  //veil
+                  $clientopctrlr->updateorcreate_op($id,'veil', $formdata['veil']);
+                }
+                $clientopctrlr->updateorcreate_opgenerated($id,'children_num',$formdata['children_num']);
+                $clientopctrlr->updateorcreate_opgenerated($id,'weight',$formdata['weight']);
+                //height
+                $clientopctrlr->updateorcreate_opgenerated($id,'height',$formdata['height']);
+                //skin
+                $clientopctrlr->updateorcreate_op($id,'skin', $formdata['skin']);
+                $clientopctrlr->updateorcreate_op($id,'body', $formdata['body']);
+                //religiosity
+                $clientopctrlr->updateorcreate_op($id,'religiosity', $formdata['religiosity']);
+                //prayer
+                $clientopctrlr->updateorcreate_op($id,'prayer',$formdata['prayer']);
+                //smoking
+                $clientopctrlr->updateorcreate_op($id,'smoking',$formdata['smoking']);
+                //education
+                $clientopctrlr->updateorcreate_op($id,'education',$formdata['education']);
+                $clientopctrlr->updateorcreate_op($id,'work',$formdata['work']);
+                //financial     
+                $clientopctrlr->updateorcreate_op($id,'financial',$formdata['financial']);
+                //job
+                $clientopctrlr->updateorcreate_opgenerated($id,'job',$formdata['job']);
+                //income
+                $clientopctrlr->updateorcreate_op($id,'income',$formdata['income']);
+                //health
+                $clientopctrlr->updateorcreate_op($id,'health',$formdata['health']);
+                //partner
+                $clientopctrlr->updateorcreate_opgenerated($id,'partner',$formdata['partner']);
+                //about_me
+                $clientopctrlr->updateorcreate_opgenerated($id,'about_me',$formdata['about_me']);
       if ($request->hasFile('image')) {
-
         $file = $request->file('image');
-        // $filename= $file->getClientOriginalName();
-
-        $this->storeImage($file, $id);
-        //  $this->storeImage( $file,2);
+                $this->storeImage($file, $id);
+       
       }
       //  return redirect()->back();
       return response()->json("ok");
@@ -587,6 +565,51 @@ class ClientController extends Controller
       Client::find($id)->update([
 
         'password' => bcrypt($formdata['password']),
+      ]);
+      //  return redirect()->back();
+      return response()->json("ok");
+    }
+  }
+  //
+  public function updatename(UpdateNameRequest $request, $lang)
+  {
+   StoreClientRequest::$lang = $lang;
+    $formdata = $request->all();
+    // return  $formdata;
+    // return redirect()->back()->with('success_message', $formdata);
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
+      return response()->json($validator);
+    } else {
+      $id = Auth::guard('client')->user()->id;
+      Client::find($id)->update([
+        'name' =>$formdata['name'],
+      ]);
+      //  return redirect()->back();
+      return response()->json("ok");
+    }
+  }
+  public function update_email(UpdateEmailRequest $request, $lang)
+  {
+    StoreClientRequest::$lang = $lang;
+    $formdata = $request->all();
+    // return  $formdata;
+    // return redirect()->back()->with('success_message', $formdata);
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
+      return response()->json($validator);
+    } else {
+      $id = Auth::guard('client')->user()->id;
+      Client::find($id)->update([
+        'email' => $formdata['email'],
       ]);
       //  return redirect()->back();
       return response()->json("ok");
@@ -687,12 +710,9 @@ class ClientController extends Controller
         $strgCtrlr = new StorageController();
         $path = $strgCtrlr->path['clients'];
         Storage::delete("public/" . $path . '/' . $oldimagename);
-
-        //delete   MediaPost records
-        // ClientSocial::where('client_id',$id)->delete();
-        // MessageModel::where('sender_id',$id)->orWhere('recipient_id',$id)->delete();
-
-        PointTrans::where('client_id', $id)->delete();
+ 
+        PointTrans::where('client_id', $id)->delete();        
+        ClientOption::where('client_id', $id)->delete();
         Client::find($id)->delete();
         Auth::guard('client')->logout();
         return response()->json("ok");

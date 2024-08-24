@@ -1,5 +1,6 @@
 var valid=true;
 var year=0;
+var delmsg="تم حذف الحساب بنجاح";
 $(document).ready(function() {
   
   $("#name").focusout(function (e) {
@@ -28,7 +29,7 @@ $(document).ready(function() {
  if(valid){
  
 //alert('6');
-sendform('#form-signup');
+sendform('#form-profile');
 	 
  }
 	});
@@ -275,7 +276,14 @@ if(nowyear-year>17){
 
 	});
 
-
+	$('#btn-delete').on('click', function (e) {
+		e.preventDefault();  
+		var formId= $(this).parents("form").attr('id');
+		sendform('#'+formId);
+	 
+	 
+    // alert(valid);
+    });
 
 	function ClearErrors() {
 		$("." + "invalid-feedback").html('').hide();
@@ -299,8 +307,13 @@ if(nowyear-year>17){
 				if (data.length == 0) {
 					noteError();
 				} else if (data == "ok") {
-					noteSuccess(); 	        
-				//	$(location).attr('href',verifurl); 
+					if(formid=='#del-form'){
+						notemsg(delmsg);
+						var url= window.location.origin;
+						$(location).attr('href',url); 
+					}else{
+						noteSuccess(); 	
+					}
 				} else {
 					noteError();
 				}
@@ -437,3 +450,6 @@ function checkmail(email) {
   function noteError() {
     swal(fail_msg);
   }
+  function notemsg(msg) {
+	     swal(msg);
+	    }
