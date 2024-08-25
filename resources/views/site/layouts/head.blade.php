@@ -21,5 +21,6 @@
   @else
   <link rel="stylesheet" href="{{ url('assets/site/css/en-styles.css') }}" />
   @endif
+
   @yield('css')
 </head>

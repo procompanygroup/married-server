@@ -28,7 +28,8 @@ $(document).ready(function() {
     });
 
     $("#age-slide").slider({ id: "slider-age"});
-
+    $("#slider-weight").slider( { id: "slider-weight"});
+    $("#slider-height").slider({ id: "slider-height"} );
 // Without JQuery
 //var slider = new Slider('#ex2', {});
 

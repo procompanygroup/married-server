@@ -15,7 +15,7 @@
                         <a class="dropdown-item"  onclick="event.preventDefault();this.closest('form').submit();" href="#"><i class="bi bi-box-arrow-right"></i> تسجيل خروج</a>
  
                 </form> 
-                <a class="dropdown-item"   href="#"><i class="bi bi-gear"></i> إعداداتي </a>
+                <a class="dropdown-item"   href="{{ route('client.account',$lang) }}"><i class="bi bi-gear"></i> إعداداتي </a>
                     
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <div class="collapse navbar-collapse justify-content-center">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-house"></i> الرئيسية</a>
+                        <a class="nav-link" href="{{ route('site.home') }}"><i class="bi bi-house"></i> الرئيسية</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="bi bi-search"></i> البحث عن أعضاء</a>

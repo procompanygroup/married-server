@@ -25,7 +25,8 @@
 <link href="{{ url('assets/site/bootstrap/bootstrap-slider.css') }}" rel="stylesheet">
 
 <link href="{{ url('assets/site/css/custom/custom-owl.css') }}" rel="stylesheet">
- 
+@yield('css')
   <link href="{{ url('assets/site/bootstrap/bootstrap-datepicker.min.css') }}" rel="stylesheet">
   <link href="{{ url('assets/site/css/custom/verify.css') }}"  rel="stylesheet">
+
 </head>

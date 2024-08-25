@@ -22,7 +22,6 @@ use App\Http\Controllers\Web\ClientController;
 use App\Http\Controllers\Web\SocialController;
 use App\Http\Controllers\Auth\SocialiteController;
  
- 
 use App\Http\Controllers\Web\TranslateController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -31,12 +30,10 @@ use App\Http\Controllers\Web\ClientPasswordResetController;
  use App\Http\Controllers\Web\PropertyController;
  use App\Http\Controllers\Web\PropertyDepController;
  use App\Http\Controllers\Web\CountryController;
- 
- 
 
 //site
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\Web\SearchController;
 
 use App\Http\Controllers\Web\CodeController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -305,7 +302,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
     Route::prefix('{lang}')->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
         Route::get('/befor-reg', [ClientController::class, 'befor_reg']);
-    
+       
         // Route::get('/scores', [ClientController::class, 'scores']);
         //Route::get('/{slug}', [ClientController::class, 'send_message']);
         
@@ -357,7 +354,8 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
            
       //      Route::post('/send', [QuestionController::class, 'sendquiz']);
            // Route::post('/checkans', [QuestionController::class, 'checkanswer']);
-         
+           Route::get('advance-search', [SearchController::class, 'show']);
+           Route::post('advance-search', [SearchController::class, 'advance_search']);
         });
     });
 
