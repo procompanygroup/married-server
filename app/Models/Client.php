@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Http\Controllers\Web\StorageController;
 use App\Notifications\ClientResetPasswordNotification;
+use Illuminate\Support\Carbon;
 //use App\Http\Controllers\Web\StorageController;
 class Client extends Authenticatable
 {
@@ -66,7 +67,7 @@ class Client extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends= ['image_path' ,'gender_conv'];
+    protected $appends= ['image_path','gender_conv','age'];
     public function getImagePathAttribute(){
         $conv="";
         $strgCtrlr = new StorageController(); 
@@ -97,7 +98,12 @@ class Client extends Authenticatable
       }
 
       //
-   
+
+
+      public function getAgeAttribute()
+      {
+         return Carbon::parse($this->attributes['birthdate'])->age;
+      }
      public function pointtrans(): HasMany
      {
          return $this->hasMany(PointTrans::class,'client_id');

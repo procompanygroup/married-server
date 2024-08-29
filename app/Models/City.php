@@ -28,5 +28,8 @@ class City extends Model
       return $this->belongsTo(Country::class,'country_id')->withDefault();
   }
 
-
+  public function optionsgroups(): HasMany
+    {
+        return $this->hasMany(OptionGroup::class,'city_id');
+    }
 }

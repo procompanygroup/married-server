@@ -1,8 +1,8 @@
 var valid=true;
 var year=0;
 var delmsg="تم حذف الحساب بنجاح";
-$(document).ready(function() {
-  
+$(function(){
+
 	$("#content-1").mCustomScrollbar({
 		theme: "rounded-dots-dark"
 	  });
@@ -15,7 +15,14 @@ $(document).ready(function() {
 	  /* Inset Dark */
 	  $(".content-3").mCustomScrollbar({    theme: "inset-3-dark"});
 
-	  
+  
+  });
+$(document).ready(function() {
+  
+	
+	$("#a-result").on('click',function (e) {
+		$("#form-search").submit();
+	});
   $("#name").focusout(function (e) {
 		if (!validatempty($(this))) {
   valid=valid && false;
@@ -35,146 +42,17 @@ $(document).ready(function() {
 
 
 	
-	$('.btn-submit').on('click', function (e) {
-		e.preventDefault();
-	 valid=true;
-	  stepvalidate();
- if(valid){
+// 	$('.btn-submit').on('click', function (e) {
+// 		e.preventDefault();
  
-//alert('6');
-sendform('#form-profile');
+// 		var formId= $(this).parents("form").attr('id');
+// sendform('#'+formId);
 	 
- }
-	});
-
-	function stepvalidate(){
-		var gender=$('input[name="gender"]').val(); 
-	// $('#name').trigger('focusout');
-	//$('#email').trigger('focusout');
-	// $('#password').trigger('focusout');
-	// $('#confirm_password').trigger('focusout');
-	//$('select').trigger('focusout');
-if(gender=='male'){
-	selectcheck($('#wife_num'));
-	selectcheck($('#family_status'));
-}else{
-	selectcheck($('#wife_num_female'));
-	selectcheck($('#family_status_female'));
-} 
-
-	selectcheck($('#children_num'));
-	$('#birthdate').trigger('focusout');
-	$('#birthdate').trigger('change');
-	selectcheck($('#residence'));
-	selectcheck($('#nationality'));
-	selectcheck($('#city'));
-	selectcheck($('#weight'));
-	selectcheck($('#height'));
-	selectcheck($('#skin'));
-	selectcheck($('#body'));	
  
-	selectcheck($('#religiosity'));
-	selectcheck($('#prayer'));
-	selectcheck($('#smoking'));
-	if(gender=='male'){
-		selectcheck($('#beard'));
-	}else{
-		selectcheck($('#veil'));
- 
-	}
+// 	});
+
 	
-	selectcheck($('#education'));
-	selectcheck($('#financial'));
-	selectcheck($('#work'));
-	$('#job').trigger('focusout');
-	selectcheck($('#income'));
-	selectcheck($('#health'));
  
- 
-	$('#first_name').trigger('focusout');
-	$('#mobile').trigger('focusout');
-	//$('#acceptConditions').trigger('focusout');
-
- 
-return valid;
-	}	   
-	
-  $("#email").focusout(function (e) {
-	$('#validate-email').text("").hide();
-    if (!validatempty($(this))) {
-			
-			valid=valid && false;
-			return false;
-		}  
-		if (!validateinputemail($(this),emailmsg)) {
-			
-			valid=valid && false;
-			return false;
-		} else {
-			checkmail($(this).val());
-			return valid; 
-		}
-	}); 
-  $("#password").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} else {
-			valid=valid && true;
-			return true;
-		}
-	});
-  $("#confirm_password").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} 
-	if($(this).val()== $("#password").val())
-	{
-		validStyle($(this));
-		valid=valid && true;
-		return true;
-	}else{
-		errorstyle($(this));
-		valid=valid && false;
-		return false;
-	}
-
-	});
-
-	$("select").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		}  
-		var option = $(this).find(":selected").val(); 
-		if($(this).attr('id')=='children_num'){
-			if (option==-1)  {
-				errorstyle($(this));
-				valid=valid && false;
-			return false;
-			}else{
-				validStyle($(this));
-				valid=valid && true;
-				return true;
-			}
-		
-		}else{
-			if (option==0)  {
-
-				errorstyle($(this));
-				valid=valid && false;
-			return false;
-			}else{
-				validStyle($(this));
-				valid=valid && true;
-				return true;
-			}
-		}
-		
-	
-	});
-
 	 function selectcheck(selElement) {
 		if (!validatempty(selElement)) {
 			valid=valid && false;
@@ -208,84 +86,15 @@ return valid;
 	// 	validDate($(this).val());
 		
 	// });
-	$('#birthdate').focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} 
-		validDate($(this).val());
-if(nowyear-year>17){
-	validStyle($(this));
-	valid=valid && true;
-	 	return true;
-}else{
-	errorstyle($(this));
-	valid=valid && false;
-	  	return false;
-}
-	});
-	$('#birthdate').on('change', function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} 
-		validDate($(this).val());
-if(nowyear-year>17){
-	validStyle($(this));
-	valid=valid && true;
-	 	return true;
-}else{
-	errorstyle($(this));
-	valid=valid && false;
-	  	return false;
-}
+ 
+ 
+
 	 
-
-	});
-
-	$("#job").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} else {
-			valid=valid && true;
-			return true;
-		}
-	});
 
    
  
-	$("#first_name").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} else {
-			valid=valid && true;
-			return true;
-		}
-	});
-	$("#mobile").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		}  
-		if(!allnumeric($(this).val())){
-			errorstyle($(this));
-			valid=valid && false;
-			return false;
-		} 
-
-	if(!stringlength($(this).val(),9,14)){
-		errorstyle($(this));
-		valid=valid && false;
-			return false;
-		} else{
-			validStyle($(this));
-			valid=valid && true;
-			return true;
-		}
-
-	});
+ 
+ 
 
  
 
@@ -412,7 +221,33 @@ $(cls).show();
 function endloading(cls) {
 	$(cls).hide();
 }
- 
+function setupCheckboxBehavior(propertyname,idsub) {
+$('#'+idsub+'-0').change(function() {
+	if (this.checked) {
+		// إلغاء تحديد جميع الخيارات الأخرى
+		$('input[name="'+propertyname+'[]"]').not(this).prop('checked', false);
+	}
+});
+$('input[name="'+propertyname+'[]"]').not('#'+idsub+'-0').change(function() {
+	if (this.checked) {
+		// إلغاء تحديد "لا يهم"
+		$('#'+idsub+'-0').prop('checked', false);
+	}
+});
+};
+
+setupCheckboxBehavior('residence','res');
+setupCheckboxBehavior('nationality','nat');
+setupCheckboxBehavior('family_status_female','fsf');
+setupCheckboxBehavior('family_status','fs');
+setupCheckboxBehavior('skin','sk');
+setupCheckboxBehavior('body','bo');
+setupCheckboxBehavior('education','ed');
+setupCheckboxBehavior('work','wo');
+setupCheckboxBehavior('financial','fi');
+setupCheckboxBehavior('religiosity','rel');
+setupCheckboxBehavior('prayer','pr');
+setupCheckboxBehavior('veil','ve');
   });
   function noteSuccess() {
     swal(success_msg);

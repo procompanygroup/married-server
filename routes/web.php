@@ -356,6 +356,8 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
            // Route::post('/checkans', [QuestionController::class, 'checkanswer']);
            Route::get('advance-search', [SearchController::class, 'show']);
            Route::post('advance-search', [SearchController::class, 'advance_search']);
+           Route::get('ai-search', [SearchController::class, 'ai_show']);
+           Route::post('ai-search', [SearchController::class, 'ai_search']);
         });
     });
 

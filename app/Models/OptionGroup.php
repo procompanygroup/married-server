@@ -5,35 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-class ClientOption extends Model
+class OptionGroup extends Model
 {
     use HasFactory;
-
-    protected $table = 'clients_options';
+    protected $table = 'options_groups';
     protected $fillable = [
-        'client_id',
-        'property_id',
         'option_id',
-        'val_str',
-        'val_int',
-        'val_date',
+        'group_id',
+        'property_id',
+        'priority',
         'notes',
-        'type',
+        'minop',
+        'maxop',
         'country_id',
         'city_id',
     ];
 
-    public function property(): BelongsTo
+  public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class,'property_id')->withDefault();
     }
-    public function client(): BelongsTo
-    {
-        return $this->belongsTo(Client::class,'client_id')->withDefault();
-    }
-    public function optionvalue(): BelongsTo
+    public function mainoption(): BelongsTo
     {
         return $this->belongsTo(OptionValue::class,'option_id')->withDefault();
+    }
+    public function optionrange(): BelongsTo
+    {
+        return $this->belongsTo(OptionValue::class,'group_id')->withDefault();
     }
     public function country(): BelongsTo
     {

@@ -52,5 +52,10 @@ class Property extends Model
     {
         return $this->hasMany(LangPost::class,'property_id');
     }
+    public function optionsgroups(): HasMany
+    {
+        return $this->hasMany(OptionGroup::class,'property_id');
+    }
+ 
    
 }

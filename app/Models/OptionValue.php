@@ -32,4 +32,12 @@ class OptionValue extends Model
     {
         return $this->hasMany(LangPost::class,'optionvalue_id');
     }
+    public function mainoptions(): HasMany
+    {
+        return $this->hasMany(OptionGroup::class,'option_id');
+    }
+    public function optionsranges(): HasMany
+    {
+        return $this->hasMany(OptionGroup::class,'group_id');
+    }
 }

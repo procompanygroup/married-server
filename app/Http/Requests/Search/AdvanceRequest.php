@@ -27,10 +27,10 @@ protected $alphaAtexpr='/^[\pL\s\_\-\@\.\0-9]+$/u';
      // $this->lang=$lang;
        return[
          
-           'name'=>'required|string|between:1,15|unique:clients,name|regex:'.$this->alphaAtexpr,               
-         'email'=>'required|email|unique:clients,email',      
-         'password'=>'required|between:'. $this->minpass.','. $this->maxpass,
-         'confirm_password' => 'same:password',  
+        //    'name'=>'required|string|between:1,15|unique:clients,name|regex:'.$this->alphaAtexpr,               
+        //  'email'=>'required|email|unique:clients,email',      
+        //  'password'=>'required|between:'. $this->minpass.','. $this->maxpass,
+        //  'confirm_password' => 'same:password',  
          'wife_num'=> 'sometimes|required|not_in:0',
          'wife_num_female'=> 'sometimes|required|not_in:0',
          'family_status'=> 'sometimes|required|not_in:0',

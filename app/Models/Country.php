@@ -25,7 +25,10 @@ class Country extends Model
         return $this->hasMany(City::class,'country_id');
     }
 
-
+    public function optionsgroups(): HasMany
+    {
+        return $this->hasMany(OptionGroup::class,'country_id');
+    }
 
 
 }
