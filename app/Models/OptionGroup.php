@@ -9,6 +9,7 @@ class OptionGroup extends Model
 {
     use HasFactory;
     protected $table = 'options_groups';
+    public $timestamps = false;
     protected $fillable = [
         'option_id',
         'group_id',

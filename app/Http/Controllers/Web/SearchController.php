@@ -349,5 +349,116 @@ class SearchController extends Controller
     }
 
   }
+  public function ai_search(Request $request, $lang)
+  {
+    //AdvanceRequest
+    StoreClientRequest::$lang = $lang;
+    $formdata = $request->all();
+
+
+   // $clientopctrlr = new ClientOptionController();
+
+    $id = Auth::guard('client')->user()->id;
+    $client = Client::find($id);
+    $sitedctrlr = new SiteDataController();
+    $transarr = $sitedctrlr->FillTransData($lang);
+    $defultlang = $transarr['langs']->first();
+    if ($client->gender == 'male') {
+      // Client search
+      //  $cliens_list=DB::table('clients')->where('gender','female') ;
+      $cliens_list = Client::where('gender', 'female');
+    }else{
+      $cliens_list = Client::where('gender', 'male');
+    }
+      if (isset($formdata["age"])) {
+
+        $age = $formdata["age"];
+        $str_arr = explode(",", $age);
+        $minAge = $str_arr[0];
+        $maxAge = $str_arr[1];
+        $minDate = Carbon::today()->subYears((integer) $maxAge); // make sure to use Carbon\Carbon in the class
+        $maxDate = Carbon::today()->subYears((integer) $minAge - 1)->endOfDay();
+        $cliens_list = $cliens_list->whereBetween('birthdate', [$minDate, $maxDate]);
+      }
+
+      $cliens_list = $cliens_list->select('id')->get();
+      $clintids = data_get($cliens_list, '*.id');
+     // $cliensoptions_list = ClientOption::whereIntegerInRaw('client_id', $clintids);
+
+     $clintids = $this->num_res("weight", $clintids,$formdata["weight"]);
+     $clintids = $this->num_res("height", $clintids,$formdata["height"]);
+
+     $clintids = $this->country_res("residence",$clintids,$formdata["residence"]);
+      
+     $clintids = $this->country_res("nationality",$clintids,$formdata["nationality"]);
+     if ($client->gender == 'male') {
+      $clintids = $this->one_op_res("wife_num_female",$clintids,$formdata["wife_num_female"]);
+      $clintids = $this->multi_op_res("family_status_female",$clintids,$formdata["family_status_female"]);
+      $clintids = $this->multi_op_res("veil",$clintids,$formdata["veil"]);
+     }else{
+      $clintids = $this->one_op_res("wife_num",$clintids,$formdata["wife_num"]);
+      $clintids = $this->multi_op_res("family_status",$clintids,$formdata["family_status"]);
+      $clintids = $this->one_op_res("beard",$clintids,$formdata["beard"]);
+     }    
+     
+     $clintids = $this->multi_op_res("skin",$clintids,$formdata["skin"]);
+     $clintids = $this->multi_op_res("body",$clintids,$formdata["body"]);
+
+     $clintids = $this->multi_op_res("education",$clintids,$formdata["education"]);
+     $clintids = $this->multi_op_res("work",$clintids,$formdata["work"]);
+     $clintids = $this->multi_op_res("financial",$clintids,$formdata["financial"]);
+     $clintids = $this->multi_op_res("religiosity",$clintids,$formdata["religiosity"]);
+     $clintids = $this->multi_op_res("prayer",$clintids,$formdata["prayer"]);
+     $clintids = $this->one_op_res("smoking",$clintids,$formdata["smoking"]);
+
+     
+
+
+      //  return  $cliens_list->with('clientoptions')->get() ;->toSql();
+
+   
+
+    $clients_res_db = Client::with(
+      [
+          'clientoptions' => function ($q) {
+              $q->with([
+                  'property:id,name,is_active,type,is_multivalue,notes',
+                  'optionvalue:id,name,is_active,value,value_int,notes,property_id,type',
+                  'country:id,name_ar,code',
+                  'city:id,name_en,name_ar,code,country_id'
+              ])->select(
+                      'id',
+                      'client_id',
+                      'property_id',
+                      'option_id',
+                      'val_str',
+                      'val_int',
+                      'val_date',
+                      'notes',
+                      'type',
+                      'country_id',
+                      'city_id'
+                  );
+          }
+      ]
+  )->whereIntegerInRaw('id', $clintids)->get();  
+  $propctrlr = new PropertyController();
+  $clients_res =$clients_res_db->map(function ($client) use($lang,$propctrlr)  {
+
+    return $this->client_prop_map($client, $lang,$propctrlr);
+
+});
+ 
+    return view(
+      "site.page.search-result",
+      [
+        "clients" => (object) $clients_res ,
+        'lang' => $lang,
+        'defultlang' => $defultlang,
+
+      ]
+    );
+
+  }
  
 }

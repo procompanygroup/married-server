@@ -178,6 +178,12 @@
                       <p>القيم</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href= "{{url('admin/ai/property')}}" class="nav-link ">
+                      <i class="far fa fa-list-alt nav-icon"></i>
+                      <p>البحث الالي</p>
+                    </a>
+                  </li>
                  
                 </ul>
               </li>

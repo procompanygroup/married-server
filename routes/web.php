@@ -1,6 +1,7 @@
 <?php
 
  
+use App\Http\Controllers\Web\OptionGroupController;
 use App\Http\Controllers\Web\OptionValueController;
 use Illuminate\Support\Facades\Route;
 
@@ -272,6 +273,12 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
 Route::resource('option', OptionValueController::class, ['except' => ['update']]);
 Route::prefix('option')->group(function () {
     Route::post('/update/{id}', [OptionValueController::class, 'update']);
+});
+Route::prefix('ai')->group(function () {
+    Route::get('property', [OptionGroupController::class, 'property_show']);
+    Route::get('option/{id}', [OptionGroupController::class, 'option_show']);
+    Route::get('optionrange/{id}', [OptionGroupController::class, 'option_range']);
+    Route::post('saverange', [OptionGroupController::class, 'save_range']);
 });
 
     //
