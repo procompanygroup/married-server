@@ -98,7 +98,7 @@ $('#mainop_id').on('change', function (e) {
 	var tmpurl=filltableurl;
 	tmpurl=tmpurl.replace('itemId',id)
 	
-			 $('#example1').html('');
+			 $('#table-container').html('');
 		 $.ajax({
 		url:tmpurl,
 		type: "GET",  
@@ -108,7 +108,7 @@ $('#mainop_id').on('change', function (e) {
 		success: function (data) {			 
 			if (data.length == 0) {			 
 			} else   {
-				$('#example1').html(data);	
+				$('#table-container').html(data);	
 			 	// $('#res').text(data); 
 				 
 			}		 

@@ -67,28 +67,58 @@
                   href="{{ url('admin/option') }}">{{ __('general.cancel', [], 'ar') }}</a>
           </div>
       </div>
-
-        <table id="example1" class="table table-bordered table-striped table-hover">
-          <thead>
-            <tr>
-                <th>#</th>
-              <th>القيمة</th>
-               </tr>
-
-            </thead>
-            <tbody>
+      <div class=" row" id="table-container">
+        <div class="col-sm-12">
+          <table id="example1" class="table table-bordered table-striped table-hover">
+            <thead>
               <tr>
-                <th scope="row"> </th>                   
-              
-              <td>   
-         
-                       </td>                
-            </tr>
- 
+                  <th>#</th>
+                <th>القيمة</th>
+                 </tr>  
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"> </th>        
+                <td></td>                
+              </tr>        
+              </tbody>                               
+                </table>
+        </div>
+        <div class="col-sm-6">
+          <table   class="table table-bordered table-striped table-hover">
+            <thead>
+              <tr>
+                  <th>#</th>
+                <th>القيمة</th>
+                 </tr>  
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"> </th>        
+                <td></td>                
+              </tr>        
+              </tbody>                               
+                </table>
+
+        </div>
+        <div class="col-sm-6">
+          <table   class="table table-bordered table-striped table-hover">
+            <thead>
+              <tr>
+                  <th>#</th>
+                <th>القيمة</th>
+                 </tr>  
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"> </th>        
+                <td></td>                
+              </tr>        
+              </tbody>                               
+                </table>
+        </div>
+      </div>
        
-            </tbody>    
-                          
-              </table>
           </form>
         </div>
         <!-- /.card-body -->

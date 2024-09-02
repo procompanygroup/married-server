@@ -103,7 +103,28 @@ class OptionGroupController extends Controller
                 $i++;
 
             }
+            //relegiosity
+if(isset($formdata['group_op2'])){
+    $group_opArr = $formdata['group_op2'];
+    $group_prop_id=isset($formdata['group_prop_id'])?$formdata['group_prop_id']:null;
+    OptionGroup::where('group_prop_id',$group_prop_id)->where('option_id',$main_id)->delete();
+    $i = 1;
+    foreach ($group_opArr as $group_id) {
 
+        $newObj = new OptionGroup();
+        $newObj->option_id = $main_id;
+        $newObj->group_id = $group_id;
+        $newObj->property_id = $prop_id;
+        $newObj->group_prop_id = $group_prop_id;
+        $newObj->priority = $i;
+        // $newObj->notes = $formdata['notes'];
+        // $newObj->min = $formdata['min'];
+        // $newObj->max = $formdata['max'];
+        $newObj->save();
+        $i++;
+
+    }
+}
 
             return response()->json("ok");
         }
@@ -120,7 +141,6 @@ class OptionGroupController extends Controller
     public function option_show($id)
     {
         $List = OptionValue::where('property_id', $id)->get();
-
         $property = Property::find($id);
         return view('admin.ai.option', ["List" => $List, 'property' => $property]);
 
@@ -129,26 +149,43 @@ class OptionGroupController extends Controller
     public function option_range($id)
     {
         $dest_prop_id = $this->get_opposite_by_op_id($id);
-        //mainoptions
-        $Listdb = OptionValue::with('optionsranges')->where('property_id', $dest_prop_id)->get();
-        //return   $Listdb  ;
 
-        $List = $Listdb->map(function ($option) use ($id) {
-            $item = $option->optionsranges->where('option_id', $id)->where('group_id', $option->id)->first();
-            //    if($item){
-            //     if()
-            //    }
+      if( is_array($dest_prop_id)){
+        // two property
+        $dest_prop_id_rel=$dest_prop_id['dest_prop_id_rel'];
+        $dest_prop_id_viel= $dest_prop_id['dest_prop_id_viel'];
+        $Listdb = OptionValue::with('optionsranges')->where('property_id',$dest_prop_id_rel)->get();
+        $vielListDb=OptionValue::with('optionsranges')->where('property_id',$dest_prop_id_viel)->get();
+        $List =  $this->map_op_list( $Listdb ,$id);
+        $vielList=$this->map_op_list( $vielListDb ,$id);
+        return view('admin.ai.group-table', ["List" => $List,"vielList" => $vielList,'group_prop_id'=>$dest_prop_id_viel]);
+      }else{
+        $Listdb = OptionValue::with('optionsranges')->where('property_id', $dest_prop_id)->get();
+        $List =  $this->map_op_list( $Listdb ,$id);
+        return view('admin.ai.group-table', ["List" => $List ]);
+    }
+        //mainoptions       
+   
+        //return   $Listdb  ;
+        
+ 
+
+    }
+
+
+    public function map_op_list($Listdb,$option_id)
+    {
+        $List = $Listdb->map(function ($option) use ($option_id) {
+            $item = $option->optionsranges->where('option_id', $option_id)->where('group_id', $option->id)->first();
+           
             return [
                 'option' => $option,
                 'is_group' => $item ? 1 : 0,
             ];
 
         });
-
-        return view('admin.ai.group-table', ["List" => $List]);
-
+        return  $List ;
     }
-
     public function get_opposite($dest_property_name)
     {
         $dest_prop_id = Property::where('name', $dest_property_name)->first()->id;
@@ -161,6 +198,7 @@ class OptionGroupController extends Controller
         $sel_op = OptionValue::find($sel_op_id);
         $prop_id = $sel_op->property_id;
         $sel_prop = Property::find($prop_id);
+
         $dest_prop_id = 0;
 
         if ($sel_prop->name == 'wife_num') {
@@ -175,7 +213,16 @@ class OptionGroupController extends Controller
         } else if ($sel_prop->name == 'family_status_female') {
             $dest_prop_id = $this->get_opposite('family_status');
 
-        } else {
+        }
+        else if ($sel_prop->name == 'religiosity') {
+            $dest_prop_id_rel = $this->get_opposite('religiosity');
+            $dest_prop_id_viel = $this->get_opposite('veil');
+            $dest_prop_id=[
+                'dest_prop_id_rel'=> $dest_prop_id_rel,
+                'dest_prop_id_viel'=>$dest_prop_id_viel ,
+            ];
+        } 
+         else {
             $dest_prop_id = $prop_id;
         }
         return $dest_prop_id;

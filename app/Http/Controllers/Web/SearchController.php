@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Search\AdvanceRequest;
+use App\Models\OptionGroup;
 use Illuminate\Http\Request;
 
 use App\Models\ClientOption;
@@ -354,69 +355,119 @@ class SearchController extends Controller
     //AdvanceRequest
     StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
-
-
-   // $clientopctrlr = new ClientOptionController();
-
     $id = Auth::guard('client')->user()->id;
-    $client = Client::find($id);
+    $client = Client::with('clientoptions')->find($id);
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
     if ($client->gender == 'male') {
+
       // Client search
       //  $cliens_list=DB::table('clients')->where('gender','female') ;
-      $cliens_list = Client::where('gender', 'female');
-    }else{
-      $cliens_list = Client::where('gender', 'male');
-    }
-      if (isset($formdata["age"])) {
-
-        $age = $formdata["age"];
-        $str_arr = explode(",", $age);
-        $minAge = $str_arr[0];
-        $maxAge = $str_arr[1];
+      $cliens_list = Client::where('gender', 'female');       
+      //age
+        $minAge = $client->age -5;
+        $maxAge =  $client->age +1;
         $minDate = Carbon::today()->subYears((integer) $maxAge); // make sure to use Carbon\Carbon in the class
         $maxDate = Carbon::today()->subYears((integer) $minAge - 1)->endOfDay();
-        $cliens_list = $cliens_list->whereBetween('birthdate', [$minDate, $maxDate]);
-      }
-
+        $cliens_list = $cliens_list->whereBetween('birthdate', [$minDate, $maxDate]);       
       $cliens_list = $cliens_list->select('id')->get();
       $clintids = data_get($cliens_list, '*.id');
-     // $cliensoptions_list = ClientOption::whereIntegerInRaw('client_id', $clintids);
+//wife_num_female
+  
+$group_option_list_ids=$this->getgroup_ids($client,'wife_num');
+$clintids = $this->multi_op_res("wife_num_female",$clintids,$group_option_list_ids);
+//family_status_female
+$group_option_list_ids=$this->getgroup_ids($client,'family_status');
+$clintids = $this->multi_op_res("family_status_female",$clintids,$group_option_list_ids);
 
-     $clintids = $this->num_res("weight", $clintids,$formdata["weight"]);
-     $clintids = $this->num_res("height", $clintids,$formdata["height"]);
+//weight
+$client_weight=$this->getclientvalue($client,"weight");
+$min=$client_weight-10;
+$max=$client_weight+10;
+$rang=implode(',',[$min,$max]);
 
-     $clintids = $this->country_res("residence",$clintids,$formdata["residence"]);
+$clintids = $this->num_res("weight", $clintids,$rang);
+//height
+$client_height=$this->getclientvalue($client,"height");
+$min=$client_height-10;
+$max=$client_height+5;
+$rang=implode(',',[$min,$max]);
+$clintids = $this->num_res("height", $clintids,$rang);
+ 
+ //
+$group_option_list_ids=$this->getgroup_ids($client,'religiosity', 'veil');
+$clintids = $this->multi_op_res("veil",$clintids,$group_option_list_ids);
+//return $clintids;
+    }else{
+
+      //female
+
+      $cliens_list = Client::where('gender', 'male');
       
-     $clintids = $this->country_res("nationality",$clintids,$formdata["nationality"]);
-     if ($client->gender == 'male') {
-      $clintids = $this->one_op_res("wife_num_female",$clintids,$formdata["wife_num_female"]);
-      $clintids = $this->multi_op_res("family_status_female",$clintids,$formdata["family_status_female"]);
-      $clintids = $this->multi_op_res("veil",$clintids,$formdata["veil"]);
-     }else{
-      $clintids = $this->one_op_res("wife_num",$clintids,$formdata["wife_num"]);
-      $clintids = $this->multi_op_res("family_status",$clintids,$formdata["family_status"]);
-      $clintids = $this->one_op_res("beard",$clintids,$formdata["beard"]);
-     }    
-     
-     $clintids = $this->multi_op_res("skin",$clintids,$formdata["skin"]);
-     $clintids = $this->multi_op_res("body",$clintids,$formdata["body"]);
+        //age
+        $minAge = $client->age -5;
+        $maxAge =  $client->age +10;
+        $minDate = Carbon::today()->subYears((integer) $maxAge); // make sure to use Carbon\Carbon in the class
+        $maxDate = Carbon::today()->subYears((integer) $minAge - 1)->endOfDay();
+        $cliens_list = $cliens_list->whereBetween('birthdate', [$minDate, $maxDate]);       
+      $cliens_list = $cliens_list->select('id')->get();
+      $clintids = data_get($cliens_list, '*.id');
+//wife_num
+  
+$group_option_list_ids=$this->getgroup_ids($client,'wife_num_female');
+$clintids = $this->multi_op_res("wife_num",$clintids,$group_option_list_ids);
+//family_status
+$group_option_list_ids=$this->getgroup_ids($client,'family_status_female');
+$clintids = $this->multi_op_res("family_status",$clintids,$group_option_list_ids);
 
-     $clintids = $this->multi_op_res("education",$clintids,$formdata["education"]);
-     $clintids = $this->multi_op_res("work",$clintids,$formdata["work"]);
-     $clintids = $this->multi_op_res("financial",$clintids,$formdata["financial"]);
-     $clintids = $this->multi_op_res("religiosity",$clintids,$formdata["religiosity"]);
-     $clintids = $this->multi_op_res("prayer",$clintids,$formdata["prayer"]);
-     $clintids = $this->one_op_res("smoking",$clintids,$formdata["smoking"]);
+//weight
+$client_weight=$this->getclientvalue($client,"weight");
+$min=$client_weight-10;
+$max=$client_weight+10;
+$rang=implode(',',[$min,$max]);
 
-     
+$clintids = $this->num_res("weight", $clintids,$rang);
+//height
+$client_height=$this->getclientvalue($client,"height");
+$min=$client_height-5;
+$max=$client_height+10;
+$rang=implode(',',[$min,$max]);
+$clintids = $this->num_res("height", $clintids,$rang);
+    }
+       //both
+    $client_res_id=$this->getclientcountry($client,'nationality');
+    $clintids = $this->country_res("nationality",$clintids,[$client_res_id]);  
+    //skin
+$group_option_list_ids=$this->getgroup_ids($client,'skin');
+$clintids = $this->multi_op_res("skin",$clintids,$group_option_list_ids);
+//body
+$group_option_list_ids=$this->getgroup_ids($client,'body');
+$clintids = $this->multi_op_res("body",$clintids,$group_option_list_ids);
+//education
+$group_option_list_ids=$this->getgroup_ids($client,'education');
+$clintids = $this->multi_op_res("education",$clintids,$group_option_list_ids);
+//work
+$group_option_list_ids=$this->getgroup_ids($client,'work');
+$clintids = $this->multi_op_res("work",$clintids,$group_option_list_ids);
+//financial
+$group_option_list_ids=$this->getgroup_ids($client,'financial');
+$clintids = $this->multi_op_res("financial",$clintids,$group_option_list_ids);
+//religiosity
+$group_option_list_ids=$this->getgroup_ids($client,'religiosity');
+$clintids = $this->multi_op_res("religiosity",$clintids,$group_option_list_ids);
+//prayer
+$group_option_list_ids=$this->getgroup_ids($client,'prayer');
+$clintids = $this->multi_op_res("prayer",$clintids,$group_option_list_ids);
+//smoking
+$group_option_list_ids=$this->getgroup_ids($client,'prayer');
+$clintids = $this->one_op_res("smoking",$clintids,$group_option_list_ids);
 
+ 
+    //  $clintids = $this->one_op_res("beard",$clintids,$formdata["beard"]);
+      
 
-      //  return  $cliens_list->with('clientoptions')->get() ;->toSql();
-
-   
+      
 
     $clients_res_db = Client::with(
       [
@@ -459,6 +510,43 @@ class SearchController extends Controller
       ]
     );
 
+  }
+
+  public function getgroup_ids($client,$property_name,$group_prop_name=null) {
+    $property=Property::where('name',$property_name)->first();
+$prop_id=$property->id;
+
+//get  client option of property wife num
+$seloption_id=$client->clientoptions->where('property_id',$prop_id)->first()->option_id; 
+if(isset($group_prop_name)){
+  $group_prop=Property::where('name',$group_prop_name)->first();
+  $group_prop_id= $group_prop->id;
+  $group_option_list=OptionGroup::where('option_id',$seloption_id)->
+  where('property_id',$prop_id)->
+  where('group_prop_id',$group_prop_id)->
+  select('group_id')->get(); 
+}else{
+  $group_option_list=OptionGroup::where('option_id',$seloption_id)->select('group_id')->get(); 
+}
+
+$group_option_list_ids = data_get($group_option_list, '*.group_id');
+return $group_option_list_ids;
+  }
+  public function getclientvalue($client,$property_name) {
+    //wieght
+    $property=Property::where('name',$property_name)->first();
+$prop_id=$property->id;
+//get  client option of property wife num
+$selval=$client->clientoptions->where('property_id',$prop_id)->first()->val_int;  
+return $selval;
+  }
+  public function getclientcountry($client,$property_name) {
+    //wieght
+    $property=Property::where('name',$property_name)->first();
+$prop_id=$property->id;
+//get  client option of property wife num
+$country_id=$client->clientoptions->where('property_id',$prop_id)->first()->country_id;  
+return $country_id;
   }
  
 }

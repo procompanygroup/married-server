@@ -20,6 +20,7 @@ class OptionGroup extends Model
         'maxop',
         'country_id',
         'city_id',
+        'group_prop_id',
     ];
 
   public function property(): BelongsTo
