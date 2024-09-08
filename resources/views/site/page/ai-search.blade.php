@@ -22,6 +22,7 @@
                                 <div class="col-md-12 form-group"> 
                                     <p>البحث بالذكاء الاصطناعي</p>                                    
                                 </div>  
+                                <input type="hidden" name="type" value="ai">
                                 <div class="submit-block text-center col-md-12"><button type="submit"
                                     class="btn btn-lg btn-primary btn-submit">بحث</button></div>                             
                             </div>

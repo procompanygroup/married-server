@@ -28,20 +28,28 @@ $(document).ready(function() {
   valid=valid && false;
 			return false;
 		}  
-		if(!stringlength($(this).val(),1,15)){
-			errorstyle($(this));
-			valid=valid && false;
-			return false;
-		}else{
-			validStyle($(this));
-			valid=valid && true;
-			return true;
-		}
+	 
 		 
 	});
 
-
-	
+	$("#btn-name-search").on('click',function (e) {
+		e.preventDefault();
+		valid=true;
+		$('#name').trigger('focusout');
+		if(valid==true){
+			$("#name-search-form").submit();
+		}
+		
+	});
+	$("#btn--search").on('click',function (e) {
+		e.preventDefault();
+		valid=true;
+		$('#name').trigger('focusout');
+		if(valid==true){
+			$("#name-search-form").submit();
+		}
+		
+	});
 // 	$('.btn-submit').on('click', function (e) {
 // 		e.preventDefault();
  
@@ -87,15 +95,6 @@ $(document).ready(function() {
 		
 	// });
  
- 
-
-	 
-
-   
- 
- 
- 
-
  
 
 	function ClearErrors() {

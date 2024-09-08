@@ -309,7 +309,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
     Route::prefix('{lang}')->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
         Route::get('/befor-reg', [ClientController::class, 'befor_reg']);
-       
+        Route::get('/member/{id}', [ClientController::class, 'show_member']);
         // Route::get('/scores', [ClientController::class, 'scores']);
         //Route::get('/{slug}', [ClientController::class, 'send_message']);
         
@@ -332,6 +332,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
     Route::resource('verify', CodeController::class);
     //can only logout without verify
     Route::middleware(['auth:client', 'verified' ])->group(function () {
+
         Route::post('u/logout', [ClientController::class, 'logout'])->name('logout.client');
     });
     Route::middleware(['auth:client', 'verified' ,'code'])->group(function () {
@@ -365,6 +366,11 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
            Route::post('advance-search', [SearchController::class, 'advance_search']);
            Route::get('ai-search', [SearchController::class, 'ai_show']);
            Route::post('ai-search', [SearchController::class, 'ai_search']);
+           Route::get('search', [SearchController::class, 'all_search']);
+           Route::post('name-search', [SearchController::class, 'name_search']);
+           Route::post('quick-search', [SearchController::class, 'quick_search']);
+           Route::get('members/online', [SearchController::class, 'online_clients']);
+           Route::get('members/new', [SearchController::class, 'new_clients']);
         });
     });
 

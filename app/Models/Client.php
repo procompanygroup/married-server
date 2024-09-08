@@ -48,14 +48,14 @@ class Client extends Authenticatable
         'country',
         'gender',
         'birthdate',
-        'facebook_id', 
+        'facebook_id',
         'total_balance',
         'balance',
         'lang_id',
 
         'code',
         'expire_at',
-
+        'lastseen_at',
     ];
 
     /**
@@ -67,58 +67,61 @@ class Client extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends= ['image_path','gender_conv','age'];
-    public function getImagePathAttribute(){
-        $conv="";
-        $strgCtrlr = new StorageController(); 
-        if(is_null($this->image) ){
-            
-            $conv =$strgCtrlr->DefaultPath($this->gender); 
-        }else if($this->image==''){
-            $conv =$strgCtrlr->DefaultPath($this->gender); 
+    protected $appends = ['image_path', 'gender_conv', 'age'];
+    public function getImagePathAttribute()
+    {
+        $conv = "";
+        $strgCtrlr = new StorageController();
+        if (is_null($this->image)) {
+
+            $conv = $strgCtrlr->DefaultPath($this->gender);
+        } else if ($this->image == '') {
+            $conv = $strgCtrlr->DefaultPath($this->gender);
         } else {
             $url = $strgCtrlr->ClientPath();
-            $conv =  $url.$this->image;
-        }     
-       
-            return  $conv;
-     }
-
-     public function getGenderConvAttribute(){
-        $conv = "-";
-        If($this->gender){
-            if ($this->gender == 'male') {
-                $conv = __('general.male',['ar']);
-            } else {
-                $conv = __('general.female',['ar']);
-            }    
+            $conv = $url . $this->image;
         }
-          
-             return  $conv;
-      }
 
-      //
+        return $conv;
+    }
 
+    public function getGenderConvAttribute()
+    {
+        $conv = "-";
+        if ($this->gender) {
+            if ($this->gender == 'male') {
+                $conv = __('general.male', ['ar']);
+            } else {
+                $conv = __('general.female', ['ar']);
+            }
+        }
 
-      public function getAgeAttribute()
-      {
-         return Carbon::parse($this->attributes['birthdate'])->age;
-      }
-     public function pointtrans(): HasMany
-     {
-         return $this->hasMany(PointTrans::class,'client_id');
-     }
-     public function language(): BelongsTo
-     {
-         return $this->belongsTo(Language::class,'lang_id')->withDefault();
-     }
-     public function clientoptions(): HasMany
-     {
-         return $this->hasMany(ClientOption::class,'client_id');
-     }
+        return $conv;
+    }
+
+    //
 
 
-    public function generateCode(){
+    public function getAgeAttribute()
+    {
+        return Carbon::parse($this->attributes['birthdate'])->age;
+    }
+    public function pointtrans(): HasMany
+    {
+        return $this->hasMany(PointTrans::class, 'client_id');
+    }
+    public function language(): BelongsTo
+    {
+        return $this->belongsTo(Language::class, 'lang_id')->withDefault();
+    }
+    public function clientoptions(): HasMany
+    {
+        return $this->hasMany(ClientOption::class, 'client_id');
+    }
+
+
+    public function generateCode()
+    {
 
         $this->timestamps = false;
         $this->code = rand(100000, 999999);
@@ -126,7 +129,8 @@ class Client extends Authenticatable
         $this->save();
     }
 
-    public function restCode(){
+    public function restCode()
+    {
 
         $this->timestamps = false;
         $this->code = null;

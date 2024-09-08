@@ -36,6 +36,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\Web\ClientActivity::class,
         ],
 
         'api' => [
@@ -70,6 +71,7 @@ class Kernel extends HttpKernel
         'localemiddle' => \App\Http\Middleware\Web\LocaleMiddle::class,
       
         'code' => \App\Http\Middleware\Code::class,
+      'client_activity'=>  \App\Http\Middleware\Web\ClientActivity::class,
 
     ];
 }

@@ -1,10 +1,10 @@
 
 
-#slider-age  .slider-track {
+#slider-age  .slider-track ,#slider-ageq  .slider-track{
     height: 3px;
    
 }
-#slider-age  .slider-selection {
+#slider-age  .slider-selection,#slider-ageq  .slider-selection {
    background: #D8445E;
    height: 3px;
    
@@ -12,16 +12,18 @@
 .b-slide {
     padding: 5px 10px;
 }
-#slider-age .slider-handle{
+#slider-age .slider-handle,#slider-ageq .slider-handle{
     background: #D8445E;  
     top: -3px;
 }
 /* other slide */
-#slider-height  .slider-track,#slider-weight  .slider-track  {
+#slider-height  .slider-track,#slider-weight  .slider-track ,#slider-weightq  .slider-track
+,#slider-heightq  .slider-track{
     height: 3px;
    
 }
-#slider-height  .slider-selection,#slider-weight  .slider-selection {
+#slider-height  .slider-selection,#slider-weight  .slider-selection
+,#slider-heightq  .slider-selection,#slider-weightq  .slider-selection {
    background: #D8445E;
    height: 3px;
    
@@ -29,7 +31,8 @@
 .b-slide {
     padding: 5px 10px;
 }
-#slider-height .slider-handle,#slider-weight .slider-handle{
+#slider-height .slider-handle,#slider-weight .slider-handle
+,#slider-heightq .slider-handle,#slider-weightq .slider-handle{
     background: #D8445E !important;  
     top: -3px;
 }

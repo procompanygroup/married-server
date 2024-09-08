@@ -113,7 +113,7 @@ return  $clientoption->id;
       
       $clientop=ClientOption::wherehas('property', function ($query) use ($property_name) {
                     $query->where('name', $property_name);
-                })->first();
+                })->where('client_id',$client_id)->first();
                 if($clientop){
                   $clientop->option_id=$option_id;
                   $clientop->save();
@@ -126,7 +126,7 @@ return  $clientoption->id;
       
         $clientop=ClientOption::wherehas('property', function ($query) use ($property_name) {
                       $query->where('name', $property_name);
-                  })->first();
+                  })->where('client_id',$client_id)->first();
                   if($clientop){                   
                     $clientop->country_id=$country_id;                   
                     $clientop->city_id=$city_id;                  
@@ -141,7 +141,7 @@ return  $clientoption->id;
       
         $clientop=ClientOption::with('property')->wherehas('property', function ($query) use ($property_name) {
                       $query->where('name', $property_name);
-                  })->first();
+                  })->where('client_id',$client_id)->first();
                   if($clientop){                   
                     if($clientop->property->type=='integer'){
                         $clientop->val_int=$option_val;

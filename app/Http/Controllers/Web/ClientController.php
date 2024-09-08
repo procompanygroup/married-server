@@ -471,8 +471,10 @@ class ClientController extends Controller
  
   public function update(UpdateClientRequest $request, $lang)
   {
+    //UpdateClientRequest
     StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
+ 
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
     $validator = Validator::make(
@@ -498,17 +500,27 @@ class ClientController extends Controller
                 
                 $clientopctrlr->updateorcreate_opcountry($id,'residence',$formdata['residence'], $formdata['city']);
                 $clientopctrlr->updateorcreate_opcountry($id,'nationality',$formdata['nationality']);
+             
                 if ($formdata['gender'] == 'male') {
+                  
                   $clientopctrlr->updateorcreate_op($id,'wife_num', $formdata['wife_num']);
+                  
                   $clientopctrlr->updateorcreate_op($id,'family_status', $formdata['family_status']);
+          
                   //beard
                   $clientopctrlr->updateorcreate_op($id,'beard', $formdata['beard']);
+            
                 } else {
+             
                   $clientopctrlr->updateorcreate_op($id,'wife_num_female', $formdata['wife_num_female']);
+               
                   $clientopctrlr->updateorcreate_op($id,'family_status_female', $formdata['family_status_female']);
+               
                   //veil
                   $clientopctrlr->updateorcreate_op($id,'veil', $formdata['veil']);
+                
                 }
+                
                 $clientopctrlr->updateorcreate_opgenerated($id,'children_num',$formdata['children_num']);
                 $clientopctrlr->updateorcreate_opgenerated($id,'weight',$formdata['weight']);
                 //height
@@ -761,5 +773,45 @@ class ClientController extends Controller
       Storage::delete("public/" . $path . '/' . $oldimagename);
     }
     return 1;
+  }
+
+  public function show_member($lang,$id)
+  {
+  
+      $propctrler = new PropertyController();
+      $client = (object) $propctrler->clientwithprop($id, $lang);    
+     // $propgroup = $propctrler->propgroup($lang);
+      $birthdateStr = (string) Carbon::create($client->client->birthdate)->format('d-m-Y');
+      Carbon::setLocale('ar');
+      $user_reg_date = $client->client->created_at->translatedFormat('l jS F Y - H:m');
+
+      $sitedctrlr = new SiteDataController();
+      $transarr = $sitedctrlr->FillTransData($lang);
+      $defultlang = $transarr['langs']->first();
+     // $nowyear = Carbon::now()->format('Y');
+      $lastseen='-';
+      if($client->client->lastseen_at){
+        $lastseen=$client->client->lastseen_at>= now()->subMinutes(5)?'متواجد الان'
+        : Carbon::parse($client->client->lastseen_at)->diffForHumans();
+      }
+ 
+      return view(
+        "site.page.client-page",
+        [
+          "client" => $client,
+          
+          'lang' => $lang,
+          'defultlang' => $defultlang,
+          'birthdateStr' => $birthdateStr,
+          'user_reg_date' => $user_reg_date,
+        //  'prop_group' => $propgroup,
+         // 'nowyear' => $nowyear,
+          'since_register'=>  $client->client->created_at->diffForHumans(),
+          'lastseen_at'=> $lastseen,
+        ]
+      );
+
+    
+
   }
 }

@@ -8,14 +8,14 @@
                     <img src="{{ auth()->guard('client')->user()->image_path }}" alt="User Image" class="user-image rounded-circle">
                 </a>
                 <div class="dropdown-menu text-right" aria-labelledby="dropdownMenuLink">
-                
+                    <a class="dropdown-item"   href="{{ route('client.account',$lang) }}"><i class="bi bi-gear"></i> إعداداتي </a>
 
                     <form method="POST" action="{{ route('logout.client') }}"  >
                         @csrf
                         <a class="dropdown-item"  onclick="event.preventDefault();this.closest('form').submit();" href="#"><i class="bi bi-box-arrow-right"></i> تسجيل خروج</a>
  
                 </form> 
-                <a class="dropdown-item"   href="{{ route('client.account',$lang) }}"><i class="bi bi-gear"></i> إعداداتي </a>
+               
                     
                 </div>
             </div>
@@ -38,15 +38,15 @@
                         <a class="nav-link" href="{{ route('site.home') }}"><i class="bi bi-house"></i> الرئيسية</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-search"></i> البحث عن أعضاء</a>
+                        <a class="nav-link" href="{{ url($lang,'search') }}"><i class="bi bi-search"></i>البحث</a>
                     </li>
                     <!-- باقي العناصر -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-people"></i> المتواجدون الآن</a>
+                        <a class="nav-link" href="{{ url($lang.'/members','online') }}"><i class="bi bi-people"></i> المتواجدون الآن</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#"> <i class="bi bi-star"></i> أعضاء جدد</a>
+                        <a class="nav-link" href="{{ url($lang.'/members','new') }}"> <i class="bi bi-star"></i> أعضاء جدد</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"> <i class="bi bi-award"></i> الأعضاء المتميزين</a>
@@ -65,17 +65,17 @@
         <button class="btn-close" id="close-sidebar"><i class="fa fa-times"></i></button>
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bi bi-house"></i> الرئيسية</a>
+                <a class="nav-link" href="{{ route('site.home') }}"><i class="bi bi-house"></i> الرئيسية</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bi bi-search"></i> البحث عن أعضاء</a>
+                <a class="nav-link" href="{{ url($lang,'search') }}"><i class="bi bi-search"></i> البحث عن أعضاء</a>
             </li>
             <!-- باقي العناصر -->
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bi bi-people"></i> المتواجدون الآن</a>
+                <a class="nav-link" href="{{ url($lang.'/members','online') }}"><i class="bi bi-people"></i> المتواجدون الآن</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bi bi-star"></i> أعضاء جدد</a>
+                <a class="nav-link" href="{{ url($lang.'/members','new') }}"><i class="bi bi-star"></i> أعضاء جدد</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#"> <i class="bi bi-award"></i> الأعضاء المتميزين</a>

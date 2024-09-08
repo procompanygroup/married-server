@@ -30,6 +30,9 @@ $(document).ready(function() {
     $("#age-slide").slider({ id: "slider-age"});
     $("#slider-weight").slider( { id: "slider-weight"});
     $("#slider-height").slider({ id: "slider-height"} );
+    $("#age-slideq").slider({ id: "slider-ageq"});
+    $("#slider-heightq").slider({ id: "slider-heightq"} );
+    $("#slider-weightq").slider( { id: "slider-weightq"});
 // Without JQuery
 //var slider = new Slider('#ex2', {});
 
