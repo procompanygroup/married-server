@@ -1,15 +1,15 @@
-@extends('site.layouts.home-signed.layout')
+ @extends('site.layouts.home-signed.layout')
+ 
 @section('content')
     <div class="container-fluid mt-3 pt-3">
         <div class="row">
             <!-- القسم الجانبي -->
             @include('site.content.profile-sidebar')
 
-            <!-- قسم تعديل البيانات -->
+         
             <section class=" content-sec col-lg-7 col-md-6 page">
 
-                <div class="page-body pl-0 pr-0 user-profile-page user-profile-male user-profile-100 not-contactable"
-                  >
+                <div class="page-body pl-0 pr-0 user-profile-page user-profile-male user-profile-100 not-contactable" >
                     <div class="row profile-cover">
                         <div class="col-md-12">
                             <div class="membership-type">
@@ -52,9 +52,9 @@
     @endif
                                      
                                     </div>
-                                    <div class="options">
+                                    <div class="options" >
                                          
-                                        <div class="option btn-send-message"><span><i class="bi bi-envelope-fill"></i></span> <span> رسالة </span></div>
+                                        <div class="option btn-send-message" data-user-name="{{ $client->client->name }}"  ><span><i class="bi bi-envelope-fill"></i></span> <span> رسالة </span></div>
                                         <div class="option btn-add-to-favorite"><span><i class="bi bi-heart-fill"></i></span> <span> إهتمام </span></div>
                                         <div class="option btn-add-to-blacklist"><span><i class="bi bi-x-circle-fill"></i></span> <span> تجاهل </span></div>
                                         <div class="option btn-report"><span><i class="bi bi-flag-fill"></i></span> <span> إبلاغ </span></div>
@@ -184,7 +184,7 @@
                   
                 </div>
 
-
+<input type="hidden" name="member-num" value="{{$client->client->id}}">
             </section>
 
 
@@ -203,6 +203,6 @@
     </script>
     <script src="{{ url('assets/site/js/sweetalert.min.js') }}"></script>
     <script src="{{ url('assets/site/js/custom/validate.js') }}"></script>
-    <script src="{{ url('assets/site/js/custom/edit-profile.js') }}"></script>
+    <script src="{{ url('assets/site/js/custom/member.js') }}"></script>
 
 @endsection

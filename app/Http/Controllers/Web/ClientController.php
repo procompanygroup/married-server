@@ -46,7 +46,7 @@ use App\Http\Requests\Site\Register\CheckMailRequest;
 
 use App\Http\Requests\Client\UpdateEmailRequest;
 use App\Http\Requests\Client\UpdateNameRequest;
-
+use App\Http\Requests\Client\UpdateSpecialRequest;
 class ClientController extends Controller
 {
   /**
@@ -74,6 +74,31 @@ class ClientController extends Controller
     return view('admin.client.pullall', [
       'op_list' => $op_list,
     ]);
+  }
+
+  public function updatespecial(UpdateSpecialRequest $request)
+  { 
+    $formdata = $request->all();
+    // return  $formdata;
+    // return redirect()->back()->with('success_message', $formdata);
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+
+    if ($validator->fails()) {
+      return response()->json($validator);
+    } else {
+      response()->json($formdata['id']);
+      $client_id= $formdata['id'];
+      $is_special= $formdata['is_special'];
+      Client::find($client_id)->update([
+        'is_special' =>  $is_special,
+      ]);
+      //  return redirect()->back();
+      return response()->json("ok");
+    }
   }
   /**
    * Display the specified resource.
@@ -740,9 +765,7 @@ class ClientController extends Controller
     //  Auth::guard('web')->logout();
     Auth::guard('client')->logout();
     $request->session()->invalidate();
-
     $request->session()->regenerateToken();
-
     return redirect('/');
   }
   public function storeImage($file, $id)
@@ -776,8 +799,7 @@ class ClientController extends Controller
   }
 
   public function show_member($lang,$id)
-  {
-  
+  {  
       $propctrler = new PropertyController();
       $client = (object) $propctrler->clientwithprop($id, $lang);    
      // $propgroup = $propctrler->propgroup($lang);
@@ -798,8 +820,7 @@ class ClientController extends Controller
       return view(
         "site.page.client-page",
         [
-          "client" => $client,
-          
+          "client" => $client,          
           'lang' => $lang,
           'defultlang' => $defultlang,
           'birthdateStr' => $birthdateStr,

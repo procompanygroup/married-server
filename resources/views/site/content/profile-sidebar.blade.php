@@ -1,5 +1,6 @@
    <!-- القسم الجانبي -->
    <aside class="col-lg-3 col-md-4">
+    @if(Auth::guard('client')->check()) 
                 <div class="profile-sidebar">
                     <div class="profile-header bg-info text-center p-3">
                         <img src="{{ auth()->guard('client')->user()->image_path }}" alt="User" class="rounded-circle mb-2">
@@ -20,4 +21,5 @@
                         </ul>
                     </div>
                 </div>
+                @endif
             </aside>

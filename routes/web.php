@@ -1,6 +1,7 @@
 <?php
 
  
+use App\Http\Controllers\Web\ChatController;
 use App\Http\Controllers\Web\OptionGroupController;
 use App\Http\Controllers\Web\OptionValueController;
 use Illuminate\Support\Facades\Route;
@@ -251,6 +252,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
         Route::get('/show/{id}', [ClientController::class, 'show']);
         Route::get('/pull/{id}', [ClientController::class, 'pullops']);
         Route::get('/allpull', [ClientController::class, 'allpullops']);
+        Route::post('/updatespecial', [ClientController::class, 'updatespecial']);
         // Route::post('/upload', [TranslateController::class, 'uploadLargeFiles'])->name('post.upload');;
 
     });
@@ -340,7 +342,12 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         //account
         Route::post('u/delete', [ClientController::class, 'destroy']);
         Route::get('/balanceinfo', [ClientController::class, 'balanceinfo']);
-       
+       //Chat
+       Route::prefix('chat')->group(function () {
+        Route::post('/send', [ChatController::class, 'send']);
+        Route::get('/show', [ChatController::class, 'show']);
+        Route::get('/showlast', [ChatController::class, 'showlast']);
+       });
         // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
         
       //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
@@ -369,8 +376,16 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
            Route::get('search', [SearchController::class, 'all_search']);
            Route::post('name-search', [SearchController::class, 'name_search']);
            Route::post('quick-search', [SearchController::class, 'quick_search']);
-           Route::get('members/online', [SearchController::class, 'online_clients']);
-           Route::get('members/new', [SearchController::class, 'new_clients']);
+
+           Route::prefix('members')->group(function () {
+           Route::get('online', [SearchController::class, 'online_clients']);
+           Route::get('new', [SearchController::class, 'new_clients']);
+           Route::get('health-cases', [SearchController::class, 'health_search']);
+           Route::post('health-cases', [SearchController::class, 'health_search_by_inputs']);
+           Route::get('special', [SearchController::class, 'special_search']);
+
+        });
+
         });
     });
 

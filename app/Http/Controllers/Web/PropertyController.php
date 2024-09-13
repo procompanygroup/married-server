@@ -314,7 +314,18 @@ class PropertyController extends Controller
         return $groupArr;
     }
 
-
+    public function propgroupfor_health($lang)
+    {
+        $countryctrlr = new CountryController();
+        $countries = $countryctrlr->getAll();
+        $prop = $this->byname('health', $lang);
+        $health = $this->propmap($prop);
+        $groupArr = [            
+            'countries' => $countries,             
+            'health' => $health,
+                  ];
+        return $groupArr;
+    }
     public function clientwithprop($client_id, $lang)
     {
         $client = Client::with(

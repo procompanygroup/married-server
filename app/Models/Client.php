@@ -56,6 +56,7 @@ class Client extends Authenticatable
         'code',
         'expire_at',
         'lastseen_at',
+        'is_special',
     ];
 
     /**
@@ -73,7 +74,6 @@ class Client extends Authenticatable
         $conv = "";
         $strgCtrlr = new StorageController();
         if (is_null($this->image)) {
-
             $conv = $strgCtrlr->DefaultPath($this->gender);
         } else if ($this->image == '') {
             $conv = $strgCtrlr->DefaultPath($this->gender);
@@ -119,6 +119,41 @@ class Client extends Authenticatable
         return $this->hasMany(ClientOption::class, 'client_id');
     }
 
+    public function chatsenders(): HasMany
+    {
+        return $this->hasMany(Chat::class, 'sender_id');
+    }
+    public function chatsrecivers(): HasMany
+    {
+        return $this->hasMany(Chat::class, 'reciver_id');
+    }
+ 
+    public function blacklists(): HasMany
+    {
+        return $this->hasMany(Blacklist::class, 'client_id');
+    }
+    public function blacktoclients(): HasMany
+    {
+        return $this->hasMany(Blacklist::class, 'black_to_client_id');
+    }
+
+    public function reporters(): HasMany
+    {
+        return $this->hasMany(ClientReport::class, 'sender_id');
+    }
+    public function reporttoclients(): HasMany
+    {
+        return $this->hasMany(ClientReport::class, 'report_to_client_id');
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class, 'client_id');
+    }
+    public function favoritestoclients(): HasMany
+    {
+        return $this->hasMany(Favorite::class, 'fav_to_client_id');
+    }
 
     public function generateCode()
     {

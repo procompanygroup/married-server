@@ -18,8 +18,12 @@
   
     @endphp
   
-  @include('site.layouts.home.head') 
-  @include('site.layouts.home-signed.header') 
+  @include('site.layouts.home.head')   
+@if(Auth::guard('client')->check())
+@include('site.layouts.home-signed.header')  
+@else
+@include('site.layouts.home.header')  
+@endif
   @yield('content')
   @include('site.layouts.home.footer')
  

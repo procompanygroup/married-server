@@ -44,12 +44,13 @@
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>رقم العضوية</th>
                   <th>{{ __('general.user_name',[],'ar') }}</th>
                  
-                  <th>{{ __('general.email',[],'ar') }}</th>                   
+                  <th>{{ __('general.email',[],'ar') }}</th>
+                  <th>مميز</th>                   
                   <th></th>                   
                 </tr>
-
                 </thead>
                 <tbody>
                     @php
@@ -58,18 +59,25 @@
                  @forelse ($clients as $client)
                 <tr>
                     <th scope="row">{{ ++$i }}</th>
-                  <td>{{ $client->name }}</td>
-                 
-                  <td>{{ $client->email }}</td>
-                              
+                    <td>{{ $client->id }}</td>
+                  <td>{{ $client->name }}</td>                 
+                  <td>{{ $client->email }}</td>     
+                  <td class="text-center">@if($client->is_special) <i class="fas fa-check"></i> 
+                    <button type="button" id="delspecial-{{$client->id}}" class="btn btn-warning btn-sm delspecial-btn"  data-toggle="modal" data-target="#modal-delspecial"   title="ازالة من المميزين">   <i class="fas fa-star">
+                    </i>ازالة من المميزين</button>
+                    @else
+                    <button type="button" id="addspecial-{{$client->id}}" class="btn btn-primary btn-sm addspecial-btn"  data-toggle="modal" data-target="#modal-addspecial"   title="اضافة الى المميزين">   <i class="fas fa-star">
+                    </i>اضافة الى المميزين</button> @endif </td>                        
                   <td> 
                           <form action="{{route('user.destroy', $client->id)}}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="button" id="del-{{$client->id}}" class="btn btn-danger btn-sm delete"  data-toggle="modal" data-target="#modal-delete"   title="Delete">   <i class="fas fa-trash">
                             </i>حذف</button>
-</form>
-                           </td>                
+                          </form>
+                        
+                           </td> 
+
                 </tr>
  
 @empty
@@ -112,15 +120,56 @@
     <!-- /.modal-dialog -->
   </div>
   <!-- /.modal -->
+
+  <div class="modal fade" id="modal-addspecial">
+    <div class="modal-dialog  modal-sm">
+      <div class="modal-content">
+        <div class="modal-body text-center" style="padding-bottom: 5px;	padding-top: 30px;">
+          <h4 class="modal-title">{{ __('general.Are you sure',[],'ar') }}</h4>
+             </div>
+        <div class="modal-footer justify-content-between" style="border-top: 0px solid  ">
+          <button class="btn ripple btn-secondary btn-cancel-modal"     data-dismiss="modal" type="button">{{ __('general.cancel',[],'ar') }}</button>
+      
+          <button class="btn ripple btn-success btn-modal-updatespecial"   type="button">اضافة</button>
+           </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
+
+  <div class="modal fade" id="modal-delspecial">
+    <div class="modal-dialog  modal-sm">
+      <div class="modal-content">
+        <div class="modal-body text-center" style="padding-bottom: 5px;	padding-top: 30px;">
+          <h4 class="modal-title">{{ __('general.Are you sure',[],'ar') }}</h4>
+             </div>
+        <div class="modal-footer justify-content-between" style="border-top: 0px solid  ">
+          <button class="btn ripple btn-secondary btn-cancel-modal"     data-dismiss="modal" type="button">{{ __('general.cancel',[],'ar') }}</button>
+      
+          <button class="btn ripple btn-danger btn-modal-updatespecial"   type="button">ازالة</button>
+           </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 @endsection
 
 @section('js')
- <!-- DataTables -->
+<script>
+ var urlspec='{{url("admin/client/updatespecial")}}';
+  </script>
+
+ 
 <script src="{{ URL::asset('assets/admin/plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{ URL::asset('assets/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
 <script src="{{ URL::asset('assets/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
 <script src="{{ URL::asset('assets/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{URL::asset('assets/admin/js/custom/delete.js')}}"></script>
+<script src="{{URL::asset('assets/admin/js/custom/client.js')}}"></script>
 <!-- page script -->
 <script>
   $(function () {

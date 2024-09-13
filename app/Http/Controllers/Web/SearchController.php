@@ -17,24 +17,24 @@ use App\Models\Property;
 use App\Models\Client;
 
 use App\Http\Requests\Client\StoreClientRequest;
-use App\Http\Requests\Client\UpdatePassRequest;
-use App\Http\Requests\Client\PullRequest;
-use App\Http\Requests\Client\UpdateClientRequest;
-use DB;
-use Illuminate\Support\Facades\Validator;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-use Illuminate\Support\Facades\Storage;
-use File;
-use Illuminate\Support\Str;
-use App\Http\Requests\Auth\LoginClientRequest;
-use Illuminate\Http\RedirectResponse;
+// use App\Http\Requests\Client\UpdatePassRequest;
+// use App\Http\Requests\Client\PullRequest;
+// use App\Http\Requests\Client\UpdateClientRequest;
+// use DB;
+// use Illuminate\Support\Facades\Validator;
+// use Intervention\Image\ImageManager;
+// use Intervention\Image\Drivers\Gd\Driver;
+// use Illuminate\Support\Facades\Storage;
+// use File;
+// use Illuminate\Support\Str;
+// use App\Http\Requests\Auth\LoginClientRequest;
+// use Illuminate\Http\RedirectResponse;
 
-use Illuminate\Auth\Events\Registered;
+// use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Web\PropertyController;
-use App\Http\Controllers\Web\ClientOptionController;
+//use App\Http\Controllers\Web\ClientOptionController;
 
 
 class SearchController extends Controller
@@ -262,7 +262,7 @@ class SearchController extends Controller
   public function one_op_res($property_name, $clintids, $options)
   {
     if (isset($options)) {
-      if (!($options[0] == 0)) {
+      if (!($options == 0)) {
         $property_id = Property::where('name', $property_name)->first()->id;
         $c_options_tmp = ClientOption::where('property_id', $property_id)
           ->where('option_id', $options)
@@ -271,6 +271,21 @@ class SearchController extends Controller
         $clintids = data_get($c_options_tmp, '*.client_id');
       }
     }
+    return $clintids;
+  }
+  public function getnothealth_ids($clintids)
+  {
+  $hArr=  $this->gethealth_op('good');     
+      if (!(is_null($hArr['option_id']))) { 
+        $op_id=$hArr['option_id'];
+        $prop_id=$hArr['property_id'];
+        $c_options_tmp = ClientOption::where('property_id',$prop_id)->whereNot('option_id', $op_id)->whereNotNull('option_id')->whereNot('option_id',0)   
+          ->whereIntegerInRaw('client_id', $clintids)
+          ->groupBy('client_id')->get();
+     
+        $clintids = data_get($c_options_tmp, '*.client_id');
+  
+      }    
     return $clintids;
   }
   //
@@ -534,7 +549,19 @@ class SearchController extends Controller
     $country_id = $client->clientoptions->where('property_id', $prop_id)->first()->country_id;
     return $country_id;
   }
-
+  public function gethealth_op($healthop_name)
+  {
+    $property = Property::where('name', 'health')->first();
+    $prop_id = $property->id;
+$op = OptionValue::where('property_id', $prop_id)->where('value',$healthop_name)->first();
+$op_id=null;
+if($op ){
+  $op_id=$op->id;
+}
+return ['property_id'=> $prop_id,
+  'option_id'=>$op_id,
+];
+  }
   public function name_search(Request $request, $lang)
   {
     //AdvanceRequest
@@ -586,18 +613,13 @@ class SearchController extends Controller
 
     $formdata = $request->all();
 
-    $id = Auth::guard('client')->user()->id;
-    $client = Client::find($id);
-    $sitedctrlr = new SiteDataController();
-    $transarr = $sitedctrlr->FillTransData($lang);
-    $defultlang = $transarr['langs']->first();
-    if ($client->gender == 'male') {
-      // Client search
-      //  $cliens_list=DB::table('clients')->where('gender','female') ;
-      $cliens_list = Client::where('gender', 'female');
-    } else {
-      $cliens_list = Client::where('gender', 'male');
-    }
+    $resultArr=$this->first_query_search($lang);  
+    $cliens_list=$resultArr['cliens_list'];
+    $gender=$resultArr['gender'];
+    $genderTrans= $resultArr['genderTrans'];
+    $client= $resultArr['client'];
+    $defultlang=$resultArr['defultlang'];
+
     if (isset($formdata["age"])) {
 
       $age = $formdata["age"];
@@ -658,38 +680,53 @@ $clintids = array_slice($clintids, 0, $this->result_num);
     );
 
   }
-
-  public function online_clients($lang)
+  public function first_query_search($lang)
   {
+  $genderTrans='';
+    $sitedctrlr = new SiteDataController();
+    $transarr = $sitedctrlr->FillTransData($lang);
+    $defultlang = $transarr['langs']->first();
     if (Auth::guard('client')->check()) {
     $id = Auth::guard('client')->user()->id;
     $client = Client::with('clientoptions')->find($id);
     $gender=$client->gender;
     }else{
       $gender='both';
+      $genderTrans='الكل';
     }
-
-    $sitedctrlr = new SiteDataController();
-    $transarr = $sitedctrlr->FillTransData($lang);
-    $defultlang = $transarr['langs']->first();
-    if ($gender == 'male') {
+      if ($gender == 'male') {
       // Client search
       //  $cliens_list=DB::table('clients')->where('gender','female') ;
       $cliens_list = Client::where('gender', 'female');
+      $genderTrans='إناث';
     } else if($gender == 'female') {
       $cliens_list = Client::where('gender', 'male');
-     
+      $genderTrans='ذكور';     
     }else{
-      $cliens_list = Client::orderByDesc('created_at');
+      $cliens_list =Client::orderByDesc('created_at');
     }
-    $datelimit=now()->subMinutes(5);
+    return [
+      'client'=>$client ,
+      'cliens_list'=>$cliens_list,
+   'gender'=> $gender,
+    'genderTrans'=>$genderTrans,
+    'defultlang'=>$defultlang,
+  ];
+  }
+  public function online_clients($lang)
+  {
+    $resultArr=$this->first_query_search($lang);  
+    $cliens_list=$resultArr['cliens_list'];
+    $gender=$resultArr['gender'];
+    $genderTrans= $resultArr['genderTrans'];
+    $client= $resultArr['client'];
+    $defultlang=$resultArr['defultlang'];
+    $datelimit=now()->subMinutes(5); 
     $cliens_list = $cliens_list->where('lastseen_at','>=',$datelimit);
     $cliens_list = $cliens_list->select('id')->get();
-    $Allclintids = data_get($cliens_list, '*.id');
-    
+    $Allclintids = data_get($cliens_list, '*.id');    
      //get current member nationality
      $client_res_id = $this->getclientcountry($client, 'nationality');
-
      //get members with same nationality
          $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
              $clients_same=$this->selectandmap($memberclintids,$lang); 
@@ -708,33 +745,21 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         'defultlang' => $defultlang,
         //'ai' => 1,
         'type'=>$type,
+        'genderTrans'=>$genderTrans,
       ]
     );
   }
   
   public function new_clients($lang)
   {
-    if (Auth::guard('client')->check()) {
-    $id = Auth::guard('client')->user()->id;
-    $client = Client::with('clientoptions')->find($id);
-    $gender=$client->gender;
-    }else{
-      $gender='both';
-    }
+ 
+      $resultArr=$this->first_query_search($lang);  
+    $cliens_list=$resultArr['cliens_list'];
+    $gender=$resultArr['gender'];
+    $genderTrans= $resultArr['genderTrans'];
+    $client= $resultArr['client'];
+    $defultlang=$resultArr['defultlang'];
 
-    $sitedctrlr = new SiteDataController();
-    $transarr = $sitedctrlr->FillTransData($lang);
-    $defultlang = $transarr['langs']->first();
-    if ($gender == 'male') {
-      // Client search
-      //  $cliens_list=DB::table('clients')->where('gender','female') ;
-      $cliens_list = Client::where('gender', 'female');
-    } else if($gender == 'female') {
-      $cliens_list = Client::where('gender', 'male');
-     
-    }else{
-      $cliens_list =Client::orderByDesc('created_at');
-    }
     $datelimit=now()->subDays($this->createdlimit);
     $cliens_list = $cliens_list->where('created_at','>=',$datelimit);
     $cliens_list = $cliens_list->select('id')->get();
@@ -766,11 +791,131 @@ $finalClients= array_slice($finalClients, 0, $this->result_num);
         'defultlang' => $defultlang,
         //'ai' => 1,
          'type'=>$type,
+         'genderTrans'=>$genderTrans,
       ]
     );
 
   }
   
+  public function health_search($lang)
+  {
+    $resultArr=$this->first_query_search($lang);  
+    $cliens_list=$resultArr['cliens_list'];
+    $gender=$resultArr['gender'];
+    $genderTrans= $resultArr['genderTrans'];
+    $client= $resultArr['client'];
+    $defultlang=$resultArr['defultlang'];
+
+      $cliens_list = $cliens_list->select('id')->get();
+      $clintids = data_get($cliens_list, '*.id');
+   // $op_id = $this->gethealth_op('good');
+  // return  $this->getnothealth_ids($clintids);   
+   $clintids= $this->getnothealth_ids($clintids);
+  
+$clintids = array_slice($clintids, 0, $this->result_num);  
+   
+    $clients_res= $this->selectandmap($clintids,$lang);
+    $type='health'; 
+  //get select list
+  $propctrler = new PropertyController();
+  //  $client = (object) $propctrler->clientwithprop($id, $lang);    
+  $propgroup = $propctrler->propgroupfor_health($lang);
+    return view(
+      "site.page.online-clients",
+      [
+        "clients" => (object) $clients_res,
+        'lang' => $lang,
+        'defultlang' => $defultlang,
+        'ai' => 1,
+        'type'=>$type,
+        'genderTrans'=>$genderTrans,
+        'prop_group' => $propgroup,
+      ]
+    );
+
+  }
+  public function health_search_by_inputs(Request $request, $lang)
+  {
+    $formdata = $request->all();
+     
+    $residence_id=$formdata['residence'];
+    $health_id=0;
+    if(isset($formdata['health'])){
+      $health_id=$formdata['health'];
+    } 
+  
+    $resultArr=$this->first_query_search($lang);  
+
+    $cliens_list=$resultArr['cliens_list'];
+    $gender=$resultArr['gender'];
+    $genderTrans= $resultArr['genderTrans'];
+    $client= $resultArr['client'];
+    $defultlang=$resultArr['defultlang'];
+      $cliens_list = $cliens_list->select('id')->get();
+
+      $clintids = data_get($cliens_list, '*.id');
+  
+      $clintids = $this->country_res("residence", $clintids, [0 => $residence_id]);
+      $clintids = $this->one_op_res("health", $clintids,$health_id);
+$clintids = array_slice($clintids, 0, $this->result_num);  
+   
+    $clients_res= $this->selectandmap($clintids,$lang);
+    $type='health'; 
+  //get select list
+  $propctrler = new PropertyController();
+  //  $client = (object) $propctrler->clientwithprop($id, $lang);    
+  $propgroup = $propctrler->propgroupfor_health($lang);
+    return view(
+      "site.page.online-clients",
+      [
+        "clients" => (object) $clients_res,
+        'lang' => $lang,
+        'defultlang' => $defultlang,
+        'ai' => 1,
+        'type'=>$type,
+        'genderTrans'=>$genderTrans,
+        'prop_group' => $propgroup,
+        'residence_id'=> $residence_id,
+        'health_id'=>$health_id,
+      ]
+    );
+
+  }
+
+  public function special_search($lang)
+  {
+    $resultArr=$this->first_query_search($lang);  
+    $cliens_list=$resultArr['cliens_list'];
+    $gender=$resultArr['gender'];
+    $genderTrans= $resultArr['genderTrans'];
+    $client= $resultArr['client'];
+    $defultlang=$resultArr['defultlang'];
+    $cliens_list= $cliens_list->where('is_special',1);
+      $cliens_list = $cliens_list->select('id')->get();
+      $clintids = data_get($cliens_list, '*.id'); 
+  
+$clintids = array_slice($clintids, 0, $this->result_num);  
+   
+    $clients_res= $this->selectandmap($clintids,$lang);
+    $type='special'; 
+  //get select list
+  $propctrler = new PropertyController();
+  //  $client = (object) $propctrler->clientwithprop($id, $lang);    
+  $propgroup = $propctrler->propgroupfor_health($lang);
+    return view(
+      "site.page.online-clients",
+      [
+        "clients" => (object) $clients_res,
+        'lang' => $lang,
+        'defultlang' => $defultlang,
+        'ai' => 1,
+        'type'=>$type,
+        'genderTrans'=>$genderTrans,
+        'prop_group' => $propgroup,
+      ]
+    );
+
+  }
   public function selectandmap($clintids,$lang)
   {
     $clients_res_db = Client::with(

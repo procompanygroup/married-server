@@ -4771,7 +4771,17 @@ button {
   background: #ffdee2;
   color: #da4761
 }
-
+.select-outline-danger {
+  border: 1px solid #da4761;
+  color: #da4761
+}
+.select-outline-danger:hover {
+  border: 1px solid #da4761;
+  color: #da4761
+}
+ 
+.select-btn
+{border-radius: 50px; }
 .btn-outline-warning {
   border: 1px solid #ffc107;
   color: #ffc107
@@ -5499,7 +5509,7 @@ input[type=checkbox].btf-checkbox:checked+label.btf-label:before,input[type=radi
 }
 
 .user-card .corner {
-  background: url(/images/4a2aad75baf666d2c8ac.svg) no-repeat 50%;
+  background: url(/assets/site/img/corner.svg) no-repeat 50%;
   background-size: 100% 100%;
   display: inline-block;
   height: 44px;
@@ -5510,11 +5520,11 @@ input[type=checkbox].btf-checkbox:checked+label.btf-label:before,input[type=radi
   width: 46px
 }
 
-[dir=ltr] .user-card .corner {
+  .user-card .corner {
   left: 0
 }
 
-[dir=rtl] .user-card .corner {
+  .user-card .corner {
   right: 0;
   transform: rotate(90deg)
 }
@@ -5525,7 +5535,7 @@ input[type=checkbox].btf-checkbox:checked+label.btf-label:before,input[type=radi
   position: absolute
 }
 
-[dir=rtl] .user-card .corner img {
+  .user-card .corner img {
   left: 9px;
   top: 9px;
   transform: rotate(-90deg)
@@ -7245,3 +7255,14 @@ body.ltr .user-profile-line .avatar .premium {
 .pswp.pswp--open {
   z-index: 19000001
 }
+.item-result-btn{
+  padding: 0;
+}
+
+ 
+
+
+
+
+
+ 

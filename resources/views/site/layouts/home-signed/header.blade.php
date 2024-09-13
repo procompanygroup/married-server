@@ -49,11 +49,11 @@
                         <a class="nav-link" href="{{ url($lang.'/members','new') }}"> <i class="bi bi-star"></i> أعضاء جدد</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"> <i class="bi bi-award"></i> الأعضاء المتميزين</a>
+                        <a class="nav-link" href="{{ url($lang.'/members','special') }}"> <i class="bi bi-award"></i> الأعضاء المتميزين</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-heart"></i> الحالات الصحية</a>
+                        <a class="nav-link" href="{{ url($lang.'/members','health-cases') }}"><i class="bi bi-heart"></i> الحالات الصحية</a>
                     </li>
 
                 </ul>
@@ -81,7 +81,7 @@
                 <a class="nav-link" href="#"> <i class="bi bi-award"></i> الأعضاء المتميزين</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bi bi-heart"></i> الحالات الصحية</a>
+                <a class="nav-link" href="{{ url($lang.'/members','health-cases') }}"><i class="bi bi-heart"></i> الحالات الصحية</a>
             </li>
         </ul>
     </div>

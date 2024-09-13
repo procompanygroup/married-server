@@ -23,7 +23,7 @@
                         <h3> البحث</h3>
                         @endif
                         <div class="row sub-menu">
-                            <div class="col-md-3 col-sm-6 sub-item">
+                            <div class="col-md-3 col-sm-6 sub-item item-result-btn">
                                 <a href="#"class=" tab-btn active text-center"> نتائج البحث </a>
                             </div>
                             <div class="col-6 col-sm-12">
@@ -35,12 +35,12 @@
                         <h3>البحث المتقدم</h3>
 
                         <div class="row sub-menu">
-                            <div class="col-md-3 col-sm-6 sub-item item-dis">
+                            <div class="col-md-3 col-sm-6 sub-item item-dis item-result-btn">
                                 <a href="{{ url($lang, 'advance-search') }}" class="disactive   text-center ">معايير
                                     البحث</a>
 
                             </div>
-                            <div class="col-md-3 col-sm-6 sub-item">
+                            <div class="col-md-3 col-sm-6 sub-item item-result-btn">
                                 <a href="#"class=" tab-btn active text-center"> نتائج البحث </a>
                             </div>
                             <div class="col-6 col-sm-12">
