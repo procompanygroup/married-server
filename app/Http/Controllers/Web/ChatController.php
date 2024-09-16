@@ -73,8 +73,10 @@ $reciver_id=$formdata['reciver_id'];
               return $query
                      ->where('sender_id',$reciver_id)
                      ->where('reciver_id', $sender_id);
-             })->with('sender','reciver')->get();
-
+             })->with('sender','reciver')->latest()->take(10)->get();
+           // $dbList=$dbList->sortByDesc('id');
+           //  $dbList=$dbList->sortBy('id');
+           $dbList= $dbList->reverse()->values();
            $List=  $this->mapclientmsg($dbList,$auth_id);
 
              return response()->json($List);

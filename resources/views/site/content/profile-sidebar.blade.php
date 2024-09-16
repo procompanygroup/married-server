@@ -12,7 +12,7 @@
                             <li> <a href="#"><i class="bi bi-bell"></i> الإشعارات</a></li>
                             <li> <a href="#"><i class="bi bi-envelope"></i> بريدي الداخلي</a></li>
                             <li> <a href="#"><i class="bi bi-person-hearts"></i> من هو مهتم بملفي</a></li>
-                            <li> <a href="#"><i class="bi bi-heart"></i> قائمة الإهتمام والتجاهل</a></li>
+                            <li> <a href="{{ url($lang,'myfavorite') }}"><i class="bi bi-heart"></i> قائمة الإهتمام والتجاهل</a></li>
                             <li> <a href="#"><i class="bi bi-eye"></i> من زار بياناتي</a></li>
                             <li> <a href="#"><i class="bi bi-images"></i> صور الأعضاء</a></li>
                             <li> <a href="{{ url($lang,'advance-search') }}"><i class="bi bi-search"></i> البحث المتقدم</a></li>

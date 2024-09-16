@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ClientReport;
 use App\Models\ReportOption;
-use App\Http\Requests\Report\StoreReportRequest;
+use App\Http\Requests\ReportOption\StoreReportOptionRequest;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-class ClientReportController extends Controller
+class ReportOptionController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $List = ClientReport::get();
+        $List = ReportOption::get();
         return view('admin.reportoption.show', ['List' => $List]);
     }
 
@@ -28,7 +29,7 @@ class ClientReportController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreReportRequest $request)
+    public function store(StoreReportOptionRequest $request)
     {
         $formdata = $request->all();
    // return  $formdata;
@@ -43,39 +44,14 @@ class ClientReportController extends Controller
     
       return response()->json($validator);
 
-    } else {   
-      $report_to_client_id = $formdata['member_id'];
-      $report_option_id=$formdata['report-sel'] ;
-      $auth_id = Auth::guard('client')->user()->id;
-   // $repObj=  ClientReport::where('sender_id', $auth_id)->where('report_to_client_id', $report_to_client_id)->first();
-  
-   $op=ReportOption::find($report_option_id);
-   ClientReport::updateOrCreate(
-                ['sender_id' => $auth_id, 'report_to_client_id' => $report_to_client_id],
-                ['is_report' => 1,'reason'=> $op->content,'report_option_id'=>$report_option_id]
-            );
-   
-    // if ($repObj) {     
-    // //   $repObj->sender_id =  $auth_id; 
-    // //   $repObj->report_to_client_id = $report_to_client_id;  
-    //   $repObj->is_report = 1;           
-    //   $repObj->reason = $op->content;
-    //   $repObj->report_option_id = $report_option_id;  
-    //   $repObj->save();
-        
-    // }else{
-    //     $repObj=new ClientReport();
-
-    //     $repObj->sender_id =  $auth_id; 
-    //     $repObj->report_to_client_id = $report_to_client_id;  
-    //     $repObj->is_report = 1;             
-    //     $repObj->reason = $op->content;
-    //     $repObj->report_option_id =$report_option_id;  
-    //     $repObj->save();
-
-    // }
-    return response()->json(1);
-}
+    } else {          
+      $newObj = new ReportOption;  
+ 
+      $newObj->content = $formdata['content'];    
+      $newObj->is_active = isset ($formdata["is_active"]) ? 1 : 0;  
+      $newObj->save();
+            return response()->json("ok");
+    }
     }
 
     /**
@@ -91,7 +67,7 @@ class ClientReportController extends Controller
      */
     public function edit($id)
     {
-        $item = ClientReport::find($id);
+        $item = ReportOption::find($id);
  
         //
         return view("admin.reportoption.edit", ["item" => $item]);
@@ -100,7 +76,7 @@ class ClientReportController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreReportRequest $request,$id)
+    public function update(StoreReportOptionRequest $request,$id)
     {
         $formdata = $request->all();
     $validator = Validator::make(
@@ -116,7 +92,7 @@ class ClientReportController extends Controller
      
       //reset all to 0
  
-      ClientReport::find($id)->update([
+      ReportOption::find($id)->update([
         'content' => $formdata['content'],
         'is_active' => isset ($formdata["is_active"]) ? 1 : 0,   
       ]);
@@ -131,12 +107,19 @@ class ClientReportController extends Controller
     public function destroy($id)
     {   
       //delete user
-      $item = ClientReport::find($id);
+      $item = ReportOption::find($id);
       if (!( $item  === null)) {
                    //delete image        
-        ClientReport::find($id)->delete();
+        ReportOption::find($id)->delete();
       }
       return redirect()->route('reportoption.index');
   
     }
+    //site
+    public function getoptions()
+    {
+        $List = ReportOption::where('is_active',1)->select('id','content')->get();
+        return response()->json($List);
+    }
+
 }

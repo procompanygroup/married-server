@@ -54,12 +54,17 @@ $(document).ready(function () {
 	}
 
 	//favorite
-	$('.btn-add-to-favorite').click(function () {
-		recieverId = $(this).attr('data-user-id');
+	$('.btn-add-to-favorite,.btn-remove-from-favorite').click(function () {
+		
 		var isFav = $(this).attr('data-user-favorite');
-		var isBlack = $('.btn-add-to-blacklist').attr('data-user-blacklist');
+		//var isBlack = $('.btn-add-to-blacklist').attr('data-user-blacklist');
+		var userCard = $(this).closest('.user-card');
+		recieverId =userCard.data('user-id');
+		// استخراج قيمة data-user-blacklist
+		var isBlack = userCard.find('.btn-remove-from-blacklist').attr('data-user-blacklist');
+	 
 		favtype = 'fav';
-		var memName = $('.btn-send-message').attr('data-user-name');
+		var memName = userCard.data('user-name');
 		if (isFav == 1) {
 			$('#modal-btn-option').show();
 			$('#modal-btn-close').hide();
@@ -80,12 +85,15 @@ $(document).ready(function () {
 
 		}
 });
-	$('.btn-add-to-blacklist').click(function () {
-		recieverId = $(this).attr('data-user-id');
+	$('.btn-add-to-blacklist,.btn-remove-from-blacklist').click(function () {
+		 
 		var isBlack = $(this).attr('data-user-blacklist');
-		var isFav = $('.btn-add-to-favorite').attr('data-user-favorite');
+		var userCard = $(this).closest('.user-card');
+		recieverId =userCard.data('user-id');
+		var isFav =userCard.find('.btn-add-to-favorite').attr('data-user-favorite');
 		favtype = 'black';
-		var memName = $('.btn-send-message').attr('data-user-name');
+	 
+		var memName = userCard.data('user-name');
 		if (isBlack == 1) {
 			$('#modal-btn-option').show();
 			$('#modal-btn-close').hide();
@@ -109,53 +117,7 @@ $(document).ready(function () {
 	});
 
 	//report
-	$('.btn-report').click(function () {
-		recieverId = $(this).attr('data-user-id');
-		// var isFav = $(this).attr('data-user-favorite');
-		// var isBlack = $('.btn-add-to-blacklist').attr('data-user-blacklist');
-		favtype = 'report';
-		var memName = $('.btn-send-message').attr('data-user-name');
-		loadoptions();
-		// if (isFav == 1) {
-		// 	$('#modal-btn-option').show();
-		// 	$('#modal-btn-close').hide();
-		// 	$("#modal-fave-title").html('حذف من الاهتمام');
-		// 	$("#modal-fave-body").html(' هل تود حذف ' + memName + ' من قائمة الاهتمام؟ ');
-		// }  
 
-		//	sendformbyType('fav',memId);
-
-
-	});
-	function loadoptions() {		 
-		//	resetForm();
-			//ClearErrors();
-		 var choose='اختر سبب المخالفة';	 
-			 $('#report-sel').html('<option title="'+choose+'" value="0"  class="text-muted">'+choose+'</option>');
-		 $.ajax({
-		url:fillselurl,
-		type: "GET",  
-	//	contentType: false,
-	//	processData: false,
-		//contentType: 'application/json',
-		success: function (data) {			 
-			if (data.length == 0) {			 
-			} else   {
-				datalist=data;
-				$(data).each(function(index, item) {
-					$('#report-sel').append('<option value="'+ item.id +'" >'+ item.content +'</option>');
-			});		 
-			}		 
-		}, error: function (errorresult) {			 
-		} 
-	});
-	
-		};
-
-		$('#btn-modal-report').click(function () {
-			sendformbyType(favtype, recieverId);
-			$('.close').trigger('click');
-		});
 	//end report
 	$('#modal-btn-yes').click(function () {
 		sendformbyType(favtype, recieverId);
@@ -169,11 +131,12 @@ $(document).ready(function () {
 			sendUrl = favurl;
 		} else if (type == 'black') {
 			sendUrl = blackurl;
-		}else if (type == 'report') {
-			sendUrl = reporturl;
-		  reportsel=	$('#report-sel').find(":selected").val(); 
-
 		}
+		// else if (type == 'report') {
+		// 	sendUrl = reporturl;
+		//   reportsel=	$('#report-sel').find(":selected").val(); 
+
+		// }
 		var senddata = { 'member_id': memId, 'report-sel':reportsel};
 
 		$.ajaxSetup({
@@ -193,32 +156,33 @@ $(document).ready(function () {
 				if (data.length == 0) {
 					//	noteError();
 				} else {
+					var userCard=$('#card-'+memId);
 					if (type == 'fav') {
-						$('.btn-add-to-favorite').attr('data-user-favorite', data);
+
+						userCard.find('.btn-add-to-favorite,.btn-remove-from-favorite').attr('data-user-favorite', data);
 						if (data == 1) {
-							$(".favorite-text").html('مهتم');
+							userCard.find('.btn-add-to-favorite').removeClass('btn-add-to-favorite').addClass('btn-remove-from-favorite');
+							userCard.find('.btn-remove-from-favorite').attr('title','مهتم');
+							//$(".favorite-text").html('مهتم');
 						} else if (data == 0 || data == 2) {
-							$(".favorite-text").html('اهتمام');
+							userCard.find('.btn-remove-from-favorite').removeClass('btn-remove-from-favorite').addClass('btn-add-to-favorite');
+						//	$(".favorite-text").html('اهتمام');
+						userCard.find('.btn-add-to-favorite').attr('title','إضافة للإهتمام');
 						}
 					} else if (type == 'black') {
-						$('.btn-add-to-blacklist').attr('data-user-blacklist', data);
+
+						userCard.find('.btn-remove-from-blacklist').attr('data-user-blacklist', data);
 						if (data == 1) {
-							$(".blacklist-text").html('تم التجاهل');
+							userCard.addClass('blacklisted');
+							//$(".blacklist-text").html('تم التجاهل');
 						} else if (data == 0 || data == 2) {
-							$(".blacklist-text").html('تجاهل');
+							userCard.removeClass('blacklisted');
+							userCard.find('.btn-remove-from-blacklist').attr('data-user-blacklist', data);
+							userCard.find('.btn-add-to-favorite').show();
+							//$(".blacklist-text").html('تجاهل');
 						}
 					}
-					else if (type == 'report') {						
-						$(".report-text").html('تم الابلاغ');
 				 
-						$('.btn-report').attr('data-user-report', data);
-						// $('.btn-add-to-blacklist').attr('data-user-blacklist', data);
-						// if (data == 1) {
-						// 	$(".blacklist-text").html('تم التجاهل');
-						// } else if (data == 0 || data == 2) {
-						// 	$(".blacklist-text").html('تجاهل');
-						// }
-					}
 				}
 
 			}, error: function (errorresult) {

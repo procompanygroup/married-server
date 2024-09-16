@@ -85,7 +85,8 @@
                 <div class="row members-list" style="height: auto !important;">
                     @forelse ($clients as $client)
                         <div class="col-md-6">
-                            <div class="user-card user-card  is-contactable"> 
+                            <div class="user-card user-card  is-contactable @if($client['is_blacklist']==1) blacklisted @endif" id="card-{{ $client['client']->id }}"
+                                data-user-name="{{ $client['client']->name }}"  data-user-id="{{$client['client']->id }}" > 
                                 @if($type == 'special')
                                 <div class="corner"><img src="{{ url('assets/site/img/corner-star.svg')}}" alt="عضو مميز"  ></div>
                                 @endif
@@ -121,17 +122,22 @@
                                     <div class="user-options">
                                         <ul>
                                             <li><span class="profile-visited" title="لقد زرت هذا الملف سابقا"></span></li>
-                                            <li><button class="btn btn-primary btn-send-message-card" 
+                                            <li><button class="btn btn-primary btn-send-message" 
                                                     data-user-name="{{ $client['client']->name }}"   data-user-id="{{$client['client']->id }}"
                                                     data-user-premium="" data-user-last-login="" data-user-favorited="0"
                                                     data-user-blacklisted="0" data-user-disabled="0"
                                                     data-user-contactability="1" title="أرسل رسالة"><i
                                                         class="fas fa-comments"></i></button></li>
-                                            <li> <button class="btn btn-outline-light btn-add-to-favorite"
-                                                    data-user-id="10054085" data-user-name="Judy1991"
-                                                    title="إضافة للإهتمام"><i class="fas fa-heart"></i></button> </li>
-                                            <li><button class="btn btn-outline-light btn-remove-from-blacklist"
-                                                    data-user-id="10054085" data-user-name="Judy1991"
+                                            <li> 
+                                                <button class="btn btn-outline-light @if($client['is_favorite']==1) btn-remove-from-favorite @else  btn-add-to-favorite @endif"
+                                                   @if($client['is_blacklist']==1) style="display:none; "@endif
+                                                   data-toggle="modal" data-target="#favoriteModal"
+                                                data-user-favorite="{{$client['is_favorite']}}"
+                                                    title="@if($client['is_favorite']==1) مهتم @else إضافة للإهتمام @endif "><i class="fas fa-heart"></i></button> </li>
+                                            <li>
+                                                <button class="btn btn-outline-light btn-remove-from-blacklist"
+                                              data-toggle="modal" data-target="#favoriteModal"
+                                                      data-user-blacklist="{{$client['is_blacklist']}}"
                                                     title="لقد تجاهلت هذا العضو"><i class="fas fa-ban"></i></button></li>
                                         </ul>
                                     </div>
@@ -151,17 +157,24 @@
             </section>
         </div>
     </div>
+    @include('site.page.sub-all.fave-modal')
 @endsection
 @section('js')
+    <script>
+        // var fail_msg = "لم يتم الحفظ";
+     var favurl="{{ url('favorite') }}";
+     var blackurl="{{ url('blacklist') }}";
+</script>
     <script src="{{ url('assets/site/js/sweetalert.min.js') }}"></script>
     <script src="{{ url('assets/site/js/custom/validate.js') }}"></script>
 
     <script src="{{ url('assets/site/bootstrap/jquery.mCustomScrollbar.concat.min.js') }}"></script>
     <script src="{{ url('assets/site/js/custom/health-search.js') }}"></script>  
-    <script src="{{ url('assets/site/js/custom/member.js') }}"></script>
+    <script src="{{ url('assets/site/js/custom/members-cards.js') }}"></script>
 @endsection
 @section('css')
     <link href="{{ url('assets/site/bootstrap/jquery.mCustomScrollbar.min.css') }}" rel="stylesheet">
     <link href="{{ url('assets/site/css/custom/srch-result.css') }}" rel="stylesheet">
     <link href="{{ url('assets/site/css/custom/slide-range.css') }}" rel="stylesheet">
+    <link href="{{ url('assets/site/css/custom/member.css') }}" rel="stylesheet">
 @endsection

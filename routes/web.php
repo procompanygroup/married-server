@@ -2,8 +2,10 @@
 
  
 use App\Http\Controllers\Web\ChatController;
+use App\Http\Controllers\Web\ClientReportController;
 use App\Http\Controllers\Web\OptionGroupController;
 use App\Http\Controllers\Web\OptionValueController;
+use App\Http\Controllers\Web\ReportOptionController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
@@ -39,7 +41,7 @@ use App\Http\Controllers\Web\SearchController;
 
 use App\Http\Controllers\Web\CodeController;
 use App\Http\Controllers\Auth\GoogleController;
-
+use App\Http\Controllers\Web\FavoriteController;
 
 use Illuminate\Support\Facades\Artisan;
 
@@ -150,6 +152,12 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             //
             // Route::get('/question', [SettingController::class, 'quessetting']);
             // Route::post('/question/{id}', [SettingController::class, 'quesupdate']);
+        });
+        Route::resource('reportoption', ReportOptionController::class, ['except' => ['update']]);
+        Route::prefix('reportoption')->group(function () {
+            Route::post('/update/{id}', [ReportOptionController::class, 'update'])->name('reportoption.update');
+            
+           
         });
         //questions
         //category
@@ -348,6 +356,22 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         Route::get('/show', [ChatController::class, 'show']);
         Route::get('/showlast', [ChatController::class, 'showlast']);
        });
+
+       Route::prefix('favorite')->group(function () {
+        Route::post('/', [FavoriteController::class, 'store']);
+         
+         
+       });
+       Route::prefix('blacklist')->group(function () {       
+        Route::post('/', [FavoriteController::class, 'store_blacklist']);
+         
+       });
+       Route::prefix('reportoption')->group(function () { 
+        Route::get('/show', [ReportOptionController::class, 'getoptions']);
+    });
+    
+    Route::resource('report', ClientReportController::class);
+
         // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
         
       //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
@@ -364,11 +388,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
             Route::post('/pull', [ClientController::class, 'pull']);
 
             Route::get('/profile', [ClientController::class, 'showprofile'])->name('client.profile');
-            //my score
-            // Route::get('/myscore', [ClientController::class, 'myscore']);
-           
-      //      Route::post('/send', [QuestionController::class, 'sendquiz']);
-           // Route::post('/checkans', [QuestionController::class, 'checkanswer']);
+       
            Route::get('advance-search', [SearchController::class, 'show']);
            Route::post('advance-search', [SearchController::class, 'advance_search']);
            Route::get('ai-search', [SearchController::class, 'ai_show']);
@@ -385,7 +405,8 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
            Route::get('special', [SearchController::class, 'special_search']);
 
         });
-
+        Route::get('myfavorite', [FavoriteController::class, 'my_favorite']);
+        Route::get('myblacklist', [FavoriteController::class, 'my_blacklist']);
         });
     });
 

@@ -13,6 +13,9 @@ class ClientReport extends Model
         'sender_id',
         'report_to_client_id',
         'is_report',
+        'reason',
+'report_option_id',
+
     ];
     public function reporter(): BelongsTo
     {

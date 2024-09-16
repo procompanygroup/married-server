@@ -816,7 +816,14 @@ class ClientController extends Controller
         $lastseen=$client->client->lastseen_at>= now()->subMinutes(5)?'متواجد الان'
         : Carbon::parse($client->client->lastseen_at)->diffForHumans();
       }
- 
+ //get fave status if login
+ $stateArr=[];
+ if (Auth::guard('client')->check()) {
+  $id = Auth::guard('client')->user()->id;
+ $favectrlr=new FavoriteController();
+ $stateArr= $favectrlr->getstate($id, $client->client->id); 
+
+ }
       return view(
         "site.page.client-page",
         [
@@ -829,6 +836,7 @@ class ClientController extends Controller
          // 'nowyear' => $nowyear,
           'since_register'=>  $client->client->created_at->diffForHumans(),
           'lastseen_at'=> $lastseen,
+          'stateArr'=>$stateArr,
         ]
       );
 

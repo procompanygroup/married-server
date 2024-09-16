@@ -118,7 +118,12 @@
                       <p>الترجمة</p>
                     </a>
                   </li>
-                 
+                  <li class="nav-item">
+                    <a href="{{route('reportoption.index')}}" class="nav-link">
+                      <i class="nav-icon far fa fa-flag" aria-hidden="true"  ></i>
+                      <p>خيارات الابلاغ</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
           

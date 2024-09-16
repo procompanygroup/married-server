@@ -13,14 +13,17 @@ class Favorite extends Model
         'client_id',
         'fav_to_client_id',
         'is_favorite',
+        'is_blacklist',
+        'favorite_date',
+        'blacklist_date',
     ];
-    
+
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class,'client_id')->withDefault();
+        return $this->belongsTo(Client::class, 'client_id')->withDefault();
     }
     public function favtoclient(): BelongsTo
     {
-        return $this->belongsTo(Client::class,'fav_to_client_id')->withDefault();
+        return $this->belongsTo(Client::class, 'fav_to_client_id')->withDefault();
     }
 }

@@ -24,7 +24,7 @@
                             </div>
                             <div class="controls"><a href="#" class="exit"><i
                                         class="ico las ico-times"></i></a></div>
-                            <div class="options"><a href="/ar/members/100" target="_blank" class="btn-new-window"></a></div>
+                            <div class="options"><a href="#" target="_blank" class="btn-new-window"></a></div>
                         </div>
                     </div>
                     <div class="main" style="padding-bottom: 65px;">
@@ -53,11 +53,18 @@
                                      
                                     </div>
                                     <div class="options" >
-                                         
+                                         @if(Auth::guard('client')->check())
                                         <div class="option btn-send-message" data-user-name="{{ $client->client->name }}"  ><span><i class="bi bi-envelope-fill"></i></span> <span> رسالة </span></div>
-                                        <div class="option btn-add-to-favorite"><span><i class="bi bi-heart-fill"></i></span> <span> إهتمام </span></div>
-                                        <div class="option btn-add-to-blacklist"><span><i class="bi bi-x-circle-fill"></i></span> <span> تجاهل </span></div>
-                                        <div class="option btn-report"><span><i class="bi bi-flag-fill"></i></span> <span> إبلاغ </span></div>
+                                        <div class="option btn-add-to-favorite" data-toggle="modal" data-target="#favoriteModal" data-user-favorite="{{ $stateArr['is_favorite'] }}"  data-user-id="{{ $client->client->id }}"><span><i class="bi bi-heart-fill"></i></span> <span class="favorite-text">@if($stateArr['is_favorite']==0 ||$stateArr['is_favorite']==2) إهتمام @else مهتم @endif</span></div>
+                                        <div class="option btn-add-to-blacklist"  data-toggle="modal" data-target="#favoriteModal"  data-user-id="{{ $client->client->id }}" data-user-blacklist="{{ $stateArr['is_blacklist'] }}" ><span><i class="bi bi-x-circle-fill"></i></span> <span class="blacklist-text"> @if($stateArr['is_blacklist']==0 ||$stateArr['is_blacklist']==2) تجاهل @else تم التجاهل @endif </span></div> 
+                                        <div class="option btn-report" data-toggle="modal" data-target="#reportModal" data-user-report="{{ $stateArr['is_report'] }}" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-flag-fill"></i></span> <span class="report-text">@if($stateArr['is_report']==0 ) إبلاغ  @else تم الابلاغ @endif </span></div>
+                                    @else
+                                    <div class="option btn-send-message" data-user-name="{{ $client->client->name }}"  ><span><i class="bi bi-envelope-fill"></i></span> <span> رسالة </span></div>
+                                    <div class="option btn-add-to-favorite" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-heart-fill"></i></span> <span class="favorite-text"> إهتمام </span></div>
+                                    <div class="option btn-add-to-blacklist" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-x-circle-fill"></i></span> <span> تجاهل </span></div>
+                                    <div class="option btn-report" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-flag-fill"></i></span> <span> إبلاغ </span></div>
+                           
+                                    @endif
                                     </div>
                                 </div>
                             </div>
@@ -191,6 +198,36 @@
 
         </div>
     </div>
+
+  @include('site.page.sub-all.fave-modal')
+
+   <!-- Modal -->
+   <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md"  role="document">
+      <div class="modal-content" style="background-color: #F8F9FA">
+        <div class="modal-header"  style="display: block">
+        
+            <button type="button" class="close" style="float: left;padding-left: 0px;" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+          <h5   style="text-align:center;" id="reportModalTitle"><span id="modal-report-title">إبلاغ الإدارة</span> </h5>
+        
+        </div>        
+        <div class="modal-body text-center">
+        <p id="modal-report-body "></p>
+ <select id="report-sel"></select>
+        </div>
+        <div class="row modal-footer" style="margin-right: 0;margin-left: 0;">
+            
+        <div   class="col-md-12 text-center modal-footer-fav " >
+            <button type="button" class="btn btn-warning col-md-12" id="btn-modal-report" >إبلاغ</button>
+           
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 @endsection
 @section('css')
 <link href="{{ url('assets/site/css/custom/member.css') }}" rel="stylesheet">
@@ -199,7 +236,10 @@
 @section('js')
     <script>
         // var fail_msg = "لم يتم الحفظ";
-     
+     var favurl="{{ url('favorite') }}";
+     var blackurl="{{ url('blacklist') }}";
+     var fillselurl="{{ url('reportoption/show') }}";
+     var reporturl="{{ route('report.store') }}";
     </script>
     <script src="{{ url('assets/site/js/sweetalert.min.js') }}"></script>
     <script src="{{ url('assets/site/js/custom/validate.js') }}"></script>

@@ -1771,4 +1771,13 @@ body.iframe .user-profile-page .profile-cover .options {
     .popup .page.user-profile-popup .popup-head {
         padding: 15px
     }
+   
 }
+.modal-footer-fav{
+    display: flex;
+    justify-content:space-around;
+}
+.btn-modal-no:hover {
+    background-color: transparent;
+    color: #080808 !important;
+  }

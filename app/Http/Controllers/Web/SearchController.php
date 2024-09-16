@@ -298,6 +298,16 @@ class SearchController extends Controller
     // $wife_num = $this->client_prop_filter($client->clientoptions, 'wife_num');
     $clientoptions = $propctrlr->client_prop_list($client->clientoptions);
     $countrytoptions = $propctrlr->country_prop_list($client->clientoptions);
+
+    if($client->favoritestoclients->first())
+    { $is_favorite= is_null($client->favoritestoclients->first()->is_favorite)?0:$client->favoritestoclients->first()->is_favorite;
+      $is_black=is_null($client->favoritestoclients->first()->is_blacklist)?:$client->favoritestoclients->first()->is_blacklist;
+    }else{
+      $is_favorite= 0;
+      $is_black=0;
+    }
+   
+
     $clientArr = [
       'client' => $client->withoutRelations(),
       'residence' => $propctrlr->country_prop_filter($countrytoptions, 'residence'),
@@ -306,7 +316,9 @@ class SearchController extends Controller
       'family_status' => $propctrlr->client_prop_filter($clientoptions, 'family_status'),
       'family_status_female' => $propctrlr->client_prop_filter($clientoptions, 'family_status_female'),
       'wife_num' => $propctrlr->client_prop_filter($clientoptions, 'wife_num'),
-      'since_register' => $client->created_at->diffForHumans()
+      'since_register' => $client->created_at->diffForHumans(),
+      'is_favorite'=>$is_favorite,
+      'is_blacklist'=>$is_black,
 
     ];
     return $clientArr;
@@ -918,6 +930,10 @@ $clintids = array_slice($clintids, 0, $this->result_num);
   }
   public function selectandmap($clintids,$lang)
   {
+    $auth_id =0;
+    if (Auth::guard('client')->check()) {
+      $auth_id = Auth::guard('client')->user()->id;
+    }
     $clients_res_db = Client::with(
       [
         'clientoptions' => function ($q) {
@@ -939,7 +955,10 @@ $clintids = array_slice($clintids, 0, $this->result_num);
               'country_id',
               'city_id'
             );
-        }
+        },
+        'favoritestoclients' => function ($q) use ($auth_id) {
+          $q->where('client_id', $auth_id);
+      }
       ]
     )->whereIntegerInRaw('id', $clintids)->get();
     $propctrlr = new PropertyController();
