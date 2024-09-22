@@ -10,6 +10,7 @@
                 <div class="dropdown-menu text-right" aria-labelledby="dropdownMenuLink">
                     <a class="dropdown-item"   href="{{ route('client.account',$lang) }}"><i class="bi bi-person"></i> الملف الشخصي </a>
                     <a class="dropdown-item"   href="{{  url($lang,'setting') }}"><i class="bi bi-gear"></i> إعداداتي </a>
+                    <a class="dropdown-item"   href="{{  route('client.edit_image',$lang) }}"><i class="bi bi-gear"></i>صورتي</a>
                     <form method="POST" action="{{ route('logout.client') }}"  >
                         @csrf
                         <a class="dropdown-item"  onclick="event.preventDefault();this.closest('form').submit();" href="#"><i class="bi bi-box-arrow-right"></i> تسجيل خروج</a>

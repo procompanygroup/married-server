@@ -35,6 +35,7 @@ $(document).ready(function () {
 			// processData: false,
 			success: function (data) {
 				if (data.length == 0) {
+					
 				} else if (data == "ok") {				 
 						tableRow.remove();				 
 				}

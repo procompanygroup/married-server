@@ -394,7 +394,8 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
             Route::get('/edit-password', [ClientController::class, 'edit_password'])->name('client.edit_password');
             Route::post('/update', [ClientController::class, 'update'])->name('client.update');
             Route::post('/pull', [ClientController::class, 'pull']);
-
+            Route::get('/edit-image', [ClientController::class, 'edit_image'])->name('client.edit_image');
+            Route::post('/update-image', [ClientController::class, 'update_image'])->name('client.update_image');
             Route::get('/profile', [ClientController::class, 'showprofile'])->name('client.profile');
             Route::get('/setting', [ClientSettingController::class, 'index']);
        

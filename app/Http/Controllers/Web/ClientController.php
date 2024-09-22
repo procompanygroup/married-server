@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Web\PropertyController;
 use App\Http\Controllers\Web\ClientOptionController;
-
+use App\Http\Requests\Client\UpdateImageRequest;
 // use App\Http\Controllers\Web\MessageController;
 // use URL;
 //use Illuminate\Support\Facades\Session;
@@ -457,6 +457,52 @@ class ClientController extends Controller
   }
   
   
+  public function edit_image($lang)
+  {
+    if (Auth::guard('client')->check()) {
+      $id = Auth::guard('client')->user()->id; 
+      $client = Client::find($id);       
+      $sitedctrlr = new SiteDataController();
+      $transarr = $sitedctrlr->FillTransData($lang);
+      $defultlang = $transarr['langs']->first();  
+      return view(
+        "site.content.edit-image",
+        [
+          "client" => $client,
+          'lang' => $lang,
+          'defultlang' => $defultlang,       
+        ]
+      );
+    } else {
+      return redirect()->route('login.client');
+    }
+
+  }
+  public function update_image(UpdateImageRequest $request, $lang)
+  {
+   StoreClientRequest::$lang = $lang;
+    $formdata = $request->all();
+    // return  $formdata;
+    // return redirect()->back()->with('success_message', $formdata);
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
+      return response()->json($validator);
+    } else {
+      $id = Auth::guard('client')->user()->id;
+
+      if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        // $filename= $file->getClientOriginalName();                
+        $this->storeImage($file, $id);
+      }
+   
+      return response()->json("ok");
+    }
+  }
   public function showprofile($lang)
   {
     if (Auth::guard('client')->check()) {
