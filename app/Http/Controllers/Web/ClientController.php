@@ -822,8 +822,14 @@ class ClientController extends Controller
   $id = Auth::guard('client')->user()->id;
  $favectrlr=new FavoriteController();
  $stateArr= $favectrlr->getstate($id, $client->client->id); 
+$visitctrlr=new VisitorController();
+Auth::guard('client')->user()->refresh();
+if(Auth::guard('client')->user()->is_hidden!=1){
+  $setvisit=$visitctrlr->set_visit($id,$client->client->id);
+}
 
  }
+
       return view(
         "site.page.client-page",
         [

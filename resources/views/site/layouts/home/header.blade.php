@@ -18,16 +18,19 @@
   
                       <!-- باقي العناصر -->
                       <li class="nav-item">
-                          <a class="nav-link" href="#"><i class="bi bi-people"></i> المتواجدون الآن</a>
+                        <a class="nav-link" href="{{ route('site.home') }}"><i class="bi bi-house"></i> الرئيسية</a>
+                    </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="{{ url($lang.'/members','online') }}"><i class="bi bi-people"></i> المتواجدون الآن</a>
                       </li>
   
                       <li class="nav-item">
-                          <a class="nav-link" href="#"> <i class="bi bi-star"></i> أعضاء جدد</a>
+                          <a class="nav-link" href="{{ url($lang.'/members','new') }}"> <i class="bi bi-star"></i> أعضاء جدد</a>
                       </li>
   
   
                       <li class="nav-item">
-                          <a class="nav-link" href="#"><i class="bi bi-heart"></i> الحالات الصحية</a>
+                          <a class="nav-link" href="{{ url($lang.'/members','health-cases') }}"><i class="bi bi-heart"></i> الحالات الصحية</a>
                       </li>
                       <li class="nav-item">
                           <a class="nav-link" href="#"><i class="bi bi-heart"></i> قصص النجاح </a>
@@ -56,22 +59,25 @@
   
               <!-- باقي العناصر -->
               <li class="nav-item">
-                  <a class="nav-link" href="#"><i class="bi bi-people"></i> المتواجدون الآن</a>
+                <a class="nav-link" href="{{ route('site.home') }}"><i class="bi bi-people"></i>الرئيسية</a>
+            </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ url($lang.'/members','online') }}"><i class="bi bi-people"></i> المتواجدون الآن</a>
               </li>
   
               <li class="nav-item">
-                  <a class="nav-link" href="#"> <i class="bi bi-star"></i> أعضاء جدد</a>
+                  <a class="nav-link" href="{{ url($lang.'/members','new') }}"> <i class="bi bi-star"></i> أعضاء جدد</a>
               </li>
   
   
               <li class="nav-item">
-                  <a class="nav-link" href="#"><i class="bi bi-heart"></i> الحالات الصحية</a>
+                  <a class="nav-link" href="{{ url($lang.'/members','health-cases') }}"><i class="bi bi-heart"></i> الحالات الصحية</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link" href="#"><i class="bi bi-heart"></i> قصص النجاح </a>
               </li>
               <li class="nav-item sign-sm">
-                  <a class="nav-link" href="#"> اشتراك</a>
+                  <a class="nav-link" href="{{ url($lang,'befor-reg') }}"> اشتراك</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link" href="{{ route('login.client',$lang) }}"> تسجيل دخول </a>

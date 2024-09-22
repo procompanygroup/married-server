@@ -301,7 +301,7 @@ class SearchController extends Controller
 
     if($client->favoritestoclients->first())
     { $is_favorite= is_null($client->favoritestoclients->first()->is_favorite)?0:$client->favoritestoclients->first()->is_favorite;
-      $is_black=is_null($client->favoritestoclients->first()->is_blacklist)?:$client->favoritestoclients->first()->is_blacklist;
+      $is_black=is_null($client->favoritestoclients->first()->is_blacklist)?0:$client->favoritestoclients->first()->is_blacklist;
     }else{
       $is_favorite= 0;
       $is_black=0;
@@ -705,6 +705,8 @@ $clintids = array_slice($clintids, 0, $this->result_num);
     }else{
       $gender='both';
       $genderTrans='الكل';
+      $client=new Client();
+
     }
       if ($gender == 'male') {
       // Client search
@@ -736,11 +738,18 @@ $clintids = array_slice($clintids, 0, $this->result_num);
     $datelimit=now()->subMinutes(5); 
     $cliens_list = $cliens_list->where('lastseen_at','>=',$datelimit);
     $cliens_list = $cliens_list->select('id')->get();
-    $Allclintids = data_get($cliens_list, '*.id');    
-     //get current member nationality
-     $client_res_id = $this->getclientcountry($client, 'nationality');
-     //get members with same nationality
-         $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
+    $Allclintids = data_get($cliens_list, '*.id'); 
+    if (Auth::guard('client')->check()) {
+      //get current member nationality
+      $client_res_id = $this->getclientcountry($client, 'nationality');
+      //get members with same nationality
+          $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
+ 
+      }else{
+        $memberclintids =   $Allclintids;
+      }
+   
+
              $clients_same=$this->selectandmap($memberclintids,$lang); 
      //get others
      $oherclintids=array_diff($Allclintids,$memberclintids);
@@ -748,6 +757,7 @@ $clintids = array_slice($clintids, 0, $this->result_num);
      //merg list
      $finalClients=array_merge($clients_same->toArray(),$clients_other->toArray());  
      $finalClients= array_slice($finalClients, 0, $this->result_num); 
+
      $type='online';
     return view(
       "site.page.online-clients",
@@ -777,11 +787,17 @@ $clintids = array_slice($clintids, 0, $this->result_num);
     $cliens_list = $cliens_list->select('id')->get();
     $Allclintids = data_get($cliens_list, '*.id');
 
-    //get current member nationality
-    $client_res_id = $this->getclientcountry($client, 'nationality');
+ 
+    if (Auth::guard('client')->check()) {
+      //get current member nationality
+      $client_res_id = $this->getclientcountry($client, 'nationality');
+      //get members with same nationality
+          $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
+ 
+      }else{
+        $memberclintids =   $Allclintids;
+      }
 
-//get members with same nationality
-    $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
         $clients_same=$this->selectandmap($memberclintids,$lang); 
 //get others
 $oherclintids=array_diff($Allclintids,$memberclintids);
@@ -792,7 +808,7 @@ $finalClients=array_merge($clients_same->toArray(),$clients_other->toArray());
 
 
 $finalClients= array_slice($finalClients, 0, $this->result_num);
-  
+ 
     //  return  $cliens_list->with('clientoptions')->get() ;->toSql();
     $type='new';
     return view(

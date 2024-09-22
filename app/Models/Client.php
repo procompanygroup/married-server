@@ -57,6 +57,7 @@ class Client extends Authenticatable
         'expire_at',
         'lastseen_at',
         'is_special',
+        'is_hidden',
     ];
 
     /**
@@ -154,10 +155,17 @@ class Client extends Authenticatable
     {
         return $this->hasMany(Favorite::class, 'fav_to_client_id');
     }
+    public function visitors(): HasMany
+    {
+        return $this->hasMany(Visitor::class, 'client_id');
+    }
+    public function visitedclients(): HasMany
+    {
+        return $this->hasMany(Visitor::class, 'visited_id');
+    }
 
     public function generateCode()
     {
-
         $this->timestamps = false;
         $this->code = rand(100000, 999999);
         $this->expire_at = now()->addMinutes(15);
@@ -166,7 +174,6 @@ class Client extends Authenticatable
 
     public function restCode()
     {
-
         $this->timestamps = false;
         $this->code = null;
         $this->expire_at = null;

@@ -7260,6 +7260,25 @@ body.ltr .user-profile-line .avatar .premium {
 }
 
  
+.secondary-data  .message-body {
+  background-color: #e2f5fb;
+ 
+  border: 1px solid transparent;
+  color: #2b373d;
+  display: inline-block;
+  font-size: 16px;
+  margin: 0 auto;
+  max-width: 410px;
+  overflow: hidden;
+  padding: 1px 15px;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 10px 10px 10px 0;
+}
+
+  
+ 
 
 
 

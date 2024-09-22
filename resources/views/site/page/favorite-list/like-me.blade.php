@@ -9,36 +9,8 @@
             <section class=" content-sec col-lg-7 col-md-6">
 
                 <div class="page-head p-3 ">
-                    <h3>قائمة الاهتمام والتجاهل</h3>
-                    @if (@isset($type))
-                    @if($type=='fav')   
-                       <div class="row sub-menu">
-                            <div class="col-md-3 col-sm-6 sub-item item-result-btn">
-                                <a href="#" class=" tab-btn active text-center">قائمة الاهتمام</a>    
-                            </div>
-                            <div class="col-md-3 col-sm-6 sub-item item-dis">
-                                <a href="{{ url($lang,'myblacklist') }}"class="disactive text-center" id="a-result">قائمة التجاهل</a>
-                            </div>
-                            <div class="col-6 col-sm-12">
-    
-                            </div>
-                        </div>
-
-                        @else
-                        
-                        <div class="row sub-menu">
-                            <div class="col-md-3 col-sm-6 sub-item item-dis item-result-btn">
-                                <a href="{{ url($lang,'myfavorite') }}" class="disactive   text-center ">قائمة الاهتمام</a>
-                            </div>
-                            <div class="col-md-3 col-sm-6 sub-item item-result-btn">
-                                <a href="#"class=" tab-btn active text-center">قائمة التجاهل</a>
-                            </div>
-                            <div class="col-6 col-sm-12">
-
-                            </div>
-                        </div>
-                    @endif
-                    @endif
+                    <h3>من يهتم بي</h3>
+                 
 
                 </div>
                 <!--   table-->
@@ -48,7 +20,7 @@
                     <div class="table-head fs-normal color-gray-dark">
                         <div class="table-cell"> ملف العضو </div>
                         <div class="table-cell added-at" style="width:130px">تاريخ الإضافة</div>
-                        <div class="table-cell text-center" style="width:30px"><i class="ico ico-ellipsis-v"></i></div>
+                       
                     </div>
                     <div class="table-body" style="height: auto !important;">
 
@@ -56,7 +28,7 @@
                         @forelse ($clients as $client)
                             <div class="table-row fs-normal   ">
                                 <div class="table-cell">
-                                    <div class="user-profile-line user-card-line female"> <a
+                                    <div class="user-profile-line user-card-line-9920457 female"> <a
                                             href="{{ url($lang.'/member',$client['client']->id) }}" role="link-profile">
                                             <div class="avatar"> <img src="{{ $client['client']->image_path }}"
                                                     class="avatar-female" alt="صورة العضو"> </div>
@@ -89,7 +61,7 @@
                                         </a> </div>
                                 </div>
                                 <div class="table-cell added-at" style="width:130px">{{ $client['since_favorite_date'] }} </div>
-                                <div class="table-cell text-center" style="width:30px"><button class="fs-large color-red pt-1 btn-remove" data-record-id="{{ $client['favorite_id'] }}"><i class="bi bi-trash"></i></button></div>
+                                
                             </div>
                                 @empty
                                 <div class="table-row fs-normal   ">

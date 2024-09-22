@@ -77,19 +77,20 @@ $(function () {
   $('.btn-send-message').click(function () {
     var memName = $(this).attr('data-user-name');
     $('#chatmember-name').html(memName);
-    recieverId = $('input[name="member-num"]').val();
+   // recieverId = $('input[name="member-num"]').val();
+   recieverId = $(this).attr('data-user-id');
     loadmsgs();
     $('.direct-chat').slideDown(500);
     interval = setInterval(loadlastmsgs, 10000);
   });
-  $('.btn-send-message-card').click(function () {
-    var memName = $(this).attr('data-user-name');
-    recieverId = $(this).attr('data-user-id');
-    $('#chatmember-name').html(memName);
-    loadmsgs();
-    $('.direct-chat').slideDown(500);
-    interval = setInterval(loadlastmsgs, 10000);
-  });
+  // $('.btn-send-message-card').click(function () {
+  //   var memName = $(this).attr('data-user-name');
+  //   recieverId = $(this).attr('data-user-id');
+  //   $('#chatmember-name').html(memName);
+  //   loadmsgs();
+  //   $('.direct-chat').slideDown(500);
+  //   interval = setInterval(loadlastmsgs, 10000);
+  // });
 
   function loadmsgs() {
  
@@ -143,7 +144,11 @@ $(function () {
     });
   };
   function fillchat(data) {
-    lastMsg = data[data.length - 1].id;
+    var currentId= data[data.length - 1].id;
+    lastMsg  
+if( currentId>lastMsg){
+  lastMsg = currentId;
+
     $.each(data, function (index, item) {
       var x = item.sender_name;
       if (item.side == 'r') {
@@ -168,6 +173,8 @@ $(function () {
       }
 
     });
+
+  }
   }
 
   /*

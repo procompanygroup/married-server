@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\ClientReportController;
 use App\Http\Controllers\Web\OptionGroupController;
 use App\Http\Controllers\Web\OptionValueController;
 use App\Http\Controllers\Web\ReportOptionController;
+use App\Http\Controllers\Web\VisitorController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
@@ -42,7 +43,7 @@ use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\CodeController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Web\FavoriteController;
-
+use App\Http\Controllers\Web\ClientSettingController;
 use Illuminate\Support\Facades\Artisan;
 
 //use Illuminate\Support\Facades\Facade\Artisan;
@@ -322,8 +323,13 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         Route::get('/member/{id}', [ClientController::class, 'show_member']);
         // Route::get('/scores', [ClientController::class, 'scores']);
         //Route::get('/{slug}', [ClientController::class, 'send_message']);
-        
-
+        Route::prefix('members')->group(function () {
+            Route::get('online', [SearchController::class, 'online_clients']);
+            Route::get('new', [SearchController::class, 'new_clients']);
+            Route::get('health-cases', [SearchController::class, 'health_search']);
+            Route::post('health-cases', [SearchController::class, 'health_search_by_inputs']);
+          //  Route::get('special', [SearchController::class, 'special_search']);
+        });
         Route::middleware('guest:client')->group(function () {
             Route::get('/register/{gender}', [ClientController::class, 'create'])->name('register.client');
             Route::post('/register', [ClientController::class, 'store']);
@@ -333,9 +339,9 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         });
     });
 
-    Route::prefix('{lang}')->group(function () {
-    Route::get('/vote/{slug}', [HomeController::class, 'getques']);
-});
+//     Route::prefix('{lang}')->group(function () {
+//     Route::get('/vote/{slug}', [HomeController::class, 'getques']);
+// });
  //vote
 //  Route::post('/addvote/{slug}', [AnswerController::class, 'addvote']);
 
@@ -359,11 +365,12 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
 
        Route::prefix('favorite')->group(function () {
         Route::post('/', [FavoriteController::class, 'store']);
-         
+        Route::post('/delete', [FavoriteController::class, 'delete_fav']);
          
        });
        Route::prefix('blacklist')->group(function () {       
         Route::post('/', [FavoriteController::class, 'store_blacklist']);
+     //  Route::post('/delete', [FavoriteController::class, 'delete_black']);
          
        });
        Route::prefix('reportoption')->group(function () { 
@@ -371,7 +378,8 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
     });
     
     Route::resource('report', ClientReportController::class);
-
+    Route::post('/setting', [ClientSettingController::class, 'update']);
+    Route::post('inbox/delete/{id}', [ChatController::class, 'destroymember_chat']);
         // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
         
       //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
@@ -388,6 +396,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
             Route::post('/pull', [ClientController::class, 'pull']);
 
             Route::get('/profile', [ClientController::class, 'showprofile'])->name('client.profile');
+            Route::get('/setting', [ClientSettingController::class, 'index']);
        
            Route::get('advance-search', [SearchController::class, 'show']);
            Route::post('advance-search', [SearchController::class, 'advance_search']);
@@ -398,15 +407,19 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
            Route::post('quick-search', [SearchController::class, 'quick_search']);
 
            Route::prefix('members')->group(function () {
-           Route::get('online', [SearchController::class, 'online_clients']);
-           Route::get('new', [SearchController::class, 'new_clients']);
-           Route::get('health-cases', [SearchController::class, 'health_search']);
-           Route::post('health-cases', [SearchController::class, 'health_search_by_inputs']);
+        //    Route::get('online', [SearchController::class, 'online_clients']);
+        //    Route::get('new', [SearchController::class, 'new_clients']);
+        //    Route::get('health-cases', [SearchController::class, 'health_search']);
+        //    Route::post('health-cases', [SearchController::class, 'health_search_by_inputs']);
            Route::get('special', [SearchController::class, 'special_search']);
 
         });
         Route::get('myfavorite', [FavoriteController::class, 'my_favorite']);
         Route::get('myblacklist', [FavoriteController::class, 'my_blacklist']);
+        Route::get('who-like-me', [FavoriteController::class, 'who_like_me']);
+        Route::get('who-visited-me', [VisitorController::class, 'who_visited_me']);
+        Route::get('inbox', [ChatController::class, 'inbox']);
+      
         });
     });
 
