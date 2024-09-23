@@ -164,6 +164,15 @@ class Client extends Authenticatable
         return $this->hasMany(Visitor::class, 'visited_id');
     }
 
+    public function clientsimages(): HasMany
+    {
+        return $this->hasMany(PrivateImage::class, 'client_id');
+    }
+    public function clientsshowto(): HasMany
+    {
+        return $this->hasMany(PrivateImage::class, 'showto_id');
+    }
+
     public function generateCode()
     {
         $this->timestamps = false;

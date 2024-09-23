@@ -207,3 +207,9 @@ padding-left: 0 !important;
 .item-dis{
   padding-top: 5px;
 }
+.secondary-data .user-age{
+  color:#878787;
+}
+.ver li{
+  float: none !important;
+}

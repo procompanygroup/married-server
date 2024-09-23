@@ -381,7 +381,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
     Route::post('/setting', [ClientSettingController::class, 'update']);
     Route::post('inbox/delete/{id}', [ChatController::class, 'destroymember_chat']);
         // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
-        
+    
       //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
         Route::prefix('{lang}')->group(function () {
             //account
@@ -396,6 +396,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
             Route::post('/pull', [ClientController::class, 'pull']);
             Route::get('/edit-image', [ClientController::class, 'edit_image'])->name('client.edit_image');
             Route::post('/update-image', [ClientController::class, 'update_image'])->name('client.update_image');
+            Route::post('/delete-image', [ClientController::class, 'delete_image']) ;
             Route::get('/profile', [ClientController::class, 'showprofile'])->name('client.profile');
             Route::get('/setting', [ClientSettingController::class, 'index']);
        

@@ -465,12 +465,16 @@ class ClientController extends Controller
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
       $defultlang = $transarr['langs']->first();  
+      $favctrlr=new FavoriteController();
+      $clients_res =  $favctrlr->favorite_listwith_image($id,$lang);
+
       return view(
         "site.content.edit-image",
         [
           "client" => $client,
           'lang' => $lang,
-          'defultlang' => $defultlang,       
+          'defultlang' => $defultlang,    
+'favorite_list'=> $clients_res,
         ]
       );
     } else {
@@ -502,6 +506,18 @@ class ClientController extends Controller
    
       return response()->json("ok");
     }
+  }
+  public function delete_image($lang)
+  {
+    if (Auth::guard('client')->check()) {
+      $id = Auth::guard('client')->user()->id;                 
+        $this->deleteImagebyId($id);
+        Auth::guard('client')->user()->refresh();
+    //    $this->edit_image($lang);
+        return redirect()->route('client.edit_image',$lang);
+      }else{
+        return redirect()->route('login.client');
+      }
   }
   public function showprofile($lang)
   {
@@ -841,6 +857,19 @@ class ClientController extends Controller
       ]);
       Storage::delete("public/" . $path . '/' . $oldimagename);
     }
+    return 1;
+  }
+  public function deleteImagebyId( $id)
+  {
+    $imagemodel = Client::find($id);
+    $strgCtrlr = new StorageController();
+    $path = $strgCtrlr->path['clients'];
+    $oldimage = $imagemodel->image;
+    $oldimagename = basename($oldimage);          
+      Client::find($id)->update([
+        "image" => null
+      ]);
+      Storage::delete("public/" . $path . '/' . $oldimagename);   
     return 1;
   }
 

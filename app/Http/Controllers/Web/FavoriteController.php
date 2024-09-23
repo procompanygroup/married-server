@@ -225,35 +225,36 @@ class FavoriteController extends Controller
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
-    $favelist = Favorite::with([
-      'favtoclient' => function ($q) use ($id) {
-        $q->with(
-          [
-            'clientoptions' => function ($q) {
-              $q->with([
-                'property:id,name,is_active,type,is_multivalue,notes',
-                'optionvalue:id,name,is_active,value,value_int,notes,property_id,type',
-                'country:id,name_ar,code',
-                'city:id,name_en,name_ar,code,country_id'
-              ])->select(
-                  'id',
-                  'client_id',
-                  'property_id',
-                  'option_id',
-                  'val_str',
-                  'val_int',
-                  'val_date',
-                  'notes',
-                  'type',
-                  'country_id',
-                  'city_id'
-                );
-            }
-          ]
-        );
-      }
-    ])->where('client_id', $id)->where('is_favorite', 1)->orderByDesc('favorite_date')->get();
-    $clients_res = $this->selectandmap($favelist, $lang);
+    // $favelist = Favorite::with([
+    //   'favtoclient' => function ($q) use ($id) {
+    //     $q->with(
+    //       [
+    //         'clientoptions' => function ($q) {
+    //           $q->with([
+    //             'property:id,name,is_active,type,is_multivalue,notes',
+    //             'optionvalue:id,name,is_active,value,value_int,notes,property_id,type',
+    //             'country:id,name_ar,code',
+    //             'city:id,name_en,name_ar,code,country_id'
+    //           ])->select(
+    //               'id',
+    //               'client_id',
+    //               'property_id',
+    //               'option_id',
+    //               'val_str',
+    //               'val_int',
+    //               'val_date',
+    //               'notes',
+    //               'type',
+    //               'country_id',
+    //               'city_id'
+    //             );
+    //         }
+    //       ]
+    //     );
+    //   }
+    // ])->where('client_id', $id)->where('is_favorite', 1)->orderByDesc('favorite_date')->get();
+    // $clients_res = $this->selectandmap($favelist, $lang);
+    $clients_res =$this->favorite_list($id, $lang);
     $type = 'fav';
     return view(
       "site.page.favorite-list.favorite",
@@ -358,6 +359,80 @@ class FavoriteController extends Controller
         'type' => $type,
       ]
     );
+  }
+
+  public function favorite_list($id,$lang)
+  {
+
+    $favelist = Favorite::with([
+      'favtoclient' => function ($q) use ($id) {
+        $q->with(
+          [
+            'clientoptions' => function ($q) {
+              $q->with([
+                'property:id,name,is_active,type,is_multivalue,notes',
+                'optionvalue:id,name,is_active,value,value_int,notes,property_id,type',
+                'country:id,name_ar,code',
+                'city:id,name_en,name_ar,code,country_id',
+
+              ])->select(
+                  'id',
+                  'client_id',
+                  'property_id',
+                  'option_id',
+                  'val_str',
+                  'val_int',
+                  'val_date',
+                  'notes',
+                  'type',
+                  'country_id',
+                  'city_id'
+                );
+            }
+
+          ]
+        );
+      }
+    ])->where('client_id', $id)->where('is_favorite', 1)->orderByDesc('favorite_date')->get();
+    $clients_res = $this->selectandmap($favelist, $lang);
+    return  $clients_res;
+  }
+  public function favorite_listwith_image($id,$lang)
+  {
+
+    $favelist = Favorite::with([
+      'favtoclient' => function ($q) use ($id) {
+        $q->with(
+          [
+            'clientoptions' => function ($q) {
+              $q->with([
+                'property:id,name,is_active,type,is_multivalue,notes',
+                'optionvalue:id,name,is_active,value,value_int,notes,property_id,type',
+                'country:id,name_ar,code',
+                'city:id,name_en,name_ar,code,country_id',
+
+              ])->select(
+                  'id',
+                  'client_id',
+                  'property_id',
+                  'option_id',
+                  'val_str',
+                  'val_int',
+                  'val_date',
+                  'notes',
+                  'type',
+                  'country_id',
+                  'city_id'
+                );
+            },
+            'clientsshowto'=> function ($q) use ($id) {
+              $q->where('client_id',$id);},            
+          ]
+        );
+      }
+    ])->where('client_id', $id)->where('is_favorite', 1)->orderByDesc('favorite_date')->get();
+    $clients_res = $this->selectandmap($favelist, $lang);
+    return  $clients_res;
   }
   public function selectandmap($favorite_list, $lang)
   {

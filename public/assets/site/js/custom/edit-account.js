@@ -1,6 +1,6 @@
 var valid=true;
 var year=0;
-
+var type='';
 $(document).ready(function() {
   
   $("#name").focusout(function (e) {
@@ -36,15 +36,7 @@ $(document).ready(function() {
     // alert(valid);
     });
 
-	$('#btn-submit-img').on('click', function (e) {
-		e.preventDefault();
-	 
-		var formId= $(this).parents("form").attr('id');
-		sendform('#'+formId);
-	 
-	 
-    // alert(valid);
-    });
+
   $("#email").focusout(function (e) {
 	$('#validate-email').text("").hide();
     if (!validatempty($(this))) {
@@ -156,19 +148,6 @@ $(cls).show();
 function endloading(cls) {
 	$(cls).hide();
 }
-
-$(document).on('change', '#image', function() { 
-	var file = this.files[0];
-	var imgTag = $('#imgshow');	 
-	if (file) {
-		var reader = new FileReader();
-		reader.onload = function(e) {
-			// عرض الصورة الجديدة
-			imgTag.attr('src', e.target.result);
-		}
-		reader.readAsDataURL(file);
-	}
-});
 
   });
   function noteSuccess() {
