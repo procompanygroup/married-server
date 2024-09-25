@@ -14,7 +14,7 @@
                             <li> <a href="{{ url($lang,'who-like-me') }}"><i class="bi bi-person-hearts"></i> من مهتم بي</a></li>
                             <li> <a href="{{ url($lang,'myfavorite') }}"><i class="bi bi-heart"></i> قائمة الإهتمام والتجاهل</a></li>
                             <li> <a href="{{ url($lang,'who-visited-me') }}"><i class="bi bi-eye"></i> من زار بياناتي</a></li>
-                            <li> <a href="#"><i class="bi bi-images"></i> صور الأعضاء</a></li>
+                            <li> <a href="{{ url($lang.'/members','image') }}"><i class="bi bi-images"></i> صور الأعضاء</a></li>
                             <li> <a href="{{ url($lang,'advance-search') }}"><i class="bi bi-search"></i> البحث المتقدم</a></li>
                             <li> <a href="{{ url($lang,'ai-search') }}"><i class="bi bi-search"></i> البحث الالي</a></li>
                             <li> <a href="#"><i class="bi bi-card-checklist"></i> تفعيل بطاقة مودة</a></li>

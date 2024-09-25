@@ -58,6 +58,7 @@ class Client extends Authenticatable
         'lastseen_at',
         'is_special',
         'is_hidden',
+        'show_image'
     ];
 
     /**
@@ -73,14 +74,39 @@ class Client extends Authenticatable
     public function getImagePathAttribute()
     {
         $conv = "";
+
         $strgCtrlr = new StorageController();
         if (is_null($this->image)) {
             $conv = $strgCtrlr->DefaultPath($this->gender);
         } else if ($this->image == '') {
             $conv = $strgCtrlr->DefaultPath($this->gender);
         } else {
-            $url = $strgCtrlr->ClientPath();
-            $conv = $url . $this->image;
+            if (auth()->guard('client')->check()  ){
+                $auth_id = auth()->guard('client')->user()->id;
+                if( $auth_id==$this->id){
+                    $url = $strgCtrlr->ClientPath();
+                    $conv = $url . $this->image;
+                }else{
+                    if (  $this->show_image == 1) {          
+             
+                        //check if allowed
+                        $primagemodel = PrivateImage::where('client_id', $this->id)->where('showto_id', $auth_id)->first();
+                        if ($primagemodel ) {
+                            $url = $strgCtrlr->ClientPath();
+                            $conv = $url . $this->image;
+                        } else {
+                            //not allowed
+                            $conv = $strgCtrlr->DefaultPath($this->gender);
+                        }
+        
+                    } else {
+                        // no one allowed
+                        $conv = $strgCtrlr->DefaultPath($this->gender);
+                    }
+                }
+            }else{
+                $conv = $strgCtrlr->DefaultPath($this->gender);
+            }
         }
 
         return $conv;
@@ -128,7 +154,7 @@ class Client extends Authenticatable
     {
         return $this->hasMany(Chat::class, 'reciver_id');
     }
- 
+
     public function blacklists(): HasMany
     {
         return $this->hasMany(Blacklist::class, 'client_id');

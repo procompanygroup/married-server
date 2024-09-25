@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Web\PrivateImageController;
 class FavoriteController extends Controller
 {
   /**
@@ -71,6 +72,11 @@ class FavoriteController extends Controller
         $is_favorite = $favObj->is_favorite;
 
       }
+      if( $favObj->is_favorite !=1){
+        $imgctrlr=new PrivateImageController();
+        $imgctrlr->delete_imgshow($auth_id,$favObj->fav_to_client_id);
+      }
+
       // Favorite::updateOrCreate(
       //     ['client_id' => $auth_id, 'fav_to_client_id' => $fav_to_client_id],
       //     ['is_favorite' => 1]
@@ -95,6 +101,10 @@ class FavoriteController extends Controller
             $favObj->favorite_date = $now;
             $favObj->is_favorite = 2;
             $favObj->save();
+            //delete private image
+$imgctrlr=new PrivateImageController();
+$imgctrlr->delete_imgshow($auth_id,$favObj->fav_to_client_id);
+            //
             return response()->json($favObj->is_favorite);
           } else if ($formdata['type'] == 'black') {
             $favObj->blacklist_date = $now;
@@ -397,7 +407,7 @@ class FavoriteController extends Controller
     $clients_res = $this->selectandmap($favelist, $lang);
     return  $clients_res;
   }
-  public function favorite_listwith_image($id,$lang)
+  public function favorite_listwith_image($id,$lang,$authclient)
   {
 
     $favelist = Favorite::with([
@@ -431,7 +441,7 @@ class FavoriteController extends Controller
         );
       }
     ])->where('client_id', $id)->where('is_favorite', 1)->orderByDesc('favorite_date')->get();
-    $clients_res = $this->selectandmap($favelist, $lang);
+    $clients_res = $this->selectandmap_withimage($favelist, $lang,$authclient);
     return  $clients_res;
   }
   public function selectandmap($favorite_list, $lang)
@@ -487,6 +497,52 @@ class FavoriteController extends Controller
     ];
     return $clientArr;
   }
+  public function selectandmap_withimage($favorite_list, $lang,$authclient)
+  {
 
+
+    $propctrlr = new PropertyController();
+    $clients_res = $favorite_list->map(function ($favorite) use ($lang, $propctrlr,$authclient) {
+
+      return $this->client_prop_withimage_map($favorite->favtoclient, $lang, $propctrlr, $favorite,$authclient);
+
+    });
+    return $clients_res;
+
+  }
+  public function client_prop_withimage_map($client, $lang, PropertyController $propctrlr, $favorite,$authclient)
+  {
+
+    // $wife_num=$client->clientoptions()->with('optionvalue','property')->wherehas('property', function ($query) {
+    //     $query->where('name', 'wife_num');
+    // })->first();
+    // $wife_num = $this->client_prop_filter($client->clientoptions, 'wife_num');
+    $clientoptions = $propctrlr->client_prop_list($client->clientoptions);
+    $countrytoptions = $propctrlr->country_prop_list($client->clientoptions);
+    $show_image=0;
+
+if($authclient->show_image==1){
+  $showimgrow=$client->clientsshowto->where('client_id',$authclient->id)->where('showto_id',$client->id)->first();
+  if($showimgrow){
+    $show_image=1;
+  }
+}
+ 
+
+    $clientArr = [
+      'client' => $client->withoutRelations(),
+      'residence' => $propctrlr->country_prop_filter($countrytoptions, 'residence'),
+      'nationality' => $propctrlr->country_prop_filter($countrytoptions, 'nationality'),
+
+      'family_status' => $propctrlr->client_prop_filter($clientoptions, 'family_status'),
+      'family_status_female' => $propctrlr->client_prop_filter($clientoptions, 'family_status_female'),
+      'wife_num' => $propctrlr->client_prop_filter($clientoptions, 'wife_num'),
+      'since_register' => $client->created_at->diffForHumans(),
+      'favorite_id' => $favorite->id,
+      'since_favorite_date' => Carbon::parse($favorite->favorite_date)->diffForHumans(),
+'is_showimage'=> $show_image,
+    ];
+    return $clientArr;
+  }
  
 }

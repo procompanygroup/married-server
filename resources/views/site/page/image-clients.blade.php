@@ -9,80 +9,8 @@
             <section class=" content-sec col-lg-7 col-md-6">
 
                 <div class="page-head p-3 ">
-                    @if (isset($type))
-                        @if ($type == 'new')
-                            <h3>أعضاء جدد : {{ $genderTrans }} </h3>
-                        @elseif($type == 'online')
-                            <h3> المتواجدون الان : {{ $genderTrans }} </h3>
-                        @elseif($type == 'health')
-                            <h3>الحالات الصحية : {{ $genderTrans }} </h3>
-                            @elseif($type == 'special')
-                            <h3> الأعضاء المتميزون : {{ $genderTrans }} </h3>
-                            @elseif($type == 'images')
-                            <h3>صور الاعضاء  : {{ $genderTrans }} </h3>
-                        @endif
-                    @else
-                        <h3> الاعضاء</h3>
-                    @endif
-                    @if($type =='health')
-                    <div class="page-options">
-                        <div>
-                            <p class="page-desc" style="min-width:165px"></p>
-                        </div>
-                        <form action="{{url($lang.'/members','health-cases')}}" id="form-search" name="form-search" method="post" >
-                            @csrf
-                        <div class="filter">                        
-                                <div class="select--alt">
-                                    <div class="dropdown bootstrap-select std_select">
-                                        <select class="btn btn-sm select-outline-danger select-btn std_select mobile-device search-select" name="residence">
-                                            <option value="0" @if(isset($residence_id) && $residence_id==0) @selected(true) @endif>كل الدول</option>                                            
-                                            @foreach ($prop_group['countries'] as $country)
-                                                <option value="{{ $country->id }}" @if(isset($residence_id) && $residence_id==$country->id) @selected(true) @endif >{{ $country->name_ar }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="select--alt">
-                                    <div class="dropdown bootstrap-select healthCase std_select">
-                                        <select  class="btn btn-sm select-outline-danger  select-btn std_select mobile-device search-select" name="health">
-                                            <option value="" @if(isset($health_id) && $health_id==0) @selected(true) @endif>كل الحالات الصحية</option>                                            
-                                            @foreach ($prop_group['health']['optionsvalues'] as $health)
-                                            <option value="{{ $health['id'] }}" @if(isset($health_id) && $health_id== $health['id']) @selected(true) @endif >{{ $health['tr_title'] }}</option>
-                                        @endforeach
-                                        </select>
-                                        </div>
-                                </div>
-                      
-                        </div>
-                    </form>
-                 </div>
-                 @elseif($type == 'special')
-                 <div class="page-options">
-                    <div>
-                        <p class="page-desc" style="min-width:165px"></p>
-                    </div>
-                    <form action="{{url($lang.'/members','special')}}" id="form-search" name="form-search" method="post" >
-                        @csrf
-                    <div class="filter">                        
-                            <div class="select--alt">
-                                <div class="dropdown bootstrap-select std_select">
-                                    <select class="btn btn-sm select-outline-danger select-btn std_select mobile-device search-select" name="residence">
-                                        <option value="0" @if(isset($residence_id) && $residence_id==0) @selected(true) @endif>كل الدول</option>                                            
-                                        @foreach ($prop_group['countries'] as $country)
-                                            <option value="{{ $country->id }}" @if(isset($residence_id) && $residence_id==$country->id) @selected(true) @endif >{{ $country->name_ar }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                       
-                  
-                    </div>
-                </form>
-             </div>
-
-                    @endif
-
-                </div>
+                       <h3>صور الاعضاء  </h3>
+                          </div>
                 <!--   table-->
                 <div class="row members-list" style="height: auto !important;">
                     @forelse ($clients as $client)

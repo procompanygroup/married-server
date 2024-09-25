@@ -466,8 +466,8 @@ class ClientController extends Controller
       $transarr = $sitedctrlr->FillTransData($lang);
       $defultlang = $transarr['langs']->first();  
       $favctrlr=new FavoriteController();
-      $clients_res =  $favctrlr->favorite_listwith_image($id,$lang);
-
+      $clients_res =  $favctrlr->favorite_listwith_image($id,$lang, $client);
+      $countshow=collect($clients_res)->where('is_showimage',1)->count();
       return view(
         "site.content.edit-image",
         [
@@ -475,6 +475,7 @@ class ClientController extends Controller
           'lang' => $lang,
           'defultlang' => $defultlang,    
 'favorite_list'=> $clients_res,
+'countshow'=>$countshow,
         ]
       );
     } else {

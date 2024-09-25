@@ -45,7 +45,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Web\FavoriteController;
 use App\Http\Controllers\Web\ClientSettingController;
 use Illuminate\Support\Facades\Artisan;
-
+use  App\Http\Controllers\Web\PrivateImageController;
 //use Illuminate\Support\Facades\Facade\Artisan;
 /*
 |--------------------------------------------------------------------------
@@ -381,7 +381,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
     Route::post('/setting', [ClientSettingController::class, 'update']);
     Route::post('inbox/delete/{id}', [ChatController::class, 'destroymember_chat']);
         // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
-    
+        Route::post('/update-member-image', [PrivateImageController::class, 'update']);
       //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
         Route::prefix('{lang}')->group(function () {
             //account
@@ -414,6 +414,9 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         //    Route::get('health-cases', [SearchController::class, 'health_search']);
         //    Route::post('health-cases', [SearchController::class, 'health_search_by_inputs']);
            Route::get('special', [SearchController::class, 'special_search']);
+
+           
+            Route::get('image', [PrivateImageController::class, 'show_to_members']);
 
         });
         Route::get('myfavorite', [FavoriteController::class, 'my_favorite']);

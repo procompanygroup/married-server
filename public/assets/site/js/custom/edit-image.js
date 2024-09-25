@@ -36,7 +36,7 @@ $('#btn-submit-img').on('click', function (e) {
 	e.preventDefault();
  
 	var formId= $(this).parents("form").attr('id');
-	sendform('#'+formId);
+	sendform('#'+formId,'img');
  
  
 // alert(valid);
@@ -57,10 +57,22 @@ $('#modal-btn-yes').click(function () {
 $('form[name="form-del-image"]').submit();
 	$('.close').trigger('click');
 });
-
+$('#btn-image-member').click(function (e) {
+	e.preventDefault(); 
+	var formId= $(this).closest("form").attr('id');
+	sendform('#'+formId,'fav') ;
+});
 //end image sec
-	 
-function sendform(formid) {
+$('.favcheck').change(function() {
+	if (this.checked) {
+		// إلغاء تحديد جميع الخيارات الأخرى
+		countShow++;		
+	}else{
+		countShow--;
+	}
+	$('#showcount').html(countShow);
+}); 
+function sendform(formid,type) {
 	 
 	var form = $(formid)[0];
 	var formData = new FormData(form);
@@ -73,14 +85,17 @@ function sendform(formid) {
 		processData: false,
 
 		success: function (data) {
-			$('.loading img').hide();
+		//	$('.loading img').hide();
 			if (data.length == 0) {
 				noteError();
 			} else if (data == "ok") {
 			
 				noteSuccess(); 
-				var currLoc = $(location).prop('href');     
-		 	$(location).attr('href',currLoc); 
+				if(type=='img'){
+					var currLoc = $(location).prop('href');     
+					$(location).attr('href',currLoc); 
+				}
+			
 			} else {
 				noteError();
 			}
