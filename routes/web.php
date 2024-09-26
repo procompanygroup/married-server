@@ -3,6 +3,7 @@
  
 use App\Http\Controllers\Web\ChatController;
 use App\Http\Controllers\Web\ClientReportController;
+use App\Http\Controllers\Web\NotificationController;
 use App\Http\Controllers\Web\OptionGroupController;
 use App\Http\Controllers\Web\OptionValueController;
 use App\Http\Controllers\Web\ReportOptionController;
@@ -424,7 +425,7 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         Route::get('who-like-me', [FavoriteController::class, 'who_like_me']);
         Route::get('who-visited-me', [VisitorController::class, 'who_visited_me']);
         Route::get('inbox', [ChatController::class, 'inbox']);
-      
+        Route::get('notifications', [NotificationController::class, 'index']);
         });
     });
 

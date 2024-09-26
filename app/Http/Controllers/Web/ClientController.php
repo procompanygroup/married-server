@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Web;
-
+use Illuminate\Support\Facades\Notification;
 use App\Http\Controllers\Controller;
 use App\Models\AnswersClient;
 // use App\Models\Category;
@@ -11,6 +11,7 @@ use App\Models\OptionValue;
 use App\Models\PointTrans;
 // use App\Models\SocialModel;
 use App\Models\Property;
+use App\Notifications\MemberNotify;
 use Illuminate\Http\Request;
 use App\Models\Client;
 // use App\Models\ClientSocial;
@@ -895,13 +896,25 @@ class ClientController extends Controller
  //get fave status if login
  $stateArr=[];
  if (Auth::guard('client')->check()) {
-  $id = Auth::guard('client')->user()->id;
+  $authid = Auth::guard('client')->user()->id;
  $favectrlr=new FavoriteController();
- $stateArr= $favectrlr->getstate($id, $client->client->id); 
+ $stateArr= $favectrlr->getstate($authid, $client->client->id); 
 $visitctrlr=new VisitorController();
 Auth::guard('client')->user()->refresh();
 if(Auth::guard('client')->user()->is_hidden!=1){
-  $setvisit=$visitctrlr->set_visit($id,$client->client->id);
+  $setvisit=$visitctrlr->set_visit($authid,$client->client->id);
+  $notifyctrlr=new NotificationController();
+  $data=[
+    'fromclient_id'=>$authid,
+    'type'=>'visit',
+    'side'=>'member',
+  ];
+  $notifyctrlr->store_member_notify($client->client->id,$data);  
+ //Client::find($client->client->id)->notify(new MemberNotify($data));
+ 
+ //list of users
+ //$clints=Client::where('gender','female')->get() ;
+//  Notification::send( $clints, new MemberNotify($data)->via('database'));
 }
 
  }

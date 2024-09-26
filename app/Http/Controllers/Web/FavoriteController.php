@@ -10,6 +10,7 @@ use App\Models\Favorite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Web\PrivateImageController;
+use App\Http\Controllers\Web\NotificationController;
 class FavoriteController extends Controller
 {
   /**
@@ -72,11 +73,24 @@ class FavoriteController extends Controller
         $is_favorite = $favObj->is_favorite;
 
       }
+      $notifyctrlr=new NotificationController();
       if( $favObj->is_favorite !=1){
         $imgctrlr=new PrivateImageController();
         $imgctrlr->delete_imgshow($auth_id,$favObj->fav_to_client_id);
+        $data=[
+          'fromclient_id'=>$auth_id,
+          'type'=>'not-like-me',
+          'side'=>'member',      
+        ];
+      }else{
+        $data=[
+          'fromclient_id'=>$auth_id,
+          'type'=>'like-me',
+          'side'=>'member',      
+        ];
+       
       }
-
+      $notifyctrlr->store_member_notify($favObj->fav_to_client_id,$data);
       // Favorite::updateOrCreate(
       //     ['client_id' => $auth_id, 'fav_to_client_id' => $fav_to_client_id],
       //     ['is_favorite' => 1]
@@ -96,6 +110,7 @@ class FavoriteController extends Controller
       $favObj = Favorite::find($favorite_id);
       if ($favObj) {
         if ($favObj->client_id == $auth_id) {
+          $notifyctrlr=new NotificationController();
           $now = Carbon::now();
           if ($formdata['type'] == 'fav') {
             $favObj->favorite_date = $now;
@@ -104,12 +119,27 @@ class FavoriteController extends Controller
             //delete private image
 $imgctrlr=new PrivateImageController();
 $imgctrlr->delete_imgshow($auth_id,$favObj->fav_to_client_id);
+            //start send notify
+            $data=[
+              'fromclient_id'=>$auth_id,
+              'type'=>'not-like-me',
+              'side'=>'member',      
+            ];
+            $notifyctrlr->store_member_notify($favObj->fav_to_client_id,$data);
             //
             return response()->json($favObj->is_favorite);
           } else if ($formdata['type'] == 'black') {
             $favObj->blacklist_date = $now;
             $favObj->is_blacklist = 2;
             $favObj->save();
+             //start send notify
+  $data=[
+          'fromclient_id'=>$auth_id,
+          'type'=>'not-blacklist-me',
+          'side'=>'member',      
+        ];
+        $notifyctrlr->store_member_notify($favObj->fav_to_client_id,$data);
+            //
             return response()->json($favObj->is_blacklist);
           }
         }
@@ -129,7 +159,9 @@ $imgctrlr->delete_imgshow($auth_id,$favObj->fav_to_client_id);
       $auth_id = Auth::guard('client')->user()->id;
       $favObj = Favorite::where('client_id', $auth_id)->where('fav_to_client_id', $fav_to_client_id)->first();
       $is_blacklist = 0;
+      $notifyctrlr=new NotificationController();
       if ($favObj) {
+
         if (is_null($favObj->is_blacklist)) {
           $is_blacklist = 1;
         } else {
@@ -160,6 +192,23 @@ $imgctrlr->delete_imgshow($auth_id,$favObj->fav_to_client_id);
         $is_blacklist = $favObj->is_blacklist;
 
       }
+      if($favObj->is_blacklist!=1)
+      {
+        $data=[
+          'fromclient_id'=>$auth_id,
+          'type'=>'not-blacklist-me',
+          'side'=>'member',      
+        ];
+     
+      }else{
+        $data=[
+          'fromclient_id'=>$auth_id,
+          'type'=>'blacklist-me',
+          'side'=>'member',      
+        ];
+      }
+      $notifyctrlr->store_member_notify($favObj->fav_to_client_id,$data);      
+
       // Favorite::updateOrCreate(
       //     ['client_id' => $auth_id, 'fav_to_client_id' => $fav_to_client_id],
       //     ['is_favorite' => 1]

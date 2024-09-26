@@ -9,6 +9,7 @@ use App\Models\Chat;
 use App\Models\Client;
 use App\Http\Controllers\Web\PropertyController;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Web\NotificationController;
 class ChatController extends Controller
 {
     /**
@@ -46,6 +47,15 @@ $reciver_id=$formdata['reciver_id'];
     $newObj->is_read = 0;
   $newObj->save();
    $chatArr=$this->mapmsg( $newObj,$auth_id);
+   //start notify
+   $notifyctrlr=new NotificationController();
+   $data=[
+           'fromclient_id'=>$auth_id,
+           'type'=>'chat-me',
+           'side'=>'member',      
+         ];
+     $notifyctrlr->store_member_notify($reciver_id,$data); 
+
   //  $newObj->read_at = $formdata['read_at'];
   return response()->json($chatArr);
   }else{

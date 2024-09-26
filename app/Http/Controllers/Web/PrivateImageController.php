@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Client\UpdateMemberImageRequest;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Web\NotificationController;
 class PrivateImageController extends Controller
 {
     /**
@@ -72,11 +73,15 @@ class PrivateImageController extends Controller
         } else {
             if (Auth::guard('client')->check()) {
                 $id = Auth::guard('client')->user()->id;
+                $old_ids= PrivateImage::where('client_id', $id)->select('showto_id')->get();
+                $old_ids = data_get($old_ids, '*.showto_id');
+                $notifyctrlr=new NotificationController();
                 if ($formdata['client_group'] == 1) {
                     Client::find($id)->update([
                         'show_image' => 1
                     ]);
                     if (isset($formdata['fav'])) {
+
                         PrivateImage::where('client_id', $id)->delete();
                         $tableArr = [];
                         $now = Carbon::now();
@@ -91,6 +96,39 @@ class PrivateImageController extends Controller
                             $tableArr[] = $rowArr;
                         }
                         PrivateImage::insert($tableArr);
+                        $new_ids = collect($formdata['fav']);
+
+ 
+$allow_ids = $new_ids->diff($old_ids)->all();
+$data=[
+  'fromclient_id'=>$id,
+  'type'=>'show-image',
+  'side'=>'member',      
+];
+$notifyctrlr->store_members_notify($allow_ids, $data);
+//
+ $notallow_id=collect($old_ids)->diff($formdata['fav'])->all();
+ $data=[
+  'fromclient_id'=>$id,
+  'type'=>'not-show-image',
+  'side'=>'member',      
+];
+$notifyctrlr->store_members_notify($notallow_id, $data);
+                    }else{
+                      //no one
+                      Client::find($id)->update([
+                        'show_image' => 0
+                    ]);
+                
+                    PrivateImage::where('client_id', $id)->delete();
+               
+                    $data=[
+                            'fromclient_id'=>$id,
+                            'type'=>'not-show-image',
+                            'side'=>'member',      
+                          ];
+                          $notifyctrlr->store_members_notify($old_ids, $data);
+                          
                     }
 
                 } else {
@@ -98,7 +136,15 @@ class PrivateImageController extends Controller
                     Client::find($id)->update([
                         'show_image' => 0
                     ]);
+                
                     PrivateImage::where('client_id', $id)->delete();
+               
+                    $data=[
+                            'fromclient_id'=>$id,
+                            'type'=>'not-show-image',
+                            'side'=>'member',      
+                          ];
+                          $notifyctrlr->store_members_notify($old_ids, $data);
                 }
 
                 return response()->json('ok');

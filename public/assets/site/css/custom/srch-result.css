@@ -5804,11 +5804,11 @@ input[type=checkbox].btf-checkbox:checked+label.btf-label:before,input[type=radi
   width: 100%
 }
 
-.user-profile-line .essential-data span {
+.user-profile-line .essential-data span,.essential-data span {
   color: #1767a1
 }
 
-.user-profile-line .essential-data span.user-username {
+.user-profile-line .essential-data span.user-username, .essential-data span.user-username{
   font-weight: 700;
   word-break: break-all
 }
@@ -7279,7 +7279,16 @@ body.ltr .user-profile-line .avatar .premium {
 
   
  
+.notify-row{
+  
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 
+}
+.notify-data{
+padding-right: 10px;
+}
 
 
 
