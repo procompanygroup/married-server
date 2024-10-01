@@ -198,6 +198,10 @@ class Client extends Authenticatable
     {
         return $this->hasMany(PrivateImage::class, 'showto_id');
     }
+    public function clientspackages(): HasMany
+    {
+        return $this->hasMany(ClientPackage::class, 'client_id');
+    }
 
     public function generateCode()
     {

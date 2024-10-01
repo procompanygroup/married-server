@@ -444,7 +444,7 @@
                       <h2 class="text-center">إشترك مجانا</h2>
                       <p class="text-center"> مودة هو موقع زواج عربي إسلامي يتيح لجميع الاعضاء التسجيل مجانا، وهو
                           للزواج فقط ولا مجال للتعارف أو للصداقة أو غيرها فسياسة الموقع قائمة على تعاليم الدين
-                          الإسلامي</p><a href="/ar/signup" class="btn btn-lg btn-danger text-center">إشترك
+                          الإسلامي</p><a href="{{ url($lang,'befor-reg') }}" class="btn btn-lg btn-danger text-center">إشترك
                           الآن</a>
                   </div>
               </div>
@@ -462,14 +462,16 @@
           <div class="col-md-12">
               <h2>آخر الأعضاء دخولا</h2>
               <div class="latest-members__filter">
-                  <div class="filter--primary btn-group btn-group-toggle male" data-toggle="buttons"><label
-                          class="btn btn-lg btn-link"><input type="radio" name="members_online" id="option1"
-                              autocomplete="off" checked="checked" value=".all"> الكل </label>
+                  <div class="filter--primary btn-group btn-group-toggle  " data-toggle="buttons">
+                    <label class="btn btn-lg btn-link">
+                        <input type="radio" name="members_online" id="option1"
+                              autocomplete="off" checked="checked" value="all"> الكل </label>
                       <label class="btn btn-lg btn-link">
                           <input type="radio" name="members_online" id="option2" autocomplete="off"
-                              value=".female"> الإناث </label>
+                              value="female"> الإناث </label>
                       <label class="btn btn-lg btn-link active">
-                          <input type="radio" name="members_online" id="option3" autocomplete="off" value=".male">
+                          <input type="radio" name="members_online" id="option3" autocomplete="off" 
+                          value="male">
                           الذكور </label>
 
                   </div>
@@ -479,117 +481,70 @@
                   <div class="container owl-2-style">
                       <div class="owl-carousel owl-2">
 
-                          <div class="carusel-item">
-                              <div class="all male  " dir="rtl" data-slick-index="6" aria-hidden="true"
+              
+                          @foreach ($last_clients as $client)
+                          <div class="carusel-item  {{$client['client']->gender }}-item">
+                              <div class="all   " dir="rtl" data-slick-index="6" aria-hidden="true"
                                   tabindex="-1" role="option" aria-describedby="slick-slide03">
-                                  <div class="user-card user-card-9434454 not-contactable" data-user-id="9434454">
-                                      <a href="/ar/members/9434454" role="link-profile" tabindex="-1">
-                                          <div class="essential-data">
-                                              <div class="avatar"> <img src="img/user.jpg" class="avatar-male"
-                                                      alt="صورة العضو" loading="eager"> <i
-                                                      class="ico ico-circle user-status online"></i></div>
-                                              <div class="data">
-                                                  <h3><span class="username" dir="auto">ورد يوسف</span> <img
-                                                          src="img/flag.gif" alt="سوريا" loading="eager"> </h3>
-                                                  <h4> 38 سنة من سوريا </h4>
-                                              </div>
-                                          </div>
-                                      </a>
-                                      <div class="secondary-data">
-                                          <div class="user-location"><i
-                                                  class="bi bi-geo-alt-fill user-location-bi"></i>
-                                              <span> سوريا / حماة </span>
-                                          </div>
-                                          <div class="user-marital-status"><i
-                                                  class="bi bi-heart-half user-location-bi"></i><span> عازب
-                                              </span></div>
-                                      </div>
-                                      <div class="more-data">
-                                          <div class="user-last-login"> </div>
-                                          <div class="user-options">
-                                              <ul>
-                                                  <li><span class="profile-visited"
-                                                          title="لقد زرت هذا الملف سابقا"></span></li>
-                                                  <li><button class="btn btn-primary btn-send-message"
-                                                          data-user-id="9434454" data-user-name="ورد يوسف"
-                                                          data-user-gender="male" data-user-online="1"
-                                                          data-user-premium="" data-user-last-login=""
-                                                          data-user-favorited="" data-user-blacklisted=""
-                                                          data-user-disabled="0" data-user-contactability=""
-                                                          title="أرسل رسالة" tabindex="-1"><i
-                                                              class="fas fa-comments"></i></button></li>
-                                                  <li> <button class="btn btn-outline-light btn-add-to-favorite"
-                                                          data-user-id="9434454" data-user-name="ورد يوسف"
-                                                          title="إضافة للإهتمام" tabindex="-1"><i
-                                                              class="fas fa-heart"></i></button> </li>
-                                                  <li><button
-                                                          class="btn btn-outline-light btn-remove-from-blacklist"
-                                                          data-user-id="9434454" data-user-name="ورد يوسف"
-                                                          title="لقد تجاهلت هذا العضو" tabindex="-1"><i
-                                                              class="fas fa-ban"></i></button></li>
-                                              </ul>
-                                          </div>
-                                      </div>
-                                  </div>
+                                  <div class="user-card user-card  is-contactable @if($client['is_blacklist']==1) blacklisted @endif" id="card-{{ $client['client']->id }}"
+                                    data-user-name="{{ $client['client']->name }}"  data-user-id="{{$client['client']->id }}" > 
+                                    
+                                    <a  href="{{ url($lang . '/member', $client['client']->id) }}" role="link-profile">
+                                        <div class="essential-data">
+                                            <div class="avatar"> <img src="{{ $client['client']->image_path }}"
+                                                    class="avatar-female" alt="صورة العضو"> <i
+                                                    class="ico ico-circle user-status online"></i></div>
+                                            <div class="data">
+                                                <h3><span class="username" dir="auto">{{ $client['client']->name }}</span>
+                                                    <img src="{{ url('assets/site/img/flags/32x32/' . $client['nationality']->code . '.png') }}"
+                                                        alt="{{ $client['nationality']->country_name }}">
+                                                </h3>
+                                                <h4> {{ $client['client']->age }} سنة من
+                                                    {{ $client['nationality']->country_name }} </h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="secondary-data">
+                                        <div class="user-location"><i class="bi bi-geo-alt-fill"></i> <span>
+                                                {{ $client['residence']->country_name }} /
+                                                {{ $client['residence']->city_name }} </span></div>
+                                        <div class="user-marital-status"> <span>
+                                                @if ($client['client']->gender == 'male')
+                                                    {{ $client['family_status']->option_name }}
+                                                @else
+                                                    {{ $client['family_status_female']->option_name }}
+                                                @endif
+                                            </span></div>
+                                    </div>
+                                    <div class="more-data">
+                                        <div class="user-last-login"> </div>
+                                        <div class="user-options">
+                                            <ul>
+                                                <li><span class="profile-visited" title="لقد زرت هذا الملف سابقا"></span></li>
+                                                <li><button class="btn btn-primary btn-send-message" 
+                                                        data-user-name="{{ $client['client']->name }}"   data-user-id="{{$client['client']->id }}"
+                                                        data-user-premium="" data-user-last-login="" data-user-favorited="0"
+                                                        data-user-blacklisted="0" data-user-disabled="0"
+                                                        data-user-contactability="1" title="أرسل رسالة"><i
+                                                            class="fas fa-comments"></i></button></li>
+                                                <li> 
+                                                    <button class="btn btn-outline-light @if($client['is_favorite']==1) btn-remove-from-favorite @else  btn-add-to-favorite @endif"
+                                                       @if($client['is_blacklist']==1) style="display:none; "@endif
+                                                       data-toggle="modal" data-target="#favoriteModal"
+                                                    data-user-favorite="{{$client['is_favorite']}}"
+                                                        title="@if($client['is_favorite']==1) مهتم @else إضافة للإهتمام @endif "><i class="fas fa-heart"></i></button> </li>
+                                                <li>
+                                                    <button class="btn btn-outline-light btn-remove-from-blacklist"
+                                                  data-toggle="modal" data-target="#favoriteModal"
+                                                          data-user-blacklist="{{$client['is_blacklist']}}"
+                                                        title="لقد تجاهلت هذا العضو"><i class="fas fa-ban"></i></button></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                               </div>
                           </div>
-
-
-                          <div class="carusel-item">
-                              <div class="all male  " dir="rtl" data-slick-index="6" aria-hidden="true"
-                                  tabindex="-1" role="option" aria-describedby="slick-slide03">
-                                  <div class="user-card user-card-9434454 not-contactable" data-user-id="9434454">
-                                      <a href="/ar/members/9434454" role="link-profile" tabindex="-1">
-                                          <div class="essential-data">
-                                              <div class="avatar"> <img src="img/user.jpg" class="avatar-male"
-                                                      alt="صورة العضو" loading="eager"> <i
-                                                      class="ico ico-circle user-status online"></i></div>
-                                              <div class="data">
-                                                  <h3><span class="username" dir="auto">mm aa</span> <img
-                                                          src="img/flag.gif" alt="سوريا" loading="eager"> </h3>
-                                                  <h4> 38 سنة من سوريا </h4>
-                                              </div>
-                                          </div>
-                                      </a>
-                                      <div class="secondary-data">
-                                          <div class="user-location"><i
-                                                  class="bi bi-geo-alt-fill user-location-bi"></i>
-                                              <span> سوريا / حماة </span>
-                                          </div>
-                                          <div class="user-marital-status"><i
-                                                  class="bi bi-heart-half user-location-bi"></i><span> عازب
-                                              </span></div>
-                                      </div>
-                                      <div class="more-data">
-                                          <div class="user-last-login"> </div>
-                                          <div class="user-options">
-                                              <ul>
-                                                  <li><span class="profile-visited"
-                                                          title="لقد زرت هذا الملف سابقا"></span></li>
-                                                  <li><button class="btn btn-primary btn-send-message"
-                                                          data-user-id="9434454" data-user-name="ورد يوسف"
-                                                          data-user-gender="male" data-user-online="1"
-                                                          data-user-premium="" data-user-last-login=""
-                                                          data-user-favorited="" data-user-blacklisted=""
-                                                          data-user-disabled="0" data-user-contactability=""
-                                                          title="أرسل رسالة" tabindex="-1"><i
-                                                              class="fas fa-comments"></i></button></li>
-                                                  <li> <button class="btn btn-outline-light btn-add-to-favorite"
-                                                          data-user-id="9434454" data-user-name="ورد يوسف"
-                                                          title="إضافة للإهتمام" tabindex="-1"><i
-                                                              class="fas fa-heart"></i></button> </li>
-                                                  <li><button
-                                                          class="btn btn-outline-light btn-remove-from-blacklist"
-                                                          data-user-id="9434454" data-user-name="ورد يوسف"
-                                                          title="لقد تجاهلت هذا العضو" tabindex="-1"><i
-                                                              class="fas fa-ban"></i></button></li>
-                                              </ul>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-
+@endforeach
 
                       </div>
                   </div>
@@ -654,7 +609,7 @@
   </div>
 
 </section>
-
-
-
-    @endsection
+  @endsection
+  @section('js')
+    <script src="{{ url('assets/site/js/custom/home.js') }}"></script>
+@endsection

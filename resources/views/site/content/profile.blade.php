@@ -58,12 +58,12 @@
                     <div class="col-md-4">
                         <div class="dashboard-page__block dashboard-page__block--equal block-premium-status">
                             <div class="subscribe">
-                                <h3>
-                                    <figure><img src="/images/cbe36d2cb9b9860df296.svg" loading="eager"></figure><span>باقة
-                                        التميز</span>
+                                <h3 class="text-center">
+                                    <div style="color: #1767A1 ;font-size: 25px;"><i class="bi bi-award"></i></div>  
+                                   <span>باقات التميز</span>
                                 </h3>
                                 <p> باقة التميز مجموعة من الخصائص والخدمات المتميزة تساعدك للتوفق و النجاح <br><a
-                                        href="/ar/subscribe-premium" class="btn btn-action"> إشتراك <i
+                                        href="{{ url($lang,'subscribe') }}" class="btn btn-action"> إشتراك <i
                                             class="ico las ico-long-arrow-alt-left"></i></a></p>
                             </div>
                         </div>

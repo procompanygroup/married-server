@@ -59,6 +59,8 @@ class StorageController extends Controller
     $this->pdfpath['categories'] = 'images/categories/pdf';
     $this->pdfpath['posts'] = 'images/posts/pdf';
     $this->path['properties'] = 'images/properties';
+    $this->path['packages'] = 'images/packages';
+    
     //value
  
     //answer
@@ -111,14 +113,7 @@ class StorageController extends Controller
   public function LanguagePath()
   {  
     $url = "";  
-  //  $url = Storage::url($this->path['users'])  . '/';
-     
-    //  if(File::exists(base_path('public\index.php')))  {
-    //   $url = url(Storage::url($this->path['languages'])) . '/';
-    //  }
-    //  else{
-    //   $url = url('public'.Storage::url($this->path['languages'])) . '/';
-    //  }
+
      $url =  $this->getlocalpath($this->path['languages']);
           return $url;
   }
@@ -271,6 +266,13 @@ public function PropertyPath()
 {  
   $url = "";   
    $url =  $this->getlocalpath($this->path['properties']);
+        return $url;
+}
+public function PackagePath()
+{  
+  $url = "";  
+ 
+   $url =  $this->getlocalpath($this->path['packages']);
         return $url;
 }
  /*

@@ -771,7 +771,13 @@ $clintids = array_slice($clintids, 0, $this->result_num);
       ]
     );
   }
+  public function last_online_clients($lang)
+  {
+    $resultArr=$this->selectandmap_online_home( $lang); 
   
+    return  $resultArr;
+    
+  }
   public function new_clients($lang)
   {
  
@@ -977,6 +983,46 @@ $clintids = array_slice($clintids, 0, $this->result_num);
       }
       ]
     )->whereIntegerInRaw('id', $clintids)->get();
+    $propctrlr = new PropertyController();
+    $clients_res = $clients_res_db->map(function ($client) use ($lang, $propctrlr) {
+
+      return $this->client_prop_map($client, $lang, $propctrlr);
+
+    });
+    return  $clients_res;
+  
+  }
+  public function selectandmap_online_home($lang)
+  {
+    $auth_id =0;
+   
+    $clients_res_db = Client::with(
+      [
+        'clientoptions' => function ($q) {
+          $q->with([
+            'property:id,name,is_active,type,is_multivalue,notes',
+            'optionvalue:id,name,is_active,value,value_int,notes,property_id,type',
+            'country:id,name_ar,code',
+            'city:id,name_en,name_ar,code,country_id'
+          ])->select(
+              'id',
+              'client_id',
+              'property_id',
+              'option_id',
+              'val_str',
+              'val_int',
+              'val_date',
+              'notes',
+              'type',
+              'country_id',
+              'city_id'
+            );
+        },
+        'favoritestoclients' => function ($q) use ($auth_id) {
+          $q->where('client_id', $auth_id);
+      }
+      ]
+    )->orderByDesc('lastseen_at')->take(20)->get();
     $propctrlr = new PropertyController();
     $clients_res = $clients_res_db->map(function ($client) use ($lang, $propctrlr) {
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 // use App\Http\Controllers\Web\AnswerController;
+use App\Http\Controllers\Web\SearchController;
 use App\Models\Category;
 // use App\Models\Question;
 
@@ -71,8 +72,16 @@ class HomeController extends Controller
       if(Auth::guard('client')->check() && !(Auth::guard('client')->user()->code)) {
      return redirect()->route('client.profile', $lang);
       }else{
-         return view('site.home',['lang'=>$lang, 'transarr'=>$transarr,'defultlang'=>$defultlang, 'active_item'=>$active,
-         'home_page'=>$home_page,'sitedataCtrlr'=>$sitedctrlr]);
+        $sechctrlr=new SearchController();
+        $last_clients=$sechctrlr->last_online_clients($lang);
+         return view('site.home',['lang'=>$lang, 
+         'transarr'=>$transarr,
+         'defultlang'=>$defultlang, 
+         'active_item'=>$active,
+         'home_page'=>$home_page,
+         'sitedataCtrlr'=>$sitedctrlr,
+      'last_clients'=> (object)$last_clients,
+      ]);
       }
   
     }

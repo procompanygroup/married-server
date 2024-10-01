@@ -2,6 +2,7 @@
 
  
 use App\Http\Controllers\Web\ChatController;
+use App\Http\Controllers\Web\ClientPackageController;
 use App\Http\Controllers\Web\ClientReportController;
 use App\Http\Controllers\Web\NotificationController;
 use App\Http\Controllers\Web\OptionGroupController;
@@ -47,6 +48,10 @@ use App\Http\Controllers\Web\FavoriteController;
 use App\Http\Controllers\Web\ClientSettingController;
 use Illuminate\Support\Facades\Artisan;
 use  App\Http\Controllers\Web\PrivateImageController;
+use  App\Http\Controllers\Web\PackageController;
+
+use App\Http\Controllers\Web\PaymentController;
+
 //use Illuminate\Support\Facades\Facade\Artisan;
 /*
 |--------------------------------------------------------------------------
@@ -282,6 +287,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
     Route::prefix('propdep')->group(function () {
         Route::post('/update/{id}', [PropertyDepController::class, 'update']);
 });
+
 Route::resource('option', OptionValueController::class, ['except' => ['update']]);
 Route::prefix('option')->group(function () {
     Route::post('/update/{id}', [OptionValueController::class, 'update']);
@@ -292,7 +298,11 @@ Route::prefix('ai')->group(function () {
     Route::get('optionrange/{id}', [OptionGroupController::class, 'option_range']);
     Route::post('saverange', [OptionGroupController::class, 'save_range']);
 });
-
+//package
+Route::resource('package', PackageController::class, ['except' => ['update']]);
+Route::prefix('package')->group(function () {
+    Route::post('/update/{id}', [PackageController::class, 'update']);
+});
     //
     Route::middleware('role.admin:admin-super')->group(function () {
     });
@@ -384,6 +394,8 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
         Route::post('/update-member-image', [PrivateImageController::class, 'update']);
       //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
+
+      Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
         Route::prefix('{lang}')->group(function () {
             //account
             Route::post('/updatepass', [ClientController::class, 'updatepass'])->name('client.updatepass');
@@ -426,6 +438,21 @@ Route::get('/cities/{id}', [CountryController::class,'getCities']);
         Route::get('who-visited-me', [VisitorController::class, 'who_visited_me']);
         Route::get('inbox', [ChatController::class, 'inbox']);
         Route::get('notifications', [NotificationController::class, 'index']);
+
+        Route::prefix('subscribe')->group(function () {          
+               Route::get('/', [ClientPackageController::class, 'index']);              
+                Route::post('payment', [ClientPackageController::class, 'payment']);
+    
+            });
+//payment
+
+
+
+Route::get('/payment', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+
+Route::get('/paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
+Route::get('/paypal/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
+
         });
     });
 
