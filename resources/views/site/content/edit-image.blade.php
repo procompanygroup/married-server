@@ -61,6 +61,7 @@
                             <div class="edit-details__content">
                                 <div class="row">
                                     <div class="col-md-12 form-group">
+                                        @if($show_img==1)
                                         <div class="search" dir="rtl">
                                             <ul class="hor ver">
                                                 <li>
@@ -155,15 +156,20 @@
 
                                             </div>
                                         </div>
+                                        @else
+                                        <p>انت غير مشترك بهذه الميزة </p> 
+                                        @endif
+                                      
 
                                     </div>
 
                                 </div>
-
+                                @if($show_img==1)
                                 <div class="submit-block text-center one-box">
                                     <button type="button" id="btn-image-member" class="btn  btn-primary "> حفظ التعديلات
                                     </button>
                                 </div>
+                                @endif
                             </div>
 
                         </div>

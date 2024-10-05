@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
+use App\Models\Package;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
+use PhpParser\Node\Stmt\Return_;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
-
+use App\Http\Controllers\Web\OrderController;
 class PaymentController extends Controller
 {
     private $paypalGateway;
@@ -30,6 +32,7 @@ class PaymentController extends Controller
     public function processPayment(Request $request)
     {
         $paymentMethod = $request->input('payment_method');
+       
 
         switch ($paymentMethod) {
             case 'paypal':
@@ -55,7 +58,7 @@ class PaymentController extends Controller
             ])->send();
 
             if ($response->isRedirect()) {
-                return redirect($response->getRedirectUrl());
+                return redirect($response->getRedirectUrl()) ;
             } else {
                 return back()->with('error', $response->getMessage());
             }
@@ -89,7 +92,19 @@ class PaymentController extends Controller
     {
         // يمكنك هنا إضافة منطق خاص لمعالجة التحويل البنكي اليدوي
         // مثل إرسال تعليمات الدفع للعميل عبر البريد الإلكتروني أو عرضها على الشاشة
-        return back()->with('success', 'Please follow the instructions to complete the bank transfer.');
+       $orderctrlr=new  OrderController();
+       $formdata = $request->all();
+  if(isset($formdata['pack']))
+{
+    $packageid=$request->input('pack');
+$package=Package::find($packageid);
+
+$order_id=$orderctrlr->add_order(auth()->guard('client')->user()->id,$packageid,'bank_transfer',$package->price);
+return back()->with('success', 'Please follow the instructions to complete the bank transfer.');
+}else{
+    return back()->with('error', ' الباقة غير موجودة'); 
+}
+      
     }
 
     // معالجات PayPal
@@ -97,16 +112,16 @@ class PaymentController extends Controller
     {
         if ($request->input('paymentId') && $request->input('PayerID')) {
             try {
-                $transaction = $this->paypalGateway->completePurchase([
+                $response = $this->paypalGateway->completePurchase([
                     'payer_id' => $request->input('PayerID'),
                     'transactionReference' => $request->input('paymentId'),
                 ])->send();
 
-                $response = $transaction->send();
+              //  $response = $transaction->();
 
                 if ($response->isSuccessful()) {
                     $data = $response->getData();
-                    return redirect()->route('payment.success')->with('success', 'Payment successful! Transaction ID: ' . $data['id']);
+                    return redirect()->route('payment.success' )->with('success', 'Payment successful! Transaction ID: ' . $data['id']);
                 } else {
                     return redirect()->route('payment.cancel')->with('error', $response->getMessage());
                 }
@@ -120,6 +135,6 @@ class PaymentController extends Controller
 
     public function paypalCancel()
     {
-        return redirect()->route('payment.form')->with('error', 'Payment canceled.');
+        return redirect()->route('payment.form','ar')->with('error', 'Payment canceled.');
     }
 }

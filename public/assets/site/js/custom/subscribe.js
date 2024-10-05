@@ -2,11 +2,7 @@ var valid=true;
 var year=0;
 var delmsg="تم حذف الحساب بنجاح";
 $(document).ready(function() {
-  
- 
 
-
-	
 	$('.btn-submit').on('click', function (e) {
 		e.preventDefault();
 	 valid=true;
@@ -20,255 +16,8 @@ sendform('#form-profile');
 	});
 
 	 
-
-	function stepvalidate(){
-		var gender=$('input[name="gender"]').val(); 
-	// $('#name').trigger('focusout');
-	//$('#email').trigger('focusout');
-	// $('#password').trigger('focusout');
-	// $('#confirm_password').trigger('focusout');
-	//$('select').trigger('focusout');
-if(gender=='male'){
-	selectcheck($('#wife_num'));
-	selectcheck($('#family_status'));
-}else{
-	selectcheck($('#wife_num_female'));
-	selectcheck($('#family_status_female'));
-} 
-
-	selectcheck($('#children_num'));
-	$('#birthdate').trigger('focusout');
-	$('#birthdate').trigger('change');
-	selectcheck($('#residence'));
-	selectcheck($('#nationality'));
-	selectcheck($('#city'));
-	selectcheck($('#weight'));
-	selectcheck($('#height'));
-	selectcheck($('#skin'));
-	selectcheck($('#body'));	
  
-	selectcheck($('#religiosity'));
-	selectcheck($('#prayer'));
-	selectcheck($('#smoking'));
-	if(gender=='male'){
-		selectcheck($('#beard'));
-	}else{
-		selectcheck($('#veil'));
- 
-	}
-	
-	selectcheck($('#education'));
-	selectcheck($('#financial'));
-	selectcheck($('#work'));
-	$('#job').trigger('focusout');
-	selectcheck($('#income'));
-	selectcheck($('#health'));
- 
- 
-	$('#first_name').trigger('focusout');
-	$('#mobile').trigger('focusout');
-	//$('#acceptConditions').trigger('focusout');
-
- 
-return valid;
-	}	   
-	
-  $("#email").focusout(function (e) {
-	$('#validate-email').text("").hide();
-    if (!validatempty($(this))) {
-			
-			valid=valid && false;
-			return false;
-		}  
-		if (!validateinputemail($(this),emailmsg)) {
-			
-			valid=valid && false;
-			return false;
-		} else {
-			checkmail($(this).val());
-			return valid; 
-		}
-	}); 
-  $("#password").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} else {
-			valid=valid && true;
-			return true;
-		}
-	});
-  $("#confirm_password").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} 
-	if($(this).val()== $("#password").val())
-	{
-		validStyle($(this));
-		valid=valid && true;
-		return true;
-	}else{
-		errorstyle($(this));
-		valid=valid && false;
-		return false;
-	}
-
-	});
-
-	$("select").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		}  
-		var option = $(this).find(":selected").val(); 
-		if($(this).attr('id')=='children_num'){
-			if (option==-1)  {
-				errorstyle($(this));
-				valid=valid && false;
-			return false;
-			}else{
-				validStyle($(this));
-				valid=valid && true;
-				return true;
-			}
-		
-		}else{
-			if (option==0)  {
-
-				errorstyle($(this));
-				valid=valid && false;
-			return false;
-			}else{
-				validStyle($(this));
-				valid=valid && true;
-				return true;
-			}
-		}
-		
-	
-	});
-
-	 function selectcheck(selElement) {
-		if (!validatempty(selElement)) {
-			valid=valid && false;
-			return false;
-		}  
-		var option = selElement.find(":selected").val(); 
-		if(selElement.attr('id')=='children_num'){
-			if (option==-1)  {
-				errorstyle(selElement);
-				valid=valid && false;
-			return false;
-			}else{
-				validStyle(selElement);
-				valid=valid && true;
-				return true;
-			}		
-		}else{
-			if (option==0)  {
-
-				errorstyle(selElement);
-				valid=valid && false;
-			return false;
-			}else{
-				validStyle(selElement);
-				valid=valid && true;
-				return true;
-			}
-		}
-	};
-	// $('#birthdate').on('change', function (e) {
-	// 	validDate($(this).val());
-		
-	// });
-	$('#birthdate').focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} 
-		validDate($(this).val());
-if(nowyear-year>17){
-	validStyle($(this));
-	valid=valid && true;
-	 	return true;
-}else{
-	errorstyle($(this));
-	valid=valid && false;
-	  	return false;
-}
-	});
-	$('#birthdate').on('change', function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} 
-		validDate($(this).val());
-if(nowyear-year>17){
-	validStyle($(this));
-	valid=valid && true;
-	 	return true;
-}else{
-	errorstyle($(this));
-	valid=valid && false;
-	  	return false;
-}
-	 
-
-	});
-
-	$("#job").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} else {
-			valid=valid && true;
-			return true;
-		}
-	});
-
-   
- 
-	$("#first_name").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		} else {
-			valid=valid && true;
-			return true;
-		}
-	});
-	$("#mobile").focusout(function (e) {
-		if (!validatempty($(this))) {
-			valid=valid && false;
-			return false;
-		}  
-		if(!allnumeric($(this).val())){
-			errorstyle($(this));
-			valid=valid && false;
-			return false;
-		} 
-
-	if(!stringlength($(this).val(),9,14)){
-		errorstyle($(this));
-		valid=valid && false;
-			return false;
-		} else{
-			validStyle($(this));
-			valid=valid && true;
-			return true;
-		}
-
-	});
-
-	$('#btn-delete').on('click', function (e) {
-		e.preventDefault();  
-		var formId= $(this).parents("form").attr('id');
-		sendform('#'+formId);
-	 
-	 
-    // alert(valid);
-    });
+  
 
 	function ClearErrors() {
 		$("." + "invalid-feedback").html('').hide();
@@ -319,115 +68,80 @@ if(nowyear-year>17){
 	}
 
    //end register
-   
-   $("#birthdatepicker").datepicker();
-//new Date() 
+    
+   $('#cardNumber').on('input', function() {
+	var cardNumber = $(this).val();
+	var cardType = getCardType(cardNumber);
 
-function validDate(value) {
-	var m = value.match(/^(\d{1,2})(\/|-)?(\d{1,2})(\/|-)?(\d{4})$/);
-	if (m){
-		value = m[5] + '-' + ("00" + m[3]).slice(-2) + '-' + ("00" + m[1]).slice(-2);
-		year=m[5];
+	if (cardType) {
+		$('#cardImage').attr('src', 'images/' + cardType + '.png').show();
+	} else {
+		$('#cardImage').hide(); // أخفِ الصورة إذا لم يتم التعرف على البطاقة
 	}
- 
-	return value;
-}
-//city
-function fillCities(data) {
-	var choose="اختر ..."
-$("#city").html('<option title="" value="0" >'+choose+'</option>');
-$.each(data, function( key,value) {
-
-if(selcity==value.id){
-$("#city").append('<option selected value="' + value.id + '">'+value.name_ar+'</option>');
-
-	}else
-	{
-		$("#city").append('<option value="' + value.id + '">'+value.name_ar+'</option>');
-
-	}
-	}); // close each()
-}
-
-$('#residence').on('change', function (e) {
-
-	var option = $(this).find(":selected").val(); 
-	loading('.city-load');
-	getcities(option);
-	//endloading() ;
-
 });
- function fillselectedCity ( ) {
 
-	var option = $('#residence').find(":selected").val(); 
-	loading('.city-load');
-	getcities(option);
-	//endloading() ;
+function getCardType(cardNumber) {
+	var visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/;
+	var masterCardRegex = /^(5[1-5][0-9]{14}|2[2-7][0-9]{14})$/;
+	var amexRegex = /^3[47][0-9]{13}$/;
+	var discoverRegex = /^6(?:011|5[0-9]{2})[0-9]{12}$/;
 
-};
-fillselectedCity ();
-function getcities(option) {
-	var newurl=cityurl;
-	newurl=newurl.replace("ItemId", option);
-	 
-	$.ajax({
-		url:newurl,
-		type: "GET",  
-	//	contentType: false,
-	//	processData: false,
-		//contentType: 'application/json',
-		success: function (data) {			 
-			if (data.length == 0) {			 
-			} else   {
-				fillCities(data);	 
-			}	
-			endloading('.city-load');	 
-		}, error: function (errorresult) {	
-			endloading('.city-load');		 
-		} 
-	});
-}
-function loading(cls) {
-	//'.city-load'
-$(cls).show();
-}
-function endloading(cls) {
-	$(cls).hide();
+	if (visaRegex.test(cardNumber)) {
+		return 'visa'; // اسم الصورة لبطاقة Visa
+	} else if (masterCardRegex.test(cardNumber)) {
+		return 'mastercard'; // اسم الصورة لبطاقة MasterCard
+	} else if (amexRegex.test(cardNumber)) {
+		return 'amex'; // اسم الصورة لبطاقة American Express
+	} else if (discoverRegex.test(cardNumber)) {
+		return 'discover'; // اسم الصورة لبطاقة Discover
+	} else {
+		return null;
+	}
 }
 
-function checkmail(email) {
-	loading('.mail-load');
-	var newurl=checkmailurl;
-	 
-	$.ajax({
-		url:newurl,
-		method: "POST",
-	
-		data:{  _token : token, data:{email:email}} ,
-	//   contentType: false,
-	//	processData: false,
-		// contentType: 'application/json',
-		success: function (data) {			 
-			if (data.length == 0) {	
-				errorstyle($('#email'));
-				valid=valid && false;	
-				$('#validate-email').text("غير متاح").removeClass('available').addClass('notav').show();
-			} else  if(data=="ok") {
-				validStyle($('#email'));
-				valid=valid && true;
-				$('#validate-email').text("متاح").removeClass('notav').addClass('available').show();
-			}	
-			endloading('.mail-load');	 
-		}, error: function (errorresult) {	
-			errorstyle($('#email'));
-			valid=valid && false;	
-			$('#validate-email').text("غير متاح").removeClass('available').addClass('notav').show();
-			endloading('.mail-load');	
 
-		} 
-	});
-}
+$('input[name="payment_method"]').change(function() {
+	if ($('#creditCard').is(':checked')) {
+		$('#creditCardInfo').removeClass('d-none');
+	} else {
+		$('#creditCardInfo').addClass('d-none');
+	}
+});
 
+$('#paymentForm').submit(function(event) {
+	// إذا كانت طريقة الدفع هي بطاقة الائتمان
+	if ($('#creditCard').is(':checked')) {
+		var isValid = true;
+
+		// التحقق من رقم البطاقة (16 رقمًا)
+		var cardNumber = $('#cardNumber').val();
+		if (!/^\d{16}$/.test(cardNumber)) {
+			alert('يرجى إدخال رقم بطاقة صالح مكون من 16 رقمًا.');
+			isValid = false;
+		}
+
+		// التحقق من تاريخ الانتهاء (MM/YY)
+		var cardExpiry = $('#cardExpiry').val();
+		if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardExpiry)) {
+			alert('يرجى إدخال تاريخ انتهاء صالح (MM/YY).');
+			isValid = false;
+		}
+
+		// التحقق من CVC (3 أو 4 أرقام)
+		var cardCVC = $('#cardCVC').val();
+		if (!/^\d{3,4}$/.test(cardCVC)) {
+			alert('يرجى إدخال رمز أمان صالح (CVC).');
+			isValid = false;
+		}
+
+		// إذا كان هناك خطأ، منع إرسال النموذج
+		if (!isValid) {
+			event.preventDefault();
+		}
+	}else{
+		//$(this).closest('form').submit();
+	}
+});
   });
   function noteSuccess() {
     swal(success_msg);

@@ -19,12 +19,18 @@
                             <tr>
                                 <th class="col-sm-3"><label> التصفح الخفي</label></th>
                                 <td  >
+                                    @if($hidden_feature==1)
                                     <div class="col-sm-10 custom-control custom-switch ">
                                         <input type="checkbox" class="custom-control-input" id="is_hidden" name="is_hidden"
                                             value="{{ $client->is_hidden }}" @if ( $client->is_hidden=='1') @checked(true) @endif >
                                         <label class="custom-control-label" for="is_hidden" id="is_hidden_lbl"></label>
                                         <span id="is_hidden-error" class="error invalid-feedback"></span>
                                     </div>
+                                   
+                                        
+                                    @else
+                                       <p>انت غير مشترك بهذه الميزة </p> 
+                                    @endif
                                 </td>
 
                             </tr>

@@ -142,6 +142,16 @@ class SearchController extends Controller
     // $clientopctrlr = new ClientOptionController();
 
     $id = Auth::guard('client')->user()->id;
+            //        
+             
+            $clientpackctrlr=new ClientPackageController();
+            $clientpack_id=  $clientpackctrlr->check_search_count($id);
+        if( $clientpack_id>0){
+          $res=$clientpackctrlr->decrease_search_count($clientpack_id);
+        }else{
+          return  redirect()->back();
+        }
+        //
     $client = Client::find($id);
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
@@ -380,6 +390,15 @@ class SearchController extends Controller
     StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     $id = Auth::guard('client')->user()->id;
+            //        
+            $clientpackctrlr=new ClientPackageController();
+            $clientpack_id=  $clientpackctrlr->check_search_count($id);
+        if( $clientpack_id>0){
+          $res=$clientpackctrlr->decrease_search_count($clientpack_id);
+        }else{
+          return  redirect()->back();
+        }
+        //
     $client = Client::with('clientoptions')->find($id);
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
@@ -580,43 +599,51 @@ return ['property_id'=> $prop_id,
 
     $formdata = $request->all();
     $id = Auth::guard('client')->user()->id;
-    $client = Client::with('clientoptions')->find($id);
-    $sitedctrlr = new SiteDataController();
-    $transarr = $sitedctrlr->FillTransData($lang);
-    $defultlang = $transarr['langs']->first();
-    $name = $formdata['name'];
-    if ($client->gender == 'male') {
+    $clientpackctrlr=new ClientPackageController();
+    $clientpack_id=  $clientpackctrlr->check_search_count($id);
+if( $clientpack_id>0){
+ 
+  $client = Client::with('clientoptions')->find($id);
+  $sitedctrlr = new SiteDataController();
+  $transarr = $sitedctrlr->FillTransData($lang);
+  $defultlang = $transarr['langs']->first();
+  $name = $formdata['name'];
+  if ($client->gender == 'male') {
 
-      
-      $cliens_list = Client::where('gender', 'female')->where('name', 'like', '%' . $name . '%')->select('id')->get();
- 
-      $clintids = data_get($cliens_list, '*.id');
- 
-    } else {
+    
+    $cliens_list = Client::where('gender', 'female')->where('name', 'like', '%' . $name . '%')->select('id')->get();
 
-      //female
-      $cliens_list = Client::where('gender', 'male')->where('name', 'like', '%' . $name . '%')->select('id')->get();
-      $cliens_list = $cliens_list->take( $this->result_num);
-      $clintids = data_get($cliens_list, '*.id');
-    }
- 
-    $clients_res= $this->selectandmap($clintids,$lang);
-    $type='';
-    if(isset($formdata["type"])){
-     $type=$formdata["type"];
+    $clintids = data_get($cliens_list, '*.id');
+
+  } else {
+
+    //female
+    $cliens_list = Client::where('gender', 'male')->where('name', 'like', '%' . $name . '%')->select('id')->get();
+    $cliens_list = $cliens_list->take( $this->result_num);
+    $clintids = data_get($cliens_list, '*.id');
+  }
+
+  $clients_res= $this->selectandmap($clintids,$lang);
+  $type='';
+  if(isset($formdata["type"])){
+   $type=$formdata["type"];
+  
+  }
+  $res=$clientpackctrlr->decrease_search_count($clientpack_id);
+  return view(
+    "site.page.search-result",
+    [
+      "clients" => (object) $clients_res,
+      'lang' => $lang,
+      'defultlang' => $defultlang,
+      'ai' => 1,
+      'type'=>$type,
+    ]
+  );
+}else{
+  return  redirect()->back();
+}
     
-    }
-    
-    return view(
-      "site.page.search-result",
-      [
-        "clients" => (object) $clients_res,
-        'lang' => $lang,
-        'defultlang' => $defultlang,
-        'ai' => 1,
-        'type'=>$type,
-      ]
-    );
 
   }
 
@@ -626,6 +653,16 @@ return ['property_id'=> $prop_id,
     $formdata = $request->all();
 
     $resultArr=$this->first_query_search($lang);  
+        //        
+        $id=$resultArr['client_id'];
+        $clientpackctrlr=new ClientPackageController();
+        $clientpack_id=  $clientpackctrlr->check_search_count($id);
+    if( $clientpack_id>0){
+      $res=$clientpackctrlr->decrease_search_count($clientpack_id);
+    }else{
+      return  redirect()->back();
+    }
+    //
     $cliens_list=$resultArr['cliens_list'];
     $gender=$resultArr['gender'];
     $genderTrans= $resultArr['genderTrans'];
@@ -698,6 +735,7 @@ $clintids = array_slice($clintids, 0, $this->result_num);
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
+    $id=0;
     if (Auth::guard('client')->check()) {
     $id = Auth::guard('client')->user()->id;
     $client = Client::with('clientoptions')->find($id);
@@ -708,6 +746,7 @@ $clintids = array_slice($clintids, 0, $this->result_num);
       $client=new Client();
 
     }
+
       if ($gender == 'male') {
       // Client search
       //  $cliens_list=DB::table('clients')->where('gender','female') ;
@@ -725,6 +764,7 @@ $clintids = array_slice($clintids, 0, $this->result_num);
    'gender'=> $gender,
     'genderTrans'=>$genderTrans,
     'defultlang'=>$defultlang,
+    'client_id'=>$id,
   ];
   }
   public function online_clients($lang)
@@ -920,12 +960,12 @@ $clintids = array_slice($clintids, 0, $this->result_num);
   {
     $resultArr=$this->first_query_search($lang);  
     $cliens_list=$resultArr['cliens_list'];
-    $gender=$resultArr['gender'];
+  //  $gender=$resultArr['gender'];
     $genderTrans= $resultArr['genderTrans'];
-    $client= $resultArr['client'];
+  //  $client= $resultArr['client'];
     $defultlang=$resultArr['defultlang'];
-    $cliens_list= $cliens_list->where('is_special',1);
-      $cliens_list = $cliens_list->select('id')->get();
+  //  $cliens_list= $cliens_list->where('is_special',1);
+      $cliens_list = $cliens_list->select('id')->get()->where('is_special',1);
       $clintids = data_get($cliens_list, '*.id'); 
   
 $clintids = array_slice($clintids, 0, $this->result_num);  

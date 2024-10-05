@@ -36,6 +36,8 @@ use Illuminate\Support\Carbon;
 use App\Http\Controllers\Web\PropertyController;
 use App\Http\Controllers\Web\ClientOptionController;
 use App\Http\Requests\Client\UpdateImageRequest;
+
+use App\Http\Controllers\Web\ClientPackageController;
 // use App\Http\Controllers\Web\MessageController;
 // use URL;
 //use Illuminate\Support\Facades\Session;
@@ -396,6 +398,9 @@ class ClientController extends Controller
   {
     if (Auth::guard('client')->check()) {
       $id = Auth::guard('client')->user()->id; 
+      $clientpackctrlr=new ClientPackageController();
+      $edit_name=  $clientpackctrlr->check_edit_name($id);
+
       $client = Client::find($id);       
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
@@ -405,7 +410,8 @@ class ClientController extends Controller
         [
           "client" => $client,
           'lang' => $lang,
-          'defultlang' => $defultlang,       
+          'defultlang' => $defultlang, 
+          'edit_name'=>$edit_name,      
         ]
       );
     } else {
@@ -462,6 +468,8 @@ class ClientController extends Controller
   {
     if (Auth::guard('client')->check()) {
       $id = Auth::guard('client')->user()->id; 
+      $clientpackctrlr=new ClientPackageController();
+      $show_img=  $clientpackctrlr->check_showimag($id);
       $client = Client::find($id);       
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
@@ -469,6 +477,7 @@ class ClientController extends Controller
       $favctrlr=new FavoriteController();
       $clients_res =  $favctrlr->favorite_listwith_image($id,$lang, $client);
       $countshow=collect($clients_res)->where('is_showimage',1)->count();
+
       return view(
         "site.content.edit-image",
         [
@@ -477,6 +486,7 @@ class ClientController extends Controller
           'defultlang' => $defultlang,    
 'favorite_list'=> $clients_res,
 'countshow'=>$countshow,
+'show_img'=>$show_img
         ]
       );
     } else {
@@ -499,6 +509,7 @@ class ClientController extends Controller
       return response()->json($validator);
     } else {
       $id = Auth::guard('client')->user()->id;
+   
 
       if ($request->hasFile('image')) {
         $file = $request->file('image');

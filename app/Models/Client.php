@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Http\Controllers\Web\StorageController;
 use App\Notifications\ClientResetPasswordNotification;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Web\ClientPackageController;
 //use App\Http\Controllers\Web\StorageController;
 class Client extends Authenticatable
 {
@@ -56,7 +57,7 @@ class Client extends Authenticatable
         'code',
         'expire_at',
         'lastseen_at',
-        'is_special',
+     
         'is_hidden',
         'show_image'
     ];
@@ -70,7 +71,7 @@ class Client extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends = ['image_path', 'gender_conv', 'age'];
+    protected $appends = ['image_path', 'gender_conv', 'age','is_special'];
     public function getImagePathAttribute()
     {
         $conv = "";
@@ -112,6 +113,7 @@ class Client extends Authenticatable
         return $conv;
     }
 
+    
     public function getGenderConvAttribute()
     {
         $conv = "-";
@@ -127,7 +129,13 @@ class Client extends Authenticatable
     }
 
     //
+    public function getIsSpecialAttribute()
+    {
+        $clientpackctrlr=new ClientPackageController();
+        $special_member=  $clientpackctrlr->check_special_member($this->id);
 
+        return $special_member;
+    }
 
     public function getAgeAttribute()
     {
@@ -203,6 +211,10 @@ class Client extends Authenticatable
         return $this->hasMany(ClientPackage::class, 'client_id');
     }
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'client_id');
+    }
     public function generateCode()
     {
         $this->timestamps = false;

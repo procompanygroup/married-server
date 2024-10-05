@@ -31,7 +31,10 @@ class Package extends Model
     {
         return $this->hasMany(ClientPackage::class, 'package_id');
     }
-
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'package_id');
+    }
 
 
 }
