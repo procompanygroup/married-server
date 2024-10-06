@@ -149,7 +149,7 @@ class SearchController extends Controller
         if( $clientpack_id>0){
           $res=$clientpackctrlr->decrease_search_count($clientpack_id);
         }else{
-          return  redirect()->back();
+          return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
         }
         //
     $client = Client::find($id);
@@ -396,7 +396,8 @@ class SearchController extends Controller
         if( $clientpack_id>0){
           $res=$clientpackctrlr->decrease_search_count($clientpack_id);
         }else{
-          return  redirect()->back();
+          return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
+          
         }
         //
     $client = Client::with('clientoptions')->find($id);
@@ -595,7 +596,7 @@ return ['property_id'=> $prop_id,
   }
   public function name_search(Request $request, $lang)
   {
-    //AdvanceRequest
+    
 
     $formdata = $request->all();
     $id = Auth::guard('client')->user()->id;
@@ -641,7 +642,7 @@ if( $clientpack_id>0){
     ]
   );
 }else{
-  return  redirect()->back();
+  return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
 }
     
 
@@ -660,7 +661,7 @@ if( $clientpack_id>0){
     if( $clientpack_id>0){
       $res=$clientpackctrlr->decrease_search_count($clientpack_id);
     }else{
-      return  redirect()->back();
+      return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
     }
     //
     $cliens_list=$resultArr['cliens_list'];

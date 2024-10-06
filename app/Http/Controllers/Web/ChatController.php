@@ -37,10 +37,17 @@ class ChatController extends Controller
 $sender_id=$auth_id;
 $reciver_id=$formdata['reciver_id'];
  
-  if($auth_id==$sender_id){
-     
+  if($auth_id==$sender_id){   
+    $clientpackctrlr=new ClientPackageController();
+    $clientpack_id=  $clientpackctrlr->check_chat_count($auth_id);
+if( $clientpack_id>0){
+  $res=$clientpackctrlr->decrease_chat_count($clientpack_id);
+}else{
+ // return  redirect()->back()->with('count_error',__('general.no_count',[],'ar') );
+  return response()->json(['count_error'=> __('general.no_count',[],'ar') ]);
+}
+    
     $newObj=new Chat();
-
     $newObj->sender_id = $sender_id;
     $newObj->reciver_id = $reciver_id;
     $newObj->content = $formdata['content'];

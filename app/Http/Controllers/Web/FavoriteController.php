@@ -58,10 +58,8 @@ class FavoriteController extends Controller
         } else {
           $now = Carbon::now();
           $favObj->favorite_date = $now;
-          $favObj->is_favorite = $is_favorite;
-          $favObj->save();
+          $favObj->is_favorite = $is_favorite;       
         }
-
       } else {
         $favObj = new Favorite();
         $now = Carbon::now();
@@ -69,10 +67,29 @@ class FavoriteController extends Controller
         $favObj->client_id = $auth_id;
         $favObj->fav_to_client_id = $fav_to_client_id;
         $favObj->is_favorite = 1;
-        $favObj->save();
-        $is_favorite = $favObj->is_favorite;
 
       }
+      //
+      if( $favObj->is_favorite==1){
+        $clientpackctrlr=new ClientPackageController();
+        $clientpack_id=  $clientpackctrlr->check_favorite_count($auth_id);
+    if( $clientpack_id>0){
+      $res=$clientpackctrlr->decrease_favorite_count($clientpack_id);
+      $favObj->save();
+    }else{
+     // return  redirect()->back()->with('count_error',__('general.no_count',[],'ar') );
+      return response()->json(['count_error'=> __('general.no_count',[],'ar') ]);
+    }
+      }else{
+        $favObj->save();
+      }
+
+
+
+      //
+
+      $is_favorite = $favObj->is_favorite;
+
       $notifyctrlr=new NotificationController();
       if( $favObj->is_favorite !=1){
         $imgctrlr=new PrivateImageController();

@@ -27,7 +27,10 @@ $(document).ready(function () {
 					//	$('.loading img').hide();
 					if (data.length == 0) {
 						//	noteError();
-					} else {
+					}if(isSet(data.count_error)){
+						 swal(data.count_error);
+						 
+				}else {
 						//alert('ok');
 						//append to chat
 						var newMsg = '<div class="direct-chat-msg right">' +
@@ -192,7 +195,10 @@ $(document).ready(function () {
 				//	$('.loading img').hide();
 				if (data.length == 0) {
 					//	noteError();
-				} else {
+				}else if(isSet(data.count_error)){
+					swal(data.count_error);
+				}else 
+				{
 					if (type == 'fav') {
 						$('.btn-add-to-favorite').attr('data-user-favorite', data);
 						if (data == 1) {
@@ -230,4 +236,10 @@ $(document).ready(function () {
 		});
 
 	}
+
+	//
+  function isSet(variable){
+		return typeof(variable) !== "undefined" && variable !== null && variable !== '';
+	}
+	//
 });

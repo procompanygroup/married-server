@@ -453,6 +453,7 @@ Route::middleware(['auth:client', 'verified', 'code'])->group(function () {
         Route::prefix('subscribe')->group(function () {
             Route::get('/', [ClientPackageController::class, 'index']);
             Route::any('payment', [ClientPackageController::class, 'payment']);
+            Route::any('features', [ClientPackageController::class, 'features']);  
 
         });
         //payment

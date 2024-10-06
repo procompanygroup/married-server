@@ -111,12 +111,7 @@
         var success_msg = "تم الحفظ بنجاح";
         var fail_msg = "لم يتم الحفظ";
         $(function() {
-            /* Rounded Dots Dark */
-
-            /* 3d Dark */
-
-
-            /* Dark Thin */
+          @include('site.page.sub-all.count-alert') 
 
         });
     </script>

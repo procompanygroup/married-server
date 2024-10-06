@@ -27,7 +27,11 @@ $(document).ready(function () {
 					//	$('.loading img').hide();
 					if (data.length == 0) {
 						//	noteError();
-					} else {
+					}else if(isSet(data.count_error)){
+						 
+						swal(data.count_error);
+										}
+										 else {
 						//alert('ok');
 						//append to chat
 						var newMsg = '<div class="direct-chat-msg right">' +
@@ -60,7 +64,7 @@ $(document).ready(function () {
 		//var isBlack = $('.btn-add-to-blacklist').attr('data-user-blacklist');
 		var userCard = $(this).closest('.user-card');
 		recieverId =userCard.data('user-id');
-		// استخراج قيمة data-user-blacklist
+		 
 		var isBlack = userCard.find('.btn-remove-from-blacklist').attr('data-user-blacklist');
 	 
 		favtype = 'fav';
@@ -132,11 +136,7 @@ $(document).ready(function () {
 		} else if (type == 'black') {
 			sendUrl = blackurl;
 		}
-		// else if (type == 'report') {
-		// 	sendUrl = reporturl;
-		//   reportsel=	$('#report-sel').find(":selected").val(); 
-
-		// }
+		 
 		var senddata = { 'member_id': memId, 'report-sel':reportsel};
 
 		$.ajaxSetup({
@@ -155,7 +155,10 @@ $(document).ready(function () {
 				//	$('.loading img').hide();
 				if (data.length == 0) {
 					//	noteError();
-				} else {
+				}else if(isSet(data.count_error)){
+					swal(data.count_error);
+				}
+				 else {
 					var userCard=$('#card-'+memId);
 					if (type == 'fav') {
 
@@ -194,4 +197,9 @@ $(document).ready(function () {
 		});
 
 	}
+	//
+	function isSet(variable){
+		return typeof(variable) !== "undefined" && variable !== null && variable !== '';
+	}
+	//
 });

@@ -75,9 +75,7 @@
                         </section>
                     </div>
                     @csrf
-                    <div class="submit-block text-center">
-                        <button type="button" class="btn btn-lg btn-primary btn-submit"> تعديل </button>
-                    </div>
+                 
                
             </section>
         </div>

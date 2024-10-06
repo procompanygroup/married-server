@@ -41,6 +41,7 @@
 
 @endsection
 @section('js')
+<script src="{{ url('assets/site/js/sweetalert.min.js') }}"></script>
     <script>
         // var fail_msg = "لم يتم الحفظ";
         var lang = "{{ $lang }}";
@@ -52,17 +53,11 @@
         var token = '{{ csrf_token() }}';
         var success_msg = "تم الحفظ بنجاح";
         var fail_msg = "لم يتم الحفظ";
-        $(function() {
-            /* Rounded Dots Dark */
-
-            /* 3d Dark */
-
-
-            /* Dark Thin */
-
+        $(function() {            
+             @include('site.page.sub-all.count-alert') 
         });
     </script>
-    <script src="{{ url('assets/site/js/sweetalert.min.js') }}"></script>
+
     <script src="{{ url('assets/site/js/custom/validate.js') }}"></script>
     <script src="{{ url('assets/site/js/custom/advanec-search.js') }}"></script>
     <script src="{{ url('assets/site/bootstrap/jquery.mCustomScrollbar.concat.min.js') }}"></script>

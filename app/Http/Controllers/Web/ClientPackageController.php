@@ -35,7 +35,7 @@ class ClientPackageController extends Controller
   //admin
   public function show_subscribtions()
   {
-    $List = ClientPackage::with('order','client', 'package')->orderByDesc('created_at')->get();  
+    $List = ClientPackage::with('order', 'client', 'package')->orderByDesc('created_at')->get();
     return view('admin.subscribe.show', ['List' => $List]);
   }
   public function payment(Request $request, $lang)
@@ -65,6 +65,27 @@ class ClientPackageController extends Controller
     return view('admin.package.create');
   }
 
+
+  //
+  public function features($lang)
+  {
+
+    $sitedctrlr = new SiteDataController();
+    $transarr = $sitedctrlr->FillTransData($lang);
+
+    $defultlang = $transarr['langs']->first();
+
+    $auth_id = auth()->guard('client')->user()->id;
+
+    $items = $this->member_packages($auth_id);
+    //  $ip= $request->getClientIp(); 
+
+    return view('site.subscribe.member_features', ['items' => $items, 'lang' => $lang, 'defultlang' => $defultlang]);
+
+
+
+  }
+  //
   /**
    * Store a newly created resource in storage.
    */
@@ -147,25 +168,25 @@ class ClientPackageController extends Controller
     $newObj->favorite_count = $package->favorite_count;
     $newObj->expire_duration = $package->expire_duration;
     $newObj->chat_count_remain = $package->chat_count;
-  
+
     $newObj->search_count_remain = $package->search_count;
     $newObj->favorite_count_remain = $package->favorite_count;
     $newObj->is_expire = $package->is_expire;
     $newObj->status = '1';
     if ($package->is_expire == 1) {
       $now = Carbon::now()->toDateString();
-    //  $now = $now->toDateString();
-      $newObj->start_date = Carbon::parse($now) ;
+      //  $now = $now->toDateString();
+      $newObj->start_date = Carbon::parse($now);
       $newObj->end_date = Carbon::parse($now)->addMonths($package->expire_duration);
 
     }
-      $newObj->save();
+    $newObj->save();
     return $newObj->id;
   }
 
 
   //validate availability section
-  public function check_available($client_id,$conditionArr)
+  public function check_available($client_id, $conditionArr=true)
   {
     /*
 ->where([
@@ -173,112 +194,199 @@ class ClientPackageController extends Controller
     ['subscribed', '<>', '1'],
 ])
     */
-    $now=Carbon::now();
-    $cpack = ClientPackage::where('client_id', $client_id)->where('status',1)
-   ->where($conditionArr)
-    ->orWhere(
-        function($query)  {
-      return $query
-             ->where('is_expire',0);            
-     })->orWhere( function($query)use($now) {
-          return $query
-          ->where('is_expire',1)
-                 ->whereDate('end_date','<=',$now);
-         })->orderBy('created_at')->get();
-         return $cpack;
+    $now = Carbon::now();
+    $cpack = ClientPackage::where('client_id', $client_id)->where('status', 1)
+      ->where($conditionArr)
+      ->Where(function ($query) use ($now) {
+        return $query
+          ->Where(
+            function ($query) {
+              return $query
+                ->where('is_expire', 0);
+            }
+          )->orWhere(function ($query) use ($now) {
+            return $query
+              ->where('is_expire', 1)
+              ->whereDate('end_date', '>=', $now);
+          });
+      })->orderBy('created_at')->get();
+    return $cpack;
   }
 
-  public function check_hidden($client_id )
+  public function member_packages($client_id)
   {
-     
-    $arr=[
-      ['hidden_feature', '=', '1'],       
+    /*
+->where([
+    ['status', '=', '1'],
+    ['subscribed', '<>', '1'],
+])
+    */
+    $now = Carbon::now();
+    $cpack = ClientPackage::with('package')->where('client_id', $client_id)->where('status', 1)
+      
+      ->Where(function ($query) use ($now) {
+        return $query
+          ->Where(
+            function ($query) {
+              return $query
+                ->where('is_expire', 0);
+            }
+          )->orWhere(function ($query) use ($now) {
+            return $query
+              ->where('is_expire', 1)
+              ->whereDate('end_date', '>=', $now);
+          });
+      })->orderByDesc('created_at')->get();
+    return $cpack;
+  }
+  public function check_hidden($client_id)
+  {
+
+    $arr = [
+      ['hidden_feature', '=', '1'],
     ];
 
-  $clientpack=  $this->check_available($client_id , $arr);
-   
-  $is_valid=0;
-  if($clientpack->first()){
-    $is_valid=1;
-  }
-  return $is_valid;
+    $clientpack = $this->check_available($client_id, $arr);
+
+    $is_valid = 0;
+    if ($clientpack->first()) {
+      $is_valid = 1;
+    }
+    return $is_valid;
   }
 
-public function check_showimag($client_id )
+  public function check_showimag($client_id)
   {
-     
-    $arr=[
-      ['show_img', '=', '1'],       
+
+    $arr = [
+      ['show_img', '=', '1'],
     ];
 
-  $clientpack=  $this->check_available($client_id , $arr);
-   
-  $is_valid=0;
-  if($clientpack->first()){
-    $is_valid=1;
-  }
-  return $is_valid;
+    $clientpack = $this->check_available($client_id, $arr);
+
+    $is_valid = 0;
+    if ($clientpack->first()) {
+      $is_valid = 1;
+    }
+    return $is_valid;
   }
 
-  public function	check_edit_name($client_id )
+  public function check_edit_name($client_id)
   {
-     
-    $arr=[
-      ['edit_name', '=', '1'],       
+
+    $arr = [
+      ['edit_name', '=', '1'],
     ];
 
-  $clientpack=  $this->check_available($client_id , $arr);
-   
-  $is_valid=0;
-  if($clientpack->first()){
-    $is_valid=1;
-  }
-  return $is_valid;
+    $clientpack = $this->check_available($client_id, $arr);
+
+    $is_valid = 0;
+    if ($clientpack->first()) {
+      $is_valid = 1;
+    }
+    return $is_valid;
   }
 
 
-  public function	check_special_member($client_id )
+  public function check_special_member($client_id)
   {
-     
-    $arr=[
-      ['special_member', '=', '1'],       
+
+    $arr = [
+      ['special_member', '=', '1'],
     ];
 
-  $clientpack=  $this->check_available($client_id , $arr);
-   
-  $is_valid=0;
-  if($clientpack->first()){
-    $is_valid=1;
-  }
-  return $is_valid;
+    $clientpack = $this->check_available($client_id, $arr);
+
+    $is_valid = 0;
+    if ($clientpack->first()) {
+      $is_valid = 1;
+    }
+    return $is_valid;
   }
 
-  public function	check_search_count($client_id )
+  public function check_search_count($client_id)
   {
-     
-    $arr=[
-      ['search_count_remain', '>', '0'],       
+
+    $arr = [
+      ['search_count_remain', '>', '0'],
     ];
 
-  $clientpack=$this->check_available($client_id , $arr);
-   
-  $is_valid=0;
-  if($clientpack->first()){
-    $is_valid=$clientpack->first()->id;
-  }
-  return $is_valid;
+    $clientpack = $this->check_available($client_id, $arr);
+
+    $is_valid = 0;
+    if ($clientpack->first()) {
+      $is_valid = $clientpack->first()->id;
+    }
+    return $is_valid;
   }
 
-  public function	decrease_search_count($client_package_id )
+  public function decrease_search_count($client_package_id)
   {
-    
-    $client_package= ClientPackage::find($client_package_id);
-if($client_package){
-  $client_package->search_count_remain--;
-  $client_package->save();
-}
-  
-  return 1;
+
+    $client_package = ClientPackage::find($client_package_id);
+    if ($client_package) {
+      $client_package->search_count_remain--;
+      $client_package->save();
+    }
+
+    return 1;
+  }
+
+  //chat
+
+  public function check_chat_count($client_id)
+  {
+
+    $arr = [
+      ['chat_count_remain', '>', '0'],
+    ];
+
+    $clientpack = $this->check_available($client_id, $arr);
+
+    $is_valid = 0;
+    if ($clientpack->first()) {
+      $is_valid = $clientpack->first()->id;
+    }
+    return $is_valid;
+  }
+
+  public function decrease_chat_count($client_package_id)
+  {
+    $client_package = ClientPackage::find($client_package_id);
+    if ($client_package) {
+      $client_package->chat_count_remain--;
+      $client_package->save();
+    }
+    return 1;
+  }
+  ///
+  public function check_favorite_count($client_id)
+  {
+
+    $arr = [
+      ['favorite_count_remain', '>', '0'],
+    ];
+
+    $clientpack = $this->check_available($client_id, $arr);
+
+    $is_valid = 0;
+    if ($clientpack->first()) {
+      $is_valid = $clientpack->first()->id;
+    }
+    return $is_valid;
+  }
+
+  public function decrease_favorite_count($client_package_id)
+  {
+    $client_package = ClientPackage::find($client_package_id);
+    if ($client_package) {
+      $client_package->favorite_count_remain--;
+      if($client_package->favorite_count_remain<0){
+       // $client_package->favorite_count_remain==0;
+      }
+      $client_package->save();
+    }
+    return 1;
   }
   /**
    * Display the specified resource.
@@ -302,46 +410,9 @@ if($client_package){
   /**
    * Update the specified resource in storage.
    */
-  //     public function update(UpdatePackageRequest $request,$id)
-//     {
-//         $formdata = $request->all();
-//     $validator = Validator::make(
-//       $formdata,
-//       $request->rules(),
-//       $request->messages()
-//     );
-//     if ($validator->fails()) {
-
-  //       return response()->json($validator);
-
-  //     } else {
 
 
 
-  //       Package::find($id)->update([
-//         //'user_name'=>$formdata['user_name'],
-//      'name' => $formdata['name'],
-// 'code' => $formdata['code'],
-// 'chat_count' => $formdata['chat_count'],
-// 'search_count' => $formdata['search_count'],
-// 'favorite_count' => $formdata['favorite_count'],
-// 'hidden_feature' =>isset ($formdata["hidden_feature"]) ? 1 : 0 ,
-// 'show_img' => isset ($formdata["show_img"]) ? 1 : 0,
-// 'special_member' => isset ($formdata["special_member"]) ? 1 : 0,
-// 'edit_name' =>isset ($formdata["edit_name"]) ? 1 : 0,
-// 'expire_duration' => $formdata['expire_duration'],
-// 'is_expire' => isset ($formdata["is_expire"]) ? 1 : 0,
-// 'price' => $formdata['price'],
-// 'is_active' => isset ($formdata["is_active"]) ? 1 : 0, 
-//       ]);
-//       if ($request->hasFile('image')) {
-//         $file = $request->file('image');
-//         // $filename= $file->getClientOriginalName();                
-//         $this->storeImage($file, $id);
-//       }  
-//       return response()->json("ok");
-//     }
-//     }
 
   /**
    * Remove the specified resource from storage.
