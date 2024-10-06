@@ -287,5 +287,16 @@ class PrivateImageController extends Controller
         PrivateImage::where('client_id', $client_id)->where('showto_id', $clientshow_id)->delete();
        return 1;
     }
+
+    public function show_image_count()
+    {
+    
+        $id = Auth::guard('client')->user()->id; 
+        $imagecount = PrivateImage::where('showto_id', $id)->count();
+
+        return  $imagecount;
+     
+  
+    }
   
 }

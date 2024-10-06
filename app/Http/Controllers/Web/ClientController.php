@@ -548,7 +548,7 @@ class ClientController extends Controller
       // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile','register-error']);
       Carbon::setLocale('ar');
       $user_reg_date = auth()->guard('client')->user()->created_at->translatedFormat('l jS F Y - H:m');
-
+    $counts_arr=  $sitedctrlr->getprofile_counts();
       return view(
         "site.content.profile",
         [
@@ -559,7 +559,7 @@ class ClientController extends Controller
           'user_reg_date' => $user_reg_date,
           //  'profile' => $profile,
           // 'sitedataCtrlr' => $sitedctrlr
-
+'counts_arr'=> $counts_arr,
         ]
       );
 

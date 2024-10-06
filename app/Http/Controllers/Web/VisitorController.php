@@ -148,4 +148,13 @@ class VisitorController extends Controller
     ];
     return $clientArr;
   }
+
+  public function who_visited_me_today_count()
+  {
+    $id = Auth::guard('client')->user()->id; 
+      $favecount = Visitor::where('visited_id', $id)->whereDate('updated_at',Carbon::today())->count();
+   // $favecount = Visitor::where('visited_id', $id)->count();
+    return $favecount;
+  }
+
 }

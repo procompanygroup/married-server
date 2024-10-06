@@ -610,5 +610,15 @@ if($authclient->show_image==1){
     ];
     return $clientArr;
   }
+
+
+  //home statistics
+  public function who_like_me_count()
+  {
+    $id = Auth::guard('client')->user()->id;   
+    $favecount = Favorite::where('fav_to_client_id', $id)->where('is_favorite', 1)->orderByDesc('favorite_date')->count();
+    return  $favecount;
+  }
+
  
 }

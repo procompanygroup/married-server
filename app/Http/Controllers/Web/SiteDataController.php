@@ -117,6 +117,9 @@ class SiteDataController extends Controller
         return $mainarr;
 
     }
+
+
+
     public function getCompanyData()
     {
         $List = Setting::select(
@@ -855,15 +858,15 @@ class SiteDataController extends Controller
     public function gethomedata($lang_id)
     {        //projects and refs
         $ref = Category::where('code', 'references')->where('status', 1)->first();
-      //  $main_banner = $this->getcatbycode($lang_id, 'main-banner');
-       // $project_banner = $this->getcatbycode($lang_id, 'project-banner');
+        //  $main_banner = $this->getcatbycode($lang_id, 'main-banner');
+        // $project_banner = $this->getcatbycode($lang_id, 'project-banner');
         if ($ref) {
             $ref = $this->getcatwithposts($lang_id, $ref->slug);
         }
         $homearr = [
             "references" => $ref,
-        //    "main_banner" => $main_banner,
-           // "project_banner" => $project_banner,
+            //    "main_banner" => $main_banner,
+            // "project_banner" => $project_banner,
         ];
         return $homearr;
     }
@@ -1058,45 +1061,45 @@ class SiteDataController extends Controller
             },
             'mediaposts.mediastore'
         ])->where('status', 1)->where('slug', $slug)->first();
-    $object_arr= $this->map_quiz_category( $Dblist, $langcode);
+        $object_arr = $this->map_quiz_category($Dblist, $langcode);
         return $object_arr;
     }
 
     public function map_quiz_category($category, $lang_code)
     {
-        $slug="";
+        $slug = "";
         $tr_title = '';
         $tr_content = '';
         $urlpath = '#';
         $image_path = '';
         $image_alt = "";
-        $meta_key="";
-        $code="";
-        $id=0;
-      //  $is_link = 0;
-      if($category){
-       $id= $category->id;
-        if ($category->langposts->first()) {
-            $slug= $category->slug;
-            $tr_title = $category->langposts->first()->title_trans;
-            $tr_content = $category->langposts->first()->content_trans;
-            if($category->mediaposts->first()){
-                $image_path = $category->mediaposts->first()->mediastore->image_path;
-                $image_alt = $category->mediaposts->first()->mediastore->name . $category->mediaposts->first()->mediastore->caption;
-              
-            }
+        $meta_key = "";
+        $code = "";
+        $id = 0;
+        //  $is_link = 0;
+        if ($category) {
+            $id = $category->id;
+            if ($category->langposts->first()) {
+                $slug = $category->slug;
+                $tr_title = $category->langposts->first()->title_trans;
+                $tr_content = $category->langposts->first()->content_trans;
+                if ($category->mediaposts->first()) {
+                    $image_path = $category->mediaposts->first()->mediastore->image_path;
+                    $image_alt = $category->mediaposts->first()->mediastore->name . $category->mediaposts->first()->mediastore->caption;
 
-             $urlpath = url($lang_code, ['quiz', $category->slug]);
-            $meta_key= $category->meta_key;
-            $code= $category->code;
+                }
+
+                $urlpath = url($lang_code, ['quiz', $category->slug]);
+                $meta_key = $category->meta_key;
+                $code = $category->code;
+            }
         }
-      }
-    
+
         return [
-            'id' =>$id,
-            'slug' =>  $slug,
-            'meta_key' =>  $meta_key,
-         'code' => $code,
+            'id' => $id,
+            'slug' => $slug,
+            'meta_key' => $meta_key,
+            'code' => $code,
             'tr_title' => $tr_title,
             'tr_content' => $tr_content,
             'urlpath' => $urlpath,
@@ -1107,10 +1110,10 @@ class SiteDataController extends Controller
     }
 
     //translate
-    public function getbycode($lang_id,$codearr)
+    public function getbycode($lang_id, $codearr)
     {        //projects and refs
-        $Dbitem = Category::with([            
-            'posts' => function ($q) use ($lang_id,$codearr) {
+        $Dbitem = Category::with([
+            'posts' => function ($q) use ($lang_id, $codearr) {
                 $q->where('status', 1)->whereIn('code', $codearr)
                     ->with([
                         'langposts' => function ($q) use ($lang_id) {
@@ -1131,81 +1134,47 @@ class SiteDataController extends Controller
             if ($postmodel->langposts->first()) {
                 $tr_title = $postmodel->langposts->first()->title_trans;
                 $tr_content = $postmodel->langposts->first()->content_trans;
-            }           
-            return [                
-                'title' => $postmodel->title,                 
+            }
+            return [
+                'title' => $postmodel->title,
                 'code' => $postmodel->code,
                 'tr_title' => $tr_title,
-                'tr_content' => $tr_content,            
+                'tr_content' => $tr_content,
             ];
         });
         return $List;
 
     }
-    public function gettrans($tr_arr,$title,$code=null)
+    public function gettrans($tr_arr, $title, $code = null)
     {
-        $tr_val="";
-     if(isset($code)){
-        if($tr_arr->where('title',$title)->where('code',$code)->first()){
-            $tr_val=$tr_arr->where('title',$title)->where('code',$code)->first()['tr_title'];
+        $tr_val = "";
+        if (isset($code)) {
+            if ($tr_arr->where('title', $title)->where('code', $code)->first()) {
+                $tr_val = $tr_arr->where('title', $title)->where('code', $code)->first()['tr_title'];
+            }
+
+        } else {
+            if ($tr_arr->where('title', $title)->first()) {
+                $tr_val = $tr_arr->where('title', $title)->first()['tr_title'];
+            }
+
         }
-        
-     }else{
-        if($tr_arr->where('title',$title)->first()){
-            $tr_val=$tr_arr->where('title',$title)->first()['tr_title'];
-        }
-       
-     }
- 
+
         return $tr_val;
     }
-   
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function getprofile_counts()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $favctrlr = new FavoriteController();
+        $who_like_me_count = $favctrlr->who_like_me_count();
+        $visitctrlr = new VisitorController();
+        $who_visited_me_today_count = $visitctrlr->who_visited_me_today_count();
+        $prvimgctrlr = new PrivateImageController();
+        $show_image_count = $prvimgctrlr->show_image_count();
+        return [
+            'who_like_me_count' => $who_like_me_count,
+            'who_visited_me_today_count' => $who_visited_me_today_count,
+            'show_image_count' => $show_image_count,
+        ];
     }
 }
