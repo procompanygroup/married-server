@@ -1,54 +1,36 @@
-@extends('site.layouts.layout')
-
+@extends('site.layouts.home-signed.layout')
 @section('content')
-     <!-- المحتوى الرئيسي -->
-     <div class="container-fluid content">
-      <div class="row justify-content-center">
-        <main role="main" class="col-12 col-lg-10 px-4">
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h2 class="h2"> <span>{{ $page['tr_title'] }}</span></h2>   
-          </div>
-          <!-- محتوى الصفحة -->
-          <div class="row main-content">
-            <!-- تصنيفات -->
+<div class="container-fluid mt-3 pt-3">
+    <div class="row">
+        <!-- القسم الجانبي -->
+        @include('site.content.profile-sidebar')
 
-            <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-4 p-1">
-              {{-- <a href="#" class="category-link">
-                <div class="category-card category-card-full">
-                  <img src="{{ $catquis['image_path'] }}" alt="{{ $catquis['image_alt'] }}">
-                  <div class="category-overlay">
-                    <h6>{{ $catquis['tr_title'] }}</h6>
-                  </div>          
-                </div>         
-              </a> --}}
-         <div class="category-details">
+       
+        <section class=" content-sec col-lg-7 col-md-6">
+
+            <h3>{{ $page['tr_title'] }}</h3>
+            <div class="bg-white p-4 rounded shadow box-form">
+                 
+                <div class="edit-details__content">
+                  <div class="category-details">
                     <p>{{Str::of($page['tr_content'])->toHtmlString()}}</p>
                   </div>
-            </div>      
-          
-      
-          </div>
-        </main>
-      </div>
+                </div>
+                        </div>
+
+
+        </section>
     </div>
-    <form   action ="{{ url($lang,'checkans') }}" method="POST"  name="check-form"   id="check-form">
-      @csrf
-       
-    </form>
+</div>
+
+
 @endsection
 @section('js')
+<script>
  
- 
- 
-<script  >
- 
-
- 
-
-
-$(document).ready(function() {
-  
-   
-});
+    var success_msg = "تم الحفظ بنجاح";
+    var fail_msg = "لم يتم الحفظ";
 </script>
+<script src="{{ url('assets/site/js/sweetalert.min.js') }}"></script>
+<script src="{{ url('assets/site/js/custom/setting.js') }}"></script>
 @endsection

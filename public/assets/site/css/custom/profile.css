@@ -74,7 +74,7 @@
 }
 
 .block-user-data .user-data figure a.upload-photo:after {
-    background: url(/images/18657767c59de4043f29.svg);
+    /* background: url(/images/1.svg); */
     content: "";
     display: block;
     height: 24px;
@@ -510,7 +510,9 @@
     height: 54px;
     width: 54px
 }
-
+.notification .avatar .user-avatar{
+border-radius: 50%; 
+}
 .block-last-notifications ul li.notification p {
     color: #324148;
     font-size: 17px;

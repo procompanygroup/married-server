@@ -427,7 +427,7 @@
           <div class="col-md-12 text-center">
               <div style="height:15px"></div>
               <div>
-                  <input type="submit" class="btn btn-md btn-danger not-register" value="بـحـث">
+                  <input type="submit" class="btn btn-md btn-danger formsearch" value="بـحـث">
               </div>
           </div>
       </div>
@@ -545,7 +545,56 @@
 </section>
 
 <!-- قسم قصص النجاح   -->
+<section class="success-stories">
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-md-12">
+              <h2>قصص النجاح</h2>
 
+              <div class="site-section bg-left-half mb-5" dir="ltr">
+                  <div class="container owl-2-style">
+                      <div class="owl-carousel owl-success">
+
+                          <div class="carusel-item">
+                              <div class="" data-slick-index="7" aria-hidden="true" tabindex="-1" role="option"
+                                  aria-describedby="slick-slide17">
+                                  <div class="story-card">
+                                      <div class="user-data">
+                                          <div class="avatar"> <img src="img/user.jpg"
+                                                  class="avatar-female" alt="صورة العضو" loading="eager"> <span
+                                                  class="status status--online"></span></div>
+                                          <h4 class="success-h"> Schicksal  aa89 <img class="success-flag" src="img/flag.gif" alt="مصر"
+                                                  loading="eager"> </h4>
+                                          <h5 class="row success-age ">  <span   >سنة من مصر </span><span >33</span></h5>
+                                      </div>
+                                      <div class="story-content">
+                                          <blockquote>
+                                              <p> تعرفت ع شخص و نحن الان في مرحله الخطوبه
+                                                  شكرا لكم </p>
+                                          </blockquote>
+                                      </div>
+                                      <div class="story-data">
+                                          <p> توافق بعد 6 أشهر </p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+
+
+
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+  </div>
+
+  </div>
+
+</section>
   @endsection
   @section('js')
     <script src="{{ url('assets/site/js/custom/home.js') }}"></script>

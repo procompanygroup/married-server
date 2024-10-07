@@ -123,25 +123,33 @@
                                     <div class="user-last-login"> </div>
                                     <div class="user-options">
                                         <ul>
+                                           @if(Auth::guard('client')->check())
+                                           <li><span class="profile-visited" title="لقد زرت هذا الملف سابقا"></span></li>
+                                           <li><button class="btn btn-primary btn-send-message" 
+                                                   data-user-name="{{ $client['client']->name }}"   data-user-id="{{$client['client']->id }}"
+                                                   data-user-premium="" data-user-last-login="" data-user-favorited="0"
+                                                   data-user-blacklisted="0" data-user-disabled="0"
+                                                   data-user-contactability="1" title="أرسل رسالة"><i
+                                                       class="fas fa-comments"></i></button></li>
+                                           <li> 
+                                               <button class="btn btn-outline-light @if($client['is_favorite']==1) btn-remove-from-favorite @else  btn-add-to-favorite @endif"
+                                                  @if($client['is_blacklist']==1) style="display:none; "@endif
+                                                  data-toggle="modal" data-target="#favoriteModal"
+                                               data-user-favorite="{{$client['is_favorite']}}"
+                                                   title="@if($client['is_favorite']==1) مهتم @else إضافة للإهتمام @endif "><i class="fas fa-heart"></i></button> </li>
+                                           <li>
+                                               <button class="btn btn-outline-light btn-remove-from-blacklist"
+                                             data-toggle="modal" data-target="#favoriteModal"
+                                                     data-user-blacklist="{{$client['is_blacklist']}}"
+                                                   title="لقد تجاهلت هذا العضو"><i class="fas fa-ban"></i></button></li>
+                                      
+                                            @else
                                             <li><span class="profile-visited" title="لقد زرت هذا الملف سابقا"></span></li>
-                                            <li><button class="btn btn-primary btn-send-message" 
-                                                    data-user-name="{{ $client['client']->name }}"   data-user-id="{{$client['client']->id }}"
-                                                    data-user-premium="" data-user-last-login="" data-user-favorited="0"
-                                                    data-user-blacklisted="0" data-user-disabled="0"
-                                                    data-user-contactability="1" title="أرسل رسالة"><i
-                                                        class="fas fa-comments"></i></button></li>
+                                            <li><button class="btn btn-primary  not-register"  data-user-contactability="1" title="أرسل رسالة"><i class="fas fa-comments"></i></button></li>
                                             <li> 
-                                                <button class="btn btn-outline-light @if($client['is_favorite']==1) btn-remove-from-favorite @else  btn-add-to-favorite @endif"
-                                                   @if($client['is_blacklist']==1) style="display:none; "@endif
-                                                   data-toggle="modal" data-target="#favoriteModal"
-                                                data-user-favorite="{{$client['is_favorite']}}"
-                                                    title="@if($client['is_favorite']==1) مهتم @else إضافة للإهتمام @endif "><i class="fas fa-heart"></i></button> </li>
-                                            <li>
-                                                <button class="btn btn-outline-light btn-remove-from-blacklist"
-                                              data-toggle="modal" data-target="#favoriteModal"
-                                                      data-user-blacklist="{{$client['is_blacklist']}}"
-                                                    title="لقد تجاهلت هذا العضو"><i class="fas fa-ban"></i></button></li>
-                                        </ul>
+                                                <button class="btn btn-outline-light btn-add-to-favorite not-register"  title="  إضافة للإهتمام "><i class="fas fa-heart"></i></button> </li>
+                                            @endif
+                                             </ul>
                                     </div>
                                 </div>
                             </div>

@@ -21,7 +21,7 @@
             <div class="input-group">
                 <input type="text" name="content" placeholder="اكتب رسالة ..." class="form-control">
                 <span class="input-group-btn">
-                    <button type="button" name="chat-send-btn" class="btn btn-primary btn-flat">ارسال</button>
+                    <button type="submit" name="chat-send-btn" class="btn btn-primary btn-flat">ارسال</button>
                 </span>
             </div>
         </form>

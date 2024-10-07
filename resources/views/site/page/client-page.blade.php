@@ -60,9 +60,9 @@
                                         <div class="option btn-report" data-toggle="modal" data-target="#reportModal" data-user-report="{{ $stateArr['is_report'] }}" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-flag-fill"></i></span> <span class="report-text">@if($stateArr['is_report']==0 ) إبلاغ  @else تم الابلاغ @endif </span></div>
                                     @else
                                     <div class="option btn-send-message" data-user-name="{{ $client->client->name }}"  ><span><i class="bi bi-envelope-fill"></i></span> <span> رسالة </span></div>
-                                    <div class="option btn-add-to-favorite" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-heart-fill"></i></span> <span class="favorite-text"> إهتمام </span></div>
-                                    <div class="option btn-add-to-blacklist" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-x-circle-fill"></i></span> <span> تجاهل </span></div>
-                                    <div class="option btn-report" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-flag-fill"></i></span> <span> إبلاغ </span></div>
+                                    <div class="option btn-add-to-favorite not-register" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-heart-fill"></i></span> <span class="favorite-text"> إهتمام </span></div>
+                                    <div class="option btn-add-to-blacklist not-register" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-x-circle-fill"></i></span> <span> تجاهل </span></div>
+                                    <div class="option btn-report not-register" data-user-id="{{ $client->client->id }}"><span><i class="bi bi-flag-fill"></i></span> <span> إبلاغ </span></div>
                            
                                     @endif
                                     </div>

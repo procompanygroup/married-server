@@ -3,34 +3,50 @@
    <footer class=" text-center text-lg-start mt-5">
        <div class="container p-4">
            <div class="row">
-               <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+            <div class="col-lg-3 col-md-6 mb-3  text-dark">
+                <h5 class="text-uppercase footer-title"> <a class="navbar-brand" style="margin-right: 0px;" href="{{ url('/') }}">
+                    <img src="{{ $mainarr['logo']}}"  alt="Logo" class="logo">
+                </a></h5>
+                <h4   >{{$mainarr['title']}}</h4>
+                <p  > للزواج الإسلامي </p>
+           
+            <p class="intto-desc">نبحث لك عن نصفك الآخر</p>
+                <ul class="list-unstyled mb-0">
+                    <li></li>
+                    
+                </ul>
+            </div>
+               <div class="col-lg-3 col-md-6 mb-4 mb-md-0 footer-menu">
+                   <h5 class="text-uppercase footer-title">من نحن</h5>
+                 
+                   <ul class="  mb-0">                    
+                       <li><a href="{{ url($lang.'/page'.'/'.'about-us') }}" class="text-dark">نبذة عنا</a></li>                      
+                       <li><a href="{{ url($lang.'/page'.'/'.'contact-us') }}" class="text-dark">اتصل بنا</a></li>  
+                       @if(!auth()->guard('client')->check())                   
+                       <li><a href="{{ url($lang,'befor-reg') }}" class="text-dark">اشتراك</a></li>   
+                       @endif
+                                   
+                   </ul>
+                   
+               </div>
+               <div class="col-lg-3 col-md-6 mb-4 mb-md-0 footer-menu">
                    <h5 class="text-uppercase footer-title">روابط مفيدة</h5>
-                   <ul class="list-unstyled mb-0">
-                       <li><button Type="button" name="show-chat-btn">Show Chat</button></li>
-                       <li><a href="#" class="text-dark">رابط 2</a></li>
-                       <li><a href="#" class="text-dark">رابط 3</a></li>
-                       <li><a href="#" class="text-dark">رابط 4</a></li>
-                       <li><a href="#" class="text-dark">رابط 5</a></li>
+                   <ul class=" mb-0">
+                       <li><a href="{{ url($lang.'/page'.'/'.'terms') }}" class="text-dark">الشروط و الاحكام</a></li>
+                       <li><a href="{{ url($lang.'/page'.'/'.'privacy') }}" class="text-dark">سياسة الخصوصية</a></li> 
+                       @if(auth()->guard('client')->check())
+                       <li><a href="{{ url($lang,'subscribe') }}" class="text-dark">الباقات</a></li>     
+                       @endif            
                    </ul>
                </div>
-               <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                   <h5 class="text-uppercase footer-title">الدعم الفني</h5>
-                   <ul class="list-unstyled mb-0">
-
-                       <li><a href="#" class="text-dark">رابط 2</a></li>
-                       <li><a href="#" class="text-dark">رابط 3</a></li>
-                       <li><a href="#" class="text-dark">رابط 4</a></li>
-                       <li><a href="#" class="text-dark">رابط 5</a></li>
-                   </ul>
-               </div>
-               <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                   <h5 class="text-uppercase footer-title">العنوان 3</h5>
-                   <ul class="list-unstyled mb-0">
-                       <li><a href="#" class="text-dark">رابط 1</a></li>
-                       <li><a href="#" class="text-dark">رابط 2</a></li>
-                       <li><a href="#" class="text-dark">رابط 3</a></li>
-                       <li><a href="#" class="text-dark">رابط 4</a></li>
-                       <li><a href="#" class="text-dark">رابط 5</a></li>
+               <div class="col-lg-3 col-md-6 mb-4 mb-md-0 footer-menu">
+                   <h5 class="text-uppercase footer-title">قوائم الاعضاء</h5>
+                   <ul class="mb-0">
+                       <li><a href="{{ url($lang.'/members','online') }}" class="text-dark">المتواجدون الآن</a></li>
+                       <li><a href="{{ url($lang.'/members','new') }}" class="text-dark">أعضاء جدد</a></li>
+                       <li><a href="{{ url($lang.'/members','special') }}" class="text-dark">الأعضاء المتميزين</a></li>
+                       <li><a href="{{ url($lang.'/members','health-cases') }}" class="text-dark">الحالات الصحية</a></li>
+                      
                    </ul>
                </div>
            </div>

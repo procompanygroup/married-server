@@ -331,7 +331,7 @@ Route::get('u/password/reset/{token}', [ClientPasswordResetController::class, 's
 Route::post('u/password/reset', [ClientPasswordResetController::class, 'reset'])->name('client.password.update');
 
 //
-Route::get('{lang}/page/{slug}', [HomeController::class, 'showpage']);
+
 // Route::get('{lang}/questions', [QuestionController::class, 'getquestions']);
 Route::post('/befor-reg', [ClientController::class, 'befor_reg_check']);
 Route::post('/checkmail', [ClientController::class, 'check_email']);
@@ -351,6 +351,8 @@ Route::prefix('{lang}')->group(function () {
         Route::post('health-cases', [SearchController::class, 'health_search_by_inputs']);
         //  Route::get('special', [SearchController::class, 'special_search']);
     });
+
+    Route::get('/page/{slug}', [HomeController::class, 'showpage']);
     Route::middleware('guest:client')->group(function () {
         Route::get('/register/{gender}', [ClientController::class, 'create'])->name('register.client');
         Route::post('/register', [ClientController::class, 'store']);

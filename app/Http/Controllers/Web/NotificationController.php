@@ -120,4 +120,15 @@ class NotificationController extends Controller
      return 1;
     }
 
+    //profile
+    public function profile_last_notify()
+    {
+        $id = Auth::guard('client')->user()->id;        
+        $Dbnotify_list = auth()->guard('client')->user()->notifications->take(5);
+        $notify_list = $Dbnotify_list->map(function ($notification) {
+            return $this->member_notify_convert($notification);
+        });     
+        return  $notify_list;
+    }
+
 }

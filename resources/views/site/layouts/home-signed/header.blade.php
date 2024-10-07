@@ -30,7 +30,7 @@
             <button class="navbar-toggler" type="button" id="menu-toggle">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{{ url('/') }}">
                 <img src="{{ $mainarr['logo']}}" alt="Logo" class="logo">
             </a>
             <div class="collapse navbar-collapse justify-content-center">

@@ -959,7 +959,26 @@ footer a {
     width: 300px; /* Adjust the width of the chat box */
     z-index: 10;
 }
-
+.footer-menu .footer-title {
+text-align: right;
+padding-right: 18px;
+margin-bottom: 20px;
+}
+.footer-menu ul{
+    color: #1767A1;
+    }
+    .footer-menu ul li{
+        text-align: right;
+       
+        padding-right: 1px;
+        padding-left: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        }
+        
+        .footer-menu ul li a:hover{
+           color: #1767A1 !important;
+            }
 
 
  

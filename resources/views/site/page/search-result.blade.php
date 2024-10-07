@@ -80,7 +80,13 @@
                                                         سنة</span>
                                                     <span class="separator-dash"></span>
                                                     <span
-                                                        class="color-pink user-maritalStatus">{{ $client['family_status_female']->option_name }}</span>
+                                                        class="color-pink user-maritalStatus">                                                      
+                                                        @if ($client['client']->gender == 'male')
+                                                        {{ $client['family_status']->option_name }}
+                                                    @else
+                                                    {{ $client['family_status_female']->option_name }}
+                                                    @endif
+                                                    </span>
                                                     <span class="separator-dash separator-user-age"></span>
                                                     <span class="user-residency" dir="auto">
                                                         @if ($client['client']->gender == 'male')

@@ -89,56 +89,56 @@ class ClientPackageController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(StorePackageRequest $request)
-  {
-    $formdata = $request->all();
-    // return  $formdata;
-    // return redirect()->back()->with('success_message', $formdata);
-    $validator = Validator::make(
-      $formdata,
-      $request->rules(),
-      $request->messages()
-    );
+  // public function store(StorePackageRequest $request)
+  // {
+  //   $formdata = $request->all();
+  //   // return  $formdata;
+  //   // return redirect()->back()->with('success_message', $formdata);
+  //   $validator = Validator::make(
+  //     $formdata,
+  //     $request->rules(),
+  //     $request->messages()
+  //   );
 
-    if ($validator->fails()) {
-      /*
-                           return  redirect()->back()->withErrors($validator)
-                           ->withInput();
-                           */
-      // return response()->withErrors($validator)->json();
-      return response()->json($validator);
+  //   if ($validator->fails()) {
+  //     /*
+  //                          return  redirect()->back()->withErrors($validator)
+  //                          ->withInput();
+  //                          */
+  //     // return response()->withErrors($validator)->json();
+  //     return response()->json($validator);
 
-    } else {
+  //   } else {
 
-      $newObj = new ClientPackage();
-      //reset all to 0
-      $newObj->client_id = $formdata['client_id'];
-      $newObj->package_id = $formdata['package_id'];
-      $newObj->chat_count = $formdata['chat_count'];
-      $newObj->search_count = $formdata['search_count'];
-      $newObj->hidden_feature = $formdata['hidden'];
-      $newObj->show_img = $formdata['show_img'];
-      $newObj->special_member = $formdata['special_member'];
-      $newObj->edit_name = $formdata['edit_name'];
-      $newObj->favorite_count = $formdata['favorite_count'];
-      $newObj->expire_duration = $formdata['expire_duration'];
-      $newObj->chat_count_remain = $formdata['chat_count_remain'];
-      $newObj->search_count_remain = $formdata['search_count_remain'];
-      $newObj->favorite_count_remain = $formdata['favorite_count_remain'];
-      $newObj->status = $formdata['status'];
-      $newObj->start_date = $formdata['start_date'];
-      $newObj->end_date = $formdata['end_date'];
+  //     $newObj = new ClientPackage();
+  //     //reset all to 0
+  //     $newObj->client_id = $formdata['client_id'];
+  //     $newObj->package_id = $formdata['package_id'];
+  //     $newObj->chat_count = $formdata['chat_count'];
+  //     $newObj->search_count = $formdata['search_count'];
+  //     $newObj->hidden_feature = $formdata['hidden'];
+  //     $newObj->show_img = $formdata['show_img'];
+  //     $newObj->special_member = $formdata['special_member'];
+  //     $newObj->edit_name = $formdata['edit_name'];
+  //     $newObj->favorite_count = $formdata['favorite_count'];
+  //     $newObj->expire_duration = $formdata['expire_duration'];
+  //     $newObj->chat_count_remain = $formdata['chat_count_remain'];
+  //     $newObj->search_count_remain = $formdata['search_count_remain'];
+  //     $newObj->favorite_count_remain = $formdata['favorite_count_remain'];
+  //     $newObj->status = $formdata['status'];
+  //     $newObj->start_date = $formdata['start_date'];
+  //     $newObj->end_date = $formdata['end_date'];
 
-      $newObj->save();
-      if ($request->hasFile('image')) {
-        $file = $request->file('image');
-        // $filename= $file->getClientOriginalName();                
-        $this->storeImage($file, $newObj->id);
-      }
+  //     $newObj->save();
+  //     if ($request->hasFile('image')) {
+  //       $file = $request->file('image');
+  //       // $filename= $file->getClientOriginalName();                
+  //       $this->storeImage($file, $newObj->id);
+  //     }
 
-      return response()->json("ok");
-    }
-  }
+  //     return response()->json("ok");
+  //   }
+  // }
 
   public function check_exist_order($order_id)
   {

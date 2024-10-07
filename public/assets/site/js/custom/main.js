@@ -176,7 +176,10 @@ if( currentId>lastMsg){
 
   }
   }
-
+  $('.not-register').click(function () {
+swal('يرجى الاشتراك لاكمال العملية');
+  });
+  
   /*
      function fillchat(data){	
       $('#chat-content').html('');

@@ -1171,10 +1171,13 @@ class SiteDataController extends Controller
         $who_visited_me_today_count = $visitctrlr->who_visited_me_today_count();
         $prvimgctrlr = new PrivateImageController();
         $show_image_count = $prvimgctrlr->show_image_count();
+        $notifyctrlr=new NotificationController();
+       $profile_last_notify= $notifyctrlr->profile_last_notify();        
         return [
             'who_like_me_count' => $who_like_me_count,
             'who_visited_me_today_count' => $who_visited_me_today_count,
             'show_image_count' => $show_image_count,
+            'last_notify_list'=>$profile_last_notify,
         ];
     }
 }
