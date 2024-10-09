@@ -165,12 +165,7 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href= "{{url('admin/propdep')}}" class="nav-link ">
-                      <i class="far fa fa-list-alt nav-icon"></i>
-                      <p>المجموعات</p>
-                    </a>
-                  </li>
+                 
                   <li class="nav-item">
                     <a href= "{{url('admin/property')}}" class="nav-link ">
                       <i class="far fa fa-list-alt nav-icon"></i>
@@ -207,12 +202,7 @@
                       <p>جميع الباقات</p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href= "{{route('package.index')}}" class="nav-link ">
-                      <i class="far fa fa-list-alt nav-icon"></i>
-                      <p> المشتركين</p>
-                    </a>
-                  </li>
+                 
                  
                 </ul>
               </li>

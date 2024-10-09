@@ -48,7 +48,7 @@
                   <th>{{ __('general.user_name',[],'ar') }}</th>
                  
                   <th>{{ __('general.email',[],'ar') }}</th>
-                  <th>مميز</th>                   
+                                     
                   <th></th>                   
                 </tr>
                 </thead>
@@ -62,12 +62,7 @@
                     <td>{{ $client->id }}</td>
                   <td>{{ $client->name }}</td>                 
                   <td>{{ $client->email }}</td>     
-                  <td class="text-center">@if($client->is_special) <i class="fas fa-check"></i> 
-                    <button type="button" id="delspecial-{{$client->id}}" class="btn btn-warning btn-sm delspecial-btn"  data-toggle="modal" data-target="#modal-delspecial"   title="ازالة من المميزين">   <i class="fas fa-star">
-                    </i>ازالة من المميزين</button>
-                    @else
-                    <button type="button" id="addspecial-{{$client->id}}" class="btn btn-primary btn-sm addspecial-btn"  data-toggle="modal" data-target="#modal-addspecial"   title="اضافة الى المميزين">   <i class="fas fa-star">
-                    </i>اضافة الى المميزين</button> @endif </td>                        
+                                   
                   <td> 
                           <form action="{{route('user.destroy', $client->id)}}" method="POST" class="d-inline">
                             @csrf

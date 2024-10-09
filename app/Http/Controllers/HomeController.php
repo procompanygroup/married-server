@@ -43,6 +43,7 @@ class HomeController extends Controller
          $sitedctrlr=new SiteDataController();
       // $slidedata=  $sitedctrlr->getSlideData('home');
          $transarr=$sitedctrlr->FillTransData($lang);
+        
       // $transarr['langs']->select('code')->get();
       // return  $sitedctrlr->getlangscod()  ;
        if(isset($formdata['lang']))
@@ -65,21 +66,23 @@ class HomeController extends Controller
       $defultlang=$transarr['langs']->first();
       $lang=  $defultlang->code;
       // $catlist= $sitedctrlr-> getquescatbyloc('cats',$defultlang->id);
-      $home_page=$sitedctrlr->getbycode($defultlang->id,['home_page']);
+     // $home_page=$sitedctrlr->getbycode($defultlang->id,['home_page']);
       //$homearr= $sitedctrlr->gethomedata( $defultlang->id);
-       
+    
       }
       if(Auth::guard('client')->check() && !(Auth::guard('client')->user()->code)) {
      return redirect()->route('client.profile', $lang);
       }else{
+         $mainarr =$sitedctrlr->FillStaticData();
         $sechctrlr=new SearchController();
         $last_clients=$sechctrlr->last_online_clients($lang);
          return view('site.home',['lang'=>$lang, 
-         'transarr'=>$transarr,
+       //  'transarr'=>$transarr,
          'defultlang'=>$defultlang, 
          'active_item'=>$active,
-         'home_page'=>$home_page,
-         'sitedataCtrlr'=>$sitedctrlr,
+      //   'home_page'=>$home_page,
+     //    'sitedataCtrlr'=>$sitedctrlr,
+    'mainarr'=>$mainarr,
       'last_clients'=> (object)$last_clients,
       ]);
       }

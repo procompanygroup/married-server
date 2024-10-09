@@ -5,7 +5,7 @@
   <div class="container">
       <div class="row intro-content  ">
           <div class="intro-info col-sm-5  col-sm-offset-0 ">
-              <h1><strong>شريك الحياة</strong>
+              <h1><strong>{{$mainarr['title']}}</strong>
                   <p> للزواج الإسلامي </p>
               </h1>
               <p class="intto-desc">نبحث لك عن نصفك الآخر</p>
