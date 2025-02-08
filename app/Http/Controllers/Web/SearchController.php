@@ -42,8 +42,8 @@ class SearchController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public $result_num=100;
-  public $createdlimit=30;//days
+  public $result_num = 100;
+  public $createdlimit = 30;//days
   public function index()
   {
     //
@@ -142,16 +142,16 @@ class SearchController extends Controller
     // $clientopctrlr = new ClientOptionController();
 
     $id = Auth::guard('client')->user()->id;
-            //        
-             
-            $clientpackctrlr=new ClientPackageController();
-            $clientpack_id=  $clientpackctrlr->check_search_count($id);
-        if( $clientpack_id>0){
-          $res=$clientpackctrlr->decrease_search_count($clientpack_id);
-        }else{
-          return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
-        }
-        //
+    //        
+
+    $clientpackctrlr = new ClientPackageController();
+    $clientpack_id = $clientpackctrlr->check_search_count($id);
+    if ($clientpack_id > 0) {
+      $res = $clientpackctrlr->decrease_search_count($clientpack_id);
+    } else {
+      return redirect()->back()->with('error', __('general.no_count', [], 'ar'));
+    }
+    //
     $client = Client::find($id);
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
@@ -205,8 +205,8 @@ class SearchController extends Controller
     $clintids = $this->one_op_res("smoking", $clintids, $formdata["smoking"]);
     //  return  $cliens_list->with('clientoptions')->get() ;->toSql();  
     $clintids = array_slice($clintids, 0, $this->result_num);
-    $clients_res= $this->selectandmap($clintids,$lang);
- 
+    $clients_res = $this->selectandmap($clintids, $lang);
+
     $type = '';
     if (isset($formdata["type"])) {
       $type = $formdata["type"];
@@ -285,17 +285,17 @@ class SearchController extends Controller
   }
   public function getnothealth_ids($clintids)
   {
-  $hArr=  $this->gethealth_op('good');     
-      if (!(is_null($hArr['option_id']))) { 
-        $op_id=$hArr['option_id'];
-        $prop_id=$hArr['property_id'];
-        $c_options_tmp = ClientOption::where('property_id',$prop_id)->whereNot('option_id', $op_id)->whereNotNull('option_id')->whereNot('option_id',0)   
-          ->whereIntegerInRaw('client_id', $clintids)
-          ->groupBy('client_id')->get();
-     
-        $clintids = data_get($c_options_tmp, '*.client_id');
-  
-      }    
+    $hArr = $this->gethealth_op('good');
+    if (!(is_null($hArr['option_id']))) {
+      $op_id = $hArr['option_id'];
+      $prop_id = $hArr['property_id'];
+      $c_options_tmp = ClientOption::where('property_id', $prop_id)->whereNot('option_id', $op_id)->whereNotNull('option_id')->whereNot('option_id', 0)
+        ->whereIntegerInRaw('client_id', $clintids)
+        ->groupBy('client_id')->get();
+
+      $clintids = data_get($c_options_tmp, '*.client_id');
+
+    }
     return $clintids;
   }
   //
@@ -309,14 +309,14 @@ class SearchController extends Controller
     $clientoptions = $propctrlr->client_prop_list($client->clientoptions);
     $countrytoptions = $propctrlr->country_prop_list($client->clientoptions);
 
-    if($client->favoritestoclients->first())
-    { $is_favorite= is_null($client->favoritestoclients->first()->is_favorite)?0:$client->favoritestoclients->first()->is_favorite;
-      $is_black=is_null($client->favoritestoclients->first()->is_blacklist)?0:$client->favoritestoclients->first()->is_blacklist;
-    }else{
-      $is_favorite= 0;
-      $is_black=0;
+    if ($client->favoritestoclients->first()) {
+      $is_favorite = is_null($client->favoritestoclients->first()->is_favorite) ? 0 : $client->favoritestoclients->first()->is_favorite;
+      $is_black = is_null($client->favoritestoclients->first()->is_blacklist) ? 0 : $client->favoritestoclients->first()->is_blacklist;
+    } else {
+      $is_favorite = 0;
+      $is_black = 0;
     }
-   
+
 
     $clientArr = [
       'client' => $client->withoutRelations(),
@@ -327,8 +327,8 @@ class SearchController extends Controller
       'family_status_female' => $propctrlr->client_prop_filter($clientoptions, 'family_status_female'),
       'wife_num' => $propctrlr->client_prop_filter($clientoptions, 'wife_num'),
       'since_register' => $client->created_at->diffForHumans(),
-      'is_favorite'=>$is_favorite,
-      'is_blacklist'=>$is_black,
+      'is_favorite' => $is_favorite,
+      'is_blacklist' => $is_black,
 
     ];
     return $clientArr;
@@ -390,16 +390,16 @@ class SearchController extends Controller
     StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     $id = Auth::guard('client')->user()->id;
-            //        
-            $clientpackctrlr=new ClientPackageController();
-            $clientpack_id=  $clientpackctrlr->check_search_count($id);
-        if( $clientpack_id>0){
-          $res=$clientpackctrlr->decrease_search_count($clientpack_id);
-        }else{
-          return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
-          
-        }
-        //
+    //        
+    $clientpackctrlr = new ClientPackageController();
+    $clientpack_id = $clientpackctrlr->check_search_count($id);
+    if ($clientpack_id > 0) {
+      $res = $clientpackctrlr->decrease_search_count($clientpack_id);
+    } else {
+      return redirect()->back()->with('error', __('general.no_count', [], 'ar'));
+
+    }
+    //
     $client = Client::with('clientoptions')->find($id);
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
@@ -521,8 +521,8 @@ class SearchController extends Controller
 
     $clintids = array_slice($clintids, 0, $this->result_num);
     //  $clintids = $this->one_op_res("beard",$clintids,$formdata["beard"]);
-    $clients_res= $this->selectandmap($clintids,$lang);
-    
+    $clients_res = $this->selectandmap($clintids, $lang);
+
     $type = '';
     if (isset($formdata["type"])) {
       $type = $formdata["type"];
@@ -585,66 +585,67 @@ class SearchController extends Controller
   {
     $property = Property::where('name', 'health')->first();
     $prop_id = $property->id;
-$op = OptionValue::where('property_id', $prop_id)->where('value',$healthop_name)->first();
-$op_id=null;
-if($op ){
-  $op_id=$op->id;
-}
-return ['property_id'=> $prop_id,
-  'option_id'=>$op_id,
-];
+    $op = OptionValue::where('property_id', $prop_id)->where('value', $healthop_name)->first();
+    $op_id = null;
+    if ($op) {
+      $op_id = $op->id;
+    }
+    return [
+      'property_id' => $prop_id,
+      'option_id' => $op_id,
+    ];
   }
   public function name_search(Request $request, $lang)
   {
-    
+
 
     $formdata = $request->all();
     $id = Auth::guard('client')->user()->id;
-    $clientpackctrlr=new ClientPackageController();
-    $clientpack_id=  $clientpackctrlr->check_search_count($id);
-if( $clientpack_id>0){
- 
-  $client = Client::with('clientoptions')->find($id);
-  $sitedctrlr = new SiteDataController();
-  $transarr = $sitedctrlr->FillTransData($lang);
-  $defultlang = $transarr['langs']->first();
-  $name = $formdata['name'];
-  if ($client->gender == 'male') {
+    $clientpackctrlr = new ClientPackageController();
+    $clientpack_id = $clientpackctrlr->check_search_count($id);
+    if ($clientpack_id > 0) {
 
-    
-    $cliens_list = Client::where('gender', 'female')->where('name', 'like', '%' . $name . '%')->select('id')->get();
+      $client = Client::with('clientoptions')->find($id);
+      $sitedctrlr = new SiteDataController();
+      $transarr = $sitedctrlr->FillTransData($lang);
+      $defultlang = $transarr['langs']->first();
+      $name = $formdata['name'];
+      if ($client->gender == 'male') {
 
-    $clintids = data_get($cliens_list, '*.id');
 
-  } else {
+        $cliens_list = Client::where('gender', 'female')->where('name', 'like', '%' . $name . '%')->select('id')->get();
 
-    //female
-    $cliens_list = Client::where('gender', 'male')->where('name', 'like', '%' . $name . '%')->select('id')->get();
-    $cliens_list = $cliens_list->take( $this->result_num);
-    $clintids = data_get($cliens_list, '*.id');
-  }
+        $clintids = data_get($cliens_list, '*.id');
 
-  $clients_res= $this->selectandmap($clintids,$lang);
-  $type='';
-  if(isset($formdata["type"])){
-   $type=$formdata["type"];
-  
-  }
-  $res=$clientpackctrlr->decrease_search_count($clientpack_id);
-  return view(
-    "site.page.search-result",
-    [
-      "clients" => (object) $clients_res,
-      'lang' => $lang,
-      'defultlang' => $defultlang,
-      'ai' => 1,
-      'type'=>$type,
-    ]
-  );
-}else{
-  return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
-}
-    
+      } else {
+
+        //female
+        $cliens_list = Client::where('gender', 'male')->where('name', 'like', '%' . $name . '%')->select('id')->get();
+        $cliens_list = $cliens_list->take($this->result_num);
+        $clintids = data_get($cliens_list, '*.id');
+      }
+
+      $clients_res = $this->selectandmap($clintids, $lang);
+      $type = '';
+      if (isset($formdata["type"])) {
+        $type = $formdata["type"];
+
+      }
+      $res = $clientpackctrlr->decrease_search_count($clientpack_id);
+      return view(
+        "site.page.search-result",
+        [
+          "clients" => (object) $clients_res,
+          'lang' => $lang,
+          'defultlang' => $defultlang,
+          'ai' => 1,
+          'type' => $type,
+        ]
+      );
+    } else {
+      return redirect()->back()->with('error', __('general.no_count', [], 'ar'));
+    }
+
 
   }
 
@@ -653,22 +654,22 @@ if( $clientpack_id>0){
 
     $formdata = $request->all();
 
-    $resultArr=$this->first_query_search($lang);  
-        //        
-        $id=$resultArr['client_id'];
-        $clientpackctrlr=new ClientPackageController();
-        $clientpack_id=  $clientpackctrlr->check_search_count($id);
-    if( $clientpack_id>0){
-      $res=$clientpackctrlr->decrease_search_count($clientpack_id);
-    }else{
-      return  redirect()->back()->with('error',__('general.no_count',[],'ar') );
+    $resultArr = $this->first_query_search($lang);
+    //        
+    $id = $resultArr['client_id'];
+    $clientpackctrlr = new ClientPackageController();
+    $clientpack_id = $clientpackctrlr->check_search_count($id);
+    if ($clientpack_id > 0) {
+      $res = $clientpackctrlr->decrease_search_count($clientpack_id);
+    } else {
+      return redirect()->back()->with('error', __('general.no_count', [], 'ar'));
     }
     //
-    $cliens_list=$resultArr['cliens_list'];
-    $gender=$resultArr['gender'];
-    $genderTrans= $resultArr['genderTrans'];
-    $client= $resultArr['client'];
-    $defultlang=$resultArr['defultlang'];
+    $cliens_list = $resultArr['cliens_list'];
+    $gender = $resultArr['gender'];
+    $genderTrans = $resultArr['genderTrans'];
+    $client = $resultArr['client'];
+    $defultlang = $resultArr['defultlang'];
 
     if (isset($formdata["age"])) {
 
@@ -707,17 +708,17 @@ if( $clientpack_id>0){
     $clintids = $this->one_op_res("education", $clintids, $formdata["education"]);
 
     $clintids = $this->one_op_res("financial", $clintids, $formdata["financial"]);
-    
-$clintids = array_slice($clintids, 0, $this->result_num);
-  
-   
-    $clients_res= $this->selectandmap($clintids,$lang);
-    $type='';
-    if(isset($formdata["type"])){
-     $type=$formdata["type"];
-    
+
+    $clintids = array_slice($clintids, 0, $this->result_num);
+
+
+    $clients_res = $this->selectandmap($clintids, $lang);
+    $type = '';
+    if (isset($formdata["type"])) {
+      $type = $formdata["type"];
+
     }
-  
+
     return view(
       "site.page.search-result",
       [
@@ -725,81 +726,81 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         'lang' => $lang,
         'defultlang' => $defultlang,
         'ai' => 1,
-        'type'=>$type,
+        'type' => $type,
       ]
     );
 
   }
   public function first_query_search($lang)
   {
-  $genderTrans='';
+    $genderTrans = '';
     $sitedctrlr = new SiteDataController();
     $transarr = $sitedctrlr->FillTransData($lang);
     $defultlang = $transarr['langs']->first();
-    $id=0;
+    $id = 0;
     if (Auth::guard('client')->check()) {
-    $id = Auth::guard('client')->user()->id;
-    $client = Client::with('clientoptions')->find($id);
-    $gender=$client->gender;
-    }else{
-      $gender='both';
-      $genderTrans='الكل';
-      $client=new Client();
+      $id = Auth::guard('client')->user()->id;
+      $client = Client::with('clientoptions')->find($id);
+      $gender = $client->gender;
+    } else {
+      $gender = 'both';
+      $genderTrans = 'الكل';
+      $client = new Client();
 
     }
 
-      if ($gender == 'male') {
+    if ($gender == 'male') {
       // Client search
       //  $cliens_list=DB::table('clients')->where('gender','female') ;
-      $cliens_list = Client::where('gender', 'female');
-      $genderTrans='إناث';
-    } else if($gender == 'female') {
-      $cliens_list = Client::where('gender', 'male');
-      $genderTrans='ذكور';     
-    }else{
-      $cliens_list =Client::orderByDesc('created_at');
+      $cliens_list = Client::where('gender', 'female')->where('is_active', 1);
+      $genderTrans = 'إناث';
+    } else if ($gender == 'female') {
+      $cliens_list = Client::where('gender', 'male')->where('is_active', 1);
+      $genderTrans = 'ذكور';
+    } else {
+      $cliens_list = Client::where('is_active', 1)->orderByDesc('created_at');
     }
     return [
-      'client'=>$client ,
-      'cliens_list'=>$cliens_list,
-   'gender'=> $gender,
-    'genderTrans'=>$genderTrans,
-    'defultlang'=>$defultlang,
-    'client_id'=>$id,
-  ];
+      'client' => $client,
+      'cliens_list' => $cliens_list,
+      'gender' => $gender,
+      'genderTrans' => $genderTrans,
+      'defultlang' => $defultlang,
+      'client_id' => $id,
+    ];
   }
   public function online_clients($lang)
   {
-    $resultArr=$this->first_query_search($lang);  
-    $cliens_list=$resultArr['cliens_list'];
-    $gender=$resultArr['gender'];
-    $genderTrans= $resultArr['genderTrans'];
-    $client= $resultArr['client'];
-    $defultlang=$resultArr['defultlang'];
-    $datelimit=now()->subMinutes(5); 
-    $cliens_list = $cliens_list->where('lastseen_at','>=',$datelimit);
+    $resultArr = $this->first_query_search($lang);
+    $cliens_list = $resultArr['cliens_list'];
+    $gender = $resultArr['gender'];
+    $genderTrans = $resultArr['genderTrans'];
+    $client = $resultArr['client'];
+    $defultlang = $resultArr['defultlang'];
+    $datelimit = now()->subMinutes(5);
+    $cliens_list = $cliens_list->where('lastseen_at', '>=', $datelimit);
     $cliens_list = $cliens_list->select('id')->get();
-    $Allclintids = data_get($cliens_list, '*.id'); 
+    $Allclintids = data_get($cliens_list, '*.id');
     if (Auth::guard('client')->check()) {
       //get current member nationality
       $client_res_id = $this->getclientcountry($client, 'nationality');
       //get members with same nationality
-          $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
- 
-      }else{
-        $memberclintids =   $Allclintids;
-      }
-   
+      $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
 
-             $clients_same=$this->selectandmap($memberclintids,$lang); 
-     //get others
-     $oherclintids=array_diff($Allclintids,$memberclintids);
-     $clients_other=$this->selectandmap($oherclintids,$lang);
-     //merg list
-     $finalClients=array_merge($clients_same->toArray(),$clients_other->toArray());  
-     $finalClients= array_slice($finalClients, 0, $this->result_num); 
+    } else {
+      $memberclintids = $Allclintids;
+    }
 
-     $type='online';
+
+    $clients_same = $this->selectandmap($memberclintids, $lang);
+    //get others
+    $oherclintids = array_diff($Allclintids, $memberclintids);
+    $clients_other = $this->selectandmap($oherclintids, $lang);
+    //merg list
+    $finalClients = array_merge($clients_same->toArray(), $clients_other->toArray());
+    $finalClients = array_slice($finalClients, 0, $this->result_num);
+
+    $type = 'online';
     return view(
       "site.page.online-clients",
       [
@@ -807,57 +808,57 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         'lang' => $lang,
         'defultlang' => $defultlang,
         //'ai' => 1,
-        'type'=>$type,
-        'genderTrans'=>$genderTrans,
+        'type' => $type,
+        'genderTrans' => $genderTrans,
       ]
     );
   }
   public function last_online_clients($lang)
   {
-    $resultArr=$this->selectandmap_online_home( $lang); 
-  
-    return  $resultArr;
-    
+    $resultArr = $this->selectandmap_online_home($lang);
+
+    return $resultArr;
+
   }
   public function new_clients($lang)
   {
- 
-      $resultArr=$this->first_query_search($lang);  
-    $cliens_list=$resultArr['cliens_list'];
-    $gender=$resultArr['gender'];
-    $genderTrans= $resultArr['genderTrans'];
-    $client= $resultArr['client'];
-    $defultlang=$resultArr['defultlang'];
 
-    $datelimit=now()->subDays($this->createdlimit);
-    $cliens_list = $cliens_list->where('created_at','>=',$datelimit);
+    $resultArr = $this->first_query_search($lang);
+    $cliens_list = $resultArr['cliens_list'];
+    $gender = $resultArr['gender'];
+    $genderTrans = $resultArr['genderTrans'];
+    $client = $resultArr['client'];
+    $defultlang = $resultArr['defultlang'];
+
+    $datelimit = now()->subDays($this->createdlimit);
+    $cliens_list = $cliens_list->where('created_at', '>=', $datelimit);
     $cliens_list = $cliens_list->select('id')->get();
     $Allclintids = data_get($cliens_list, '*.id');
 
- 
+
     if (Auth::guard('client')->check()) {
       //get current member nationality
       $client_res_id = $this->getclientcountry($client, 'nationality');
       //get members with same nationality
-          $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
- 
-      }else{
-        $memberclintids =   $Allclintids;
-      }
+      $memberclintids = $this->country_res("nationality", $Allclintids, [$client_res_id]);
 
-        $clients_same=$this->selectandmap($memberclintids,$lang); 
-//get others
-$oherclintids=array_diff($Allclintids,$memberclintids);
-$clients_other=$this->selectandmap($oherclintids,$lang);
-//merg list
+    } else {
+      $memberclintids = $Allclintids;
+    }
+
+    $clients_same = $this->selectandmap($memberclintids, $lang);
+    //get others
+    $oherclintids = array_diff($Allclintids, $memberclintids);
+    $clients_other = $this->selectandmap($oherclintids, $lang);
+    //merg list
 //$finalClients=array_merge($clients_same ,$clients_other );
-$finalClients=array_merge($clients_same->toArray(),$clients_other->toArray());
+    $finalClients = array_merge($clients_same->toArray(), $clients_other->toArray());
 
 
-$finalClients= array_slice($finalClients, 0, $this->result_num);
- 
+    $finalClients = array_slice($finalClients, 0, $this->result_num);
+
     //  return  $cliens_list->with('clientoptions')->get() ;->toSql();
-    $type='new';
+    $type = 'new';
     return view(
       "site.page.online-clients",
       [
@@ -865,36 +866,36 @@ $finalClients= array_slice($finalClients, 0, $this->result_num);
         'lang' => $lang,
         'defultlang' => $defultlang,
         //'ai' => 1,
-         'type'=>$type,
-         'genderTrans'=>$genderTrans,
+        'type' => $type,
+        'genderTrans' => $genderTrans,
       ]
     );
 
   }
-  
+
   public function health_search($lang)
   {
-    $resultArr=$this->first_query_search($lang);  
-    $cliens_list=$resultArr['cliens_list'];
-    $gender=$resultArr['gender'];
-    $genderTrans= $resultArr['genderTrans'];
-    $client= $resultArr['client'];
-    $defultlang=$resultArr['defultlang'];
+    $resultArr = $this->first_query_search($lang);
+    $cliens_list = $resultArr['cliens_list'];
+    $gender = $resultArr['gender'];
+    $genderTrans = $resultArr['genderTrans'];
+    $client = $resultArr['client'];
+    $defultlang = $resultArr['defultlang'];
 
-      $cliens_list = $cliens_list->select('id')->get();
-      $clintids = data_get($cliens_list, '*.id');
-   // $op_id = $this->gethealth_op('good');
-  // return  $this->getnothealth_ids($clintids);   
-   $clintids= $this->getnothealth_ids($clintids);
-  
-$clintids = array_slice($clintids, 0, $this->result_num);  
-   
-    $clients_res= $this->selectandmap($clintids,$lang);
-    $type='health'; 
-  //get select list
-  $propctrler = new PropertyController();
-  //  $client = (object) $propctrler->clientwithprop($id, $lang);    
-  $propgroup = $propctrler->propgroupfor_health($lang);
+    $cliens_list = $cliens_list->select('id')->get();
+    $clintids = data_get($cliens_list, '*.id');
+    // $op_id = $this->gethealth_op('good');
+    // return  $this->getnothealth_ids($clintids);   
+    $clintids = $this->getnothealth_ids($clintids);
+
+    $clintids = array_slice($clintids, 0, $this->result_num);
+
+    $clients_res = $this->selectandmap($clintids, $lang);
+    $type = 'health';
+    //get select list
+    $propctrler = new PropertyController();
+    //  $client = (object) $propctrler->clientwithprop($id, $lang);    
+    $propgroup = $propctrler->propgroupfor_health($lang);
     return view(
       "site.page.online-clients",
       [
@@ -902,8 +903,8 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         'lang' => $lang,
         'defultlang' => $defultlang,
         'ai' => 1,
-        'type'=>$type,
-        'genderTrans'=>$genderTrans,
+        'type' => $type,
+        'genderTrans' => $genderTrans,
         'prop_group' => $propgroup,
       ]
     );
@@ -912,34 +913,34 @@ $clintids = array_slice($clintids, 0, $this->result_num);
   public function health_search_by_inputs(Request $request, $lang)
   {
     $formdata = $request->all();
-     
-    $residence_id=$formdata['residence'];
-    $health_id=0;
-    if(isset($formdata['health'])){
-      $health_id=$formdata['health'];
-    } 
-  
-    $resultArr=$this->first_query_search($lang);  
 
-    $cliens_list=$resultArr['cliens_list'];
-    $gender=$resultArr['gender'];
-    $genderTrans= $resultArr['genderTrans'];
-    $client= $resultArr['client'];
-    $defultlang=$resultArr['defultlang'];
-      $cliens_list = $cliens_list->select('id')->get();
+    $residence_id = $formdata['residence'];
+    $health_id = 0;
+    if (isset($formdata['health'])) {
+      $health_id = $formdata['health'];
+    }
 
-      $clintids = data_get($cliens_list, '*.id');
-  
-      $clintids = $this->country_res("residence", $clintids, [0 => $residence_id]);
-      $clintids = $this->one_op_res("health", $clintids,$health_id);
-$clintids = array_slice($clintids, 0, $this->result_num);  
-   
-    $clients_res= $this->selectandmap($clintids,$lang);
-    $type='health'; 
-  //get select list
-  $propctrler = new PropertyController();
-  //  $client = (object) $propctrler->clientwithprop($id, $lang);    
-  $propgroup = $propctrler->propgroupfor_health($lang);
+    $resultArr = $this->first_query_search($lang);
+
+    $cliens_list = $resultArr['cliens_list'];
+    $gender = $resultArr['gender'];
+    $genderTrans = $resultArr['genderTrans'];
+    $client = $resultArr['client'];
+    $defultlang = $resultArr['defultlang'];
+    $cliens_list = $cliens_list->select('id')->get();
+
+    $clintids = data_get($cliens_list, '*.id');
+
+    $clintids = $this->country_res("residence", $clintids, [0 => $residence_id]);
+    $clintids = $this->one_op_res("health", $clintids, $health_id);
+    $clintids = array_slice($clintids, 0, $this->result_num);
+
+    $clients_res = $this->selectandmap($clintids, $lang);
+    $type = 'health';
+    //get select list
+    $propctrler = new PropertyController();
+    //  $client = (object) $propctrler->clientwithprop($id, $lang);    
+    $propgroup = $propctrler->propgroupfor_health($lang);
     return view(
       "site.page.online-clients",
       [
@@ -947,11 +948,11 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         'lang' => $lang,
         'defultlang' => $defultlang,
         'ai' => 1,
-        'type'=>$type,
-        'genderTrans'=>$genderTrans,
+        'type' => $type,
+        'genderTrans' => $genderTrans,
         'prop_group' => $propgroup,
-        'residence_id'=> $residence_id,
-        'health_id'=>$health_id,
+        'residence_id' => $residence_id,
+        'health_id' => $health_id,
       ]
     );
 
@@ -959,24 +960,24 @@ $clintids = array_slice($clintids, 0, $this->result_num);
 
   public function special_search($lang)
   {
-    $resultArr=$this->first_query_search($lang);  
-    $cliens_list=$resultArr['cliens_list'];
-  //  $gender=$resultArr['gender'];
-    $genderTrans= $resultArr['genderTrans'];
-  //  $client= $resultArr['client'];
-    $defultlang=$resultArr['defultlang'];
-  //  $cliens_list= $cliens_list->where('is_special',1);
-      $cliens_list = $cliens_list->select('id')->get()->where('is_special',1);
-      $clintids = data_get($cliens_list, '*.id'); 
-  
-$clintids = array_slice($clintids, 0, $this->result_num);  
-   
-    $clients_res= $this->selectandmap($clintids,$lang);
-    $type='special'; 
-  //get select list
-  $propctrler = new PropertyController();
-  //  $client = (object) $propctrler->clientwithprop($id, $lang);    
-  $propgroup = $propctrler->propgroupfor_health($lang);
+    $resultArr = $this->first_query_search($lang);
+    $cliens_list = $resultArr['cliens_list'];
+    //  $gender=$resultArr['gender'];
+    $genderTrans = $resultArr['genderTrans'];
+    //  $client= $resultArr['client'];
+    $defultlang = $resultArr['defultlang'];
+    //  $cliens_list= $cliens_list->where('is_special',1);
+    $cliens_list = $cliens_list->select('id')->get()->where('is_special', 1);
+    $clintids = data_get($cliens_list, '*.id');
+
+    $clintids = array_slice($clintids, 0, $this->result_num);
+
+    $clients_res = $this->selectandmap($clintids, $lang);
+    $type = 'special';
+    //get select list
+    $propctrler = new PropertyController();
+    //  $client = (object) $propctrler->clientwithprop($id, $lang);    
+    $propgroup = $propctrler->propgroupfor_health($lang);
     return view(
       "site.page.online-clients",
       [
@@ -984,16 +985,16 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         'lang' => $lang,
         'defultlang' => $defultlang,
         'ai' => 1,
-        'type'=>$type,
-        'genderTrans'=>$genderTrans,
+        'type' => $type,
+        'genderTrans' => $genderTrans,
         'prop_group' => $propgroup,
       ]
     );
 
   }
-  public function selectandmap($clintids,$lang)
+  public function selectandmap($clintids, $lang)
   {
-    $auth_id =0;
+    $auth_id = 0;
     if (Auth::guard('client')->check()) {
       $auth_id = Auth::guard('client')->user()->id;
     }
@@ -1021,7 +1022,7 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         },
         'favoritestoclients' => function ($q) use ($auth_id) {
           $q->where('client_id', $auth_id);
-      }
+        }
       ]
     )->whereIntegerInRaw('id', $clintids)->get();
     $propctrlr = new PropertyController();
@@ -1030,13 +1031,13 @@ $clintids = array_slice($clintids, 0, $this->result_num);
       return $this->client_prop_map($client, $lang, $propctrlr);
 
     });
-    return  $clients_res;
-  
+    return $clients_res;
+
   }
   public function selectandmap_online_home($lang)
   {
-    $auth_id =0;
-   
+    $auth_id = 0;
+
     $clients_res_db = Client::with(
       [
         'clientoptions' => function ($q) {
@@ -1061,7 +1062,7 @@ $clintids = array_slice($clintids, 0, $this->result_num);
         },
         'favoritestoclients' => function ($q) use ($auth_id) {
           $q->where('client_id', $auth_id);
-      }
+        }
       ]
     )->orderByDesc('lastseen_at')->take(20)->get();
     $propctrlr = new PropertyController();
@@ -1070,7 +1071,7 @@ $clintids = array_slice($clintids, 0, $this->result_num);
       return $this->client_prop_map($client, $lang, $propctrlr);
 
     });
-    return  $clients_res;
-  
+    return $clients_res;
+
   }
 }
