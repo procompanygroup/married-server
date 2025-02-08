@@ -57,7 +57,7 @@ class Client extends Authenticatable
         'code',
         'expire_at',
         'lastseen_at',
-     
+
         'is_hidden',
         'show_image'
     ];
@@ -71,7 +71,7 @@ class Client extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends = ['image_path', 'gender_conv', 'age','is_special'];
+    protected $appends = ['image_path', 'gender_conv', 'age', 'is_special'];
     public function getImagePathAttribute()
     {
         $conv = "";
@@ -82,30 +82,30 @@ class Client extends Authenticatable
         } else if ($this->image == '') {
             $conv = $strgCtrlr->DefaultPath($this->gender);
         } else {
-            if (auth()->guard('client')->check()  ){
+            if (auth()->guard('client')->check()) {
                 $auth_id = auth()->guard('client')->user()->id;
-                if( $auth_id==$this->id){
+                if ($auth_id == $this->id) {
                     $url = $strgCtrlr->ClientPath();
                     $conv = $url . $this->image;
-                }else{
-                    if (  $this->show_image == 1) {          
-             
+                } else {
+                    if ($this->show_image == 1) {
+
                         //check if allowed
                         $primagemodel = PrivateImage::where('client_id', $this->id)->where('showto_id', $auth_id)->first();
-                        if ($primagemodel ) {
+                        if ($primagemodel) {
                             $url = $strgCtrlr->ClientPath();
                             $conv = $url . $this->image;
                         } else {
                             //not allowed
                             $conv = $strgCtrlr->DefaultPath($this->gender);
                         }
-        
+
                     } else {
                         // no one allowed
                         $conv = $strgCtrlr->DefaultPath($this->gender);
                     }
                 }
-            }else{
+            } else {
                 $conv = $strgCtrlr->DefaultPath($this->gender);
             }
         }
@@ -113,7 +113,7 @@ class Client extends Authenticatable
         return $conv;
     }
 
-    
+
     public function getGenderConvAttribute()
     {
         $conv = "-";
@@ -131,8 +131,8 @@ class Client extends Authenticatable
     //
     public function getIsSpecialAttribute()
     {
-        $clientpackctrlr=new ClientPackageController();
-        $special_member=  $clientpackctrlr->check_special_member($this->id);
+        $clientpackctrlr = new ClientPackageController();
+        $special_member = $clientpackctrlr->check_special_member($this->id);
 
         return $special_member;
     }
@@ -221,6 +221,7 @@ class Client extends Authenticatable
         $this->code = rand(100000, 999999);
         $this->expire_at = now()->addMinutes(15);
         $this->save();
+        return $this->code;
     }
 
     public function restCode()
@@ -228,6 +229,7 @@ class Client extends Authenticatable
         $this->timestamps = false;
         $this->code = null;
         $this->expire_at = null;
+        $this->is_active = 1;
         $this->save();
     }
 

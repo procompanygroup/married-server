@@ -50,6 +50,7 @@ use App\Http\Requests\Site\Register\CheckMailRequest;
 use App\Http\Requests\Client\UpdateEmailRequest;
 use App\Http\Requests\Client\UpdateNameRequest;
 use App\Http\Requests\Client\UpdateSpecialRequest;
+use App\Http\Controllers\Web\MailController;
 class ClientController extends Controller
 {
   /**
@@ -80,7 +81,7 @@ class ClientController extends Controller
   }
 
   public function updatespecial(UpdateSpecialRequest $request)
-  { 
+  {
     $formdata = $request->all();
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
@@ -94,10 +95,10 @@ class ClientController extends Controller
       return response()->json($validator);
     } else {
       response()->json($formdata['id']);
-      $client_id= $formdata['id'];
-      $is_special= $formdata['is_special'];
+      $client_id = $formdata['id'];
+      $is_special = $formdata['is_special'];
       Client::find($client_id)->update([
-        'is_special' =>  $is_special,
+        'is_special' => $is_special,
       ]);
       //  return redirect()->back();
       return response()->json("ok");
@@ -234,6 +235,7 @@ class ClientController extends Controller
     //return redirect()->intended(Route('mymessages',false));
     $client = Client::find(auth()->guard('client')->user()->id);
     $code = $client->code;
+
     if ($code != null) {
       return response()->json("verify");
     } else {
@@ -279,7 +281,7 @@ class ClientController extends Controller
       // $newObj->role = 'admin';
       //   $newObj->is_active = $formdata['is_active'];
       // $newObj->user_name=$slug;
-      $newObj->is_active = 1;
+      $newObj->is_active = 0;
       //    $newObj->lang_id = $defultlang->id;
       $newObj->save();
       //wife_num   
@@ -345,9 +347,14 @@ class ClientController extends Controller
       event(new Registered($newObj));
       // insert code in data
       $client = Client::where('email', $formdata['email'])->first();
-      $client->generateCode();          // from Client model
+      $code = $client->generateCode();          // from Client model
+
       // send mail
-      $client->notify(new Code());
+      $mctrlr = new MailController();
+
+      $mctrlr->getmail($client->email, $code);
+      //  $client->notify(new Code());
+
       Auth::guard('client')->login($newObj);
       // make login after register
       //  return redirect()->route('site.home');
@@ -366,7 +373,7 @@ class ClientController extends Controller
     if (Auth::guard('client')->check()) {
       $id = Auth::guard('client')->user()->id;
       $propctrler = new PropertyController();
-      $client = (object) $propctrler->clientwithprop($id, $lang);    
+      $client = (object) $propctrler->clientwithprop($id, $lang);
       $propgroup = $propctrler->propgroup($lang);
       $birthdateStr = (string) Carbon::create($client->client->birthdate)->format('d-m-Y');
       Carbon::setLocale('ar');
@@ -397,21 +404,21 @@ class ClientController extends Controller
   public function edit_username($lang)
   {
     if (Auth::guard('client')->check()) {
-      $id = Auth::guard('client')->user()->id; 
-      $clientpackctrlr=new ClientPackageController();
-      $edit_name=  $clientpackctrlr->check_edit_name($id);
+      $id = Auth::guard('client')->user()->id;
+      $clientpackctrlr = new ClientPackageController();
+      $edit_name = $clientpackctrlr->check_edit_name($id);
 
-      $client = Client::find($id);       
+      $client = Client::find($id);
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
-      $defultlang = $transarr['langs']->first();  
+      $defultlang = $transarr['langs']->first();
       return view(
         "site.content.edit-name",
         [
           "client" => $client,
           'lang' => $lang,
-          'defultlang' => $defultlang, 
-          'edit_name'=>$edit_name,      
+          'defultlang' => $defultlang,
+          'edit_name' => $edit_name,
         ]
       );
     } else {
@@ -422,17 +429,17 @@ class ClientController extends Controller
   public function edit_email($lang)
   {
     if (Auth::guard('client')->check()) {
-      $id = Auth::guard('client')->user()->id; 
-      $client = Client::find($id);       
+      $id = Auth::guard('client')->user()->id;
+      $client = Client::find($id);
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
-      $defultlang = $transarr['langs']->first();  
+      $defultlang = $transarr['langs']->first();
       return view(
         "site.content.edit-email",
         [
           "client" => $client,
           'lang' => $lang,
-          'defultlang' => $defultlang,       
+          'defultlang' => $defultlang,
         ]
       );
     } else {
@@ -440,21 +447,21 @@ class ClientController extends Controller
     }
 
   }
-  
+
   public function edit_password($lang)
   {
     if (Auth::guard('client')->check()) {
-      $id = Auth::guard('client')->user()->id; 
-      $client = Client::find($id);       
+      $id = Auth::guard('client')->user()->id;
+      $client = Client::find($id);
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
-      $defultlang = $transarr['langs']->first();  
+      $defultlang = $transarr['langs']->first();
       return view(
         "site.content.edit-password",
         [
           "client" => $client,
           'lang' => $lang,
-          'defultlang' => $defultlang,       
+          'defultlang' => $defultlang,
         ]
       );
     } else {
@@ -462,31 +469,31 @@ class ClientController extends Controller
     }
 
   }
-  
-  
+
+
   public function edit_image($lang)
   {
     if (Auth::guard('client')->check()) {
-      $id = Auth::guard('client')->user()->id; 
-      $clientpackctrlr=new ClientPackageController();
-      $show_img=  $clientpackctrlr->check_showimag($id);
-      $client = Client::find($id);       
+      $id = Auth::guard('client')->user()->id;
+      $clientpackctrlr = new ClientPackageController();
+      $show_img = $clientpackctrlr->check_showimag($id);
+      $client = Client::find($id);
       $sitedctrlr = new SiteDataController();
       $transarr = $sitedctrlr->FillTransData($lang);
-      $defultlang = $transarr['langs']->first();  
-      $favctrlr=new FavoriteController();
-      $clients_res =  $favctrlr->favorite_listwith_image($id,$lang, $client);
-      $countshow=collect($clients_res)->where('is_showimage',1)->count();
+      $defultlang = $transarr['langs']->first();
+      $favctrlr = new FavoriteController();
+      $clients_res = $favctrlr->favorite_listwith_image($id, $lang, $client);
+      $countshow = collect($clients_res)->where('is_showimage', 1)->count();
 
       return view(
         "site.content.edit-image",
         [
           "client" => $client,
           'lang' => $lang,
-          'defultlang' => $defultlang,    
-'favorite_list'=> $clients_res,
-'countshow'=>$countshow,
-'show_img'=>$show_img
+          'defultlang' => $defultlang,
+          'favorite_list' => $clients_res,
+          'countshow' => $countshow,
+          'show_img' => $show_img
         ]
       );
     } else {
@@ -496,7 +503,7 @@ class ClientController extends Controller
   }
   public function update_image(UpdateImageRequest $request, $lang)
   {
-   StoreClientRequest::$lang = $lang;
+    StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
@@ -509,34 +516,39 @@ class ClientController extends Controller
       return response()->json($validator);
     } else {
       $id = Auth::guard('client')->user()->id;
-   
+
 
       if ($request->hasFile('image')) {
         $file = $request->file('image');
         // $filename= $file->getClientOriginalName();                
         $this->storeImage($file, $id);
       }
-   
+
       return response()->json("ok");
     }
   }
   public function delete_image($lang)
   {
     if (Auth::guard('client')->check()) {
-      $id = Auth::guard('client')->user()->id;                 
-        $this->deleteImagebyId($id);
-        Auth::guard('client')->user()->refresh();
-    //    $this->edit_image($lang);
-        return redirect()->route('client.edit_image',$lang);
-      }else{
-        return redirect()->route('login.client');
-      }
+      $id = Auth::guard('client')->user()->id;
+      $this->deleteImagebyId($id);
+      Auth::guard('client')->user()->refresh();
+      //    $this->edit_image($lang);
+      return redirect()->route('client.edit_image', $lang);
+    } else {
+      return redirect()->route('login.client');
+    }
   }
   public function showprofile($lang)
   {
     if (Auth::guard('client')->check()) {
+
       $id = Auth::guard('client')->user()->id;
       $client = Client::find($id);
+      // $mctrlr = new MailController();
+      // $code = rand(1000, 9000);
+      // $mctrlr->getmail($client->email, $code);
+
       $client->birthdateStr = (string) Carbon::create($client->birthdate)->format('Y-m-d');
       //return response()->json($this->getsocial($id));  
       $sitedctrlr = new SiteDataController();
@@ -548,7 +560,7 @@ class ClientController extends Controller
       // $profile = $sitedctrlr->getbycode($defultlang->id, ['profile','register-error']);
       Carbon::setLocale('ar');
       $user_reg_date = auth()->guard('client')->user()->created_at->translatedFormat('l jS F Y - H:m');
-    $counts_arr=  $sitedctrlr->getprofile_counts();
+      $counts_arr = $sitedctrlr->getprofile_counts();
       return view(
         "site.content.profile",
         [
@@ -559,7 +571,7 @@ class ClientController extends Controller
           'user_reg_date' => $user_reg_date,
           //  'profile' => $profile,
           // 'sitedataCtrlr' => $sitedctrlr
-'counts_arr'=> $counts_arr,
+          'counts_arr' => $counts_arr,
         ]
       );
 
@@ -568,13 +580,13 @@ class ClientController extends Controller
     }
 
   }
- 
+
   public function update(UpdateClientRequest $request, $lang)
   {
     //UpdateClientRequest
     StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
- 
+
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
     $validator = Validator::make(
@@ -592,67 +604,67 @@ class ClientController extends Controller
       $birthdate = Carbon::create($formdata["birthdate"])->format('Y-m-d');
       $id = Auth::guard('client')->user()->id;
       Client::find($id)->update([
-        'first_name' => $formdata['first_name'],      
-        'birthdate' =>$birthdate, 
-        'mobile' => $formdata['mobile'], 
+        'first_name' => $formdata['first_name'],
+        'birthdate' => $birthdate,
+        'mobile' => $formdata['mobile'],
       ]);
-   
-                
-                $clientopctrlr->updateorcreate_opcountry($id,'residence',$formdata['residence'], $formdata['city']);
-                $clientopctrlr->updateorcreate_opcountry($id,'nationality',$formdata['nationality']);
-             
-                if ($formdata['gender'] == 'male') {
-                  
-                  $clientopctrlr->updateorcreate_op($id,'wife_num', $formdata['wife_num']);
-                  
-                  $clientopctrlr->updateorcreate_op($id,'family_status', $formdata['family_status']);
-          
-                  //beard
-                  $clientopctrlr->updateorcreate_op($id,'beard', $formdata['beard']);
-            
-                } else {
-             
-                  $clientopctrlr->updateorcreate_op($id,'wife_num_female', $formdata['wife_num_female']);
-               
-                  $clientopctrlr->updateorcreate_op($id,'family_status_female', $formdata['family_status_female']);
-               
-                  //veil
-                  $clientopctrlr->updateorcreate_op($id,'veil', $formdata['veil']);
-                
-                }
-                
-                $clientopctrlr->updateorcreate_opgenerated($id,'children_num',$formdata['children_num']);
-                $clientopctrlr->updateorcreate_opgenerated($id,'weight',$formdata['weight']);
-                //height
-                $clientopctrlr->updateorcreate_opgenerated($id,'height',$formdata['height']);
-                //skin
-                $clientopctrlr->updateorcreate_op($id,'skin', $formdata['skin']);
-                $clientopctrlr->updateorcreate_op($id,'body', $formdata['body']);
-                //religiosity
-                $clientopctrlr->updateorcreate_op($id,'religiosity', $formdata['religiosity']);
-                //prayer
-                $clientopctrlr->updateorcreate_op($id,'prayer',$formdata['prayer']);
-                //smoking
-                $clientopctrlr->updateorcreate_op($id,'smoking',$formdata['smoking']);
-                //education
-                $clientopctrlr->updateorcreate_op($id,'education',$formdata['education']);
-                $clientopctrlr->updateorcreate_op($id,'work',$formdata['work']);
-                //financial     
-                $clientopctrlr->updateorcreate_op($id,'financial',$formdata['financial']);
-                //job
-                $clientopctrlr->updateorcreate_opgenerated($id,'job',$formdata['job']);
-                //income
-                $clientopctrlr->updateorcreate_op($id,'income',$formdata['income']);
-                //health
-                $clientopctrlr->updateorcreate_op($id,'health',$formdata['health']);
-                //partner
-                $clientopctrlr->updateorcreate_opgenerated($id,'partner',$formdata['partner']);
-                //about_me
-                $clientopctrlr->updateorcreate_opgenerated($id,'about_me',$formdata['about_me']);
+
+
+      $clientopctrlr->updateorcreate_opcountry($id, 'residence', $formdata['residence'], $formdata['city']);
+      $clientopctrlr->updateorcreate_opcountry($id, 'nationality', $formdata['nationality']);
+
+      if ($formdata['gender'] == 'male') {
+
+        $clientopctrlr->updateorcreate_op($id, 'wife_num', $formdata['wife_num']);
+
+        $clientopctrlr->updateorcreate_op($id, 'family_status', $formdata['family_status']);
+
+        //beard
+        $clientopctrlr->updateorcreate_op($id, 'beard', $formdata['beard']);
+
+      } else {
+
+        $clientopctrlr->updateorcreate_op($id, 'wife_num_female', $formdata['wife_num_female']);
+
+        $clientopctrlr->updateorcreate_op($id, 'family_status_female', $formdata['family_status_female']);
+
+        //veil
+        $clientopctrlr->updateorcreate_op($id, 'veil', $formdata['veil']);
+
+      }
+
+      $clientopctrlr->updateorcreate_opgenerated($id, 'children_num', $formdata['children_num']);
+      $clientopctrlr->updateorcreate_opgenerated($id, 'weight', $formdata['weight']);
+      //height
+      $clientopctrlr->updateorcreate_opgenerated($id, 'height', $formdata['height']);
+      //skin
+      $clientopctrlr->updateorcreate_op($id, 'skin', $formdata['skin']);
+      $clientopctrlr->updateorcreate_op($id, 'body', $formdata['body']);
+      //religiosity
+      $clientopctrlr->updateorcreate_op($id, 'religiosity', $formdata['religiosity']);
+      //prayer
+      $clientopctrlr->updateorcreate_op($id, 'prayer', $formdata['prayer']);
+      //smoking
+      $clientopctrlr->updateorcreate_op($id, 'smoking', $formdata['smoking']);
+      //education
+      $clientopctrlr->updateorcreate_op($id, 'education', $formdata['education']);
+      $clientopctrlr->updateorcreate_op($id, 'work', $formdata['work']);
+      //financial     
+      $clientopctrlr->updateorcreate_op($id, 'financial', $formdata['financial']);
+      //job
+      $clientopctrlr->updateorcreate_opgenerated($id, 'job', $formdata['job']);
+      //income
+      $clientopctrlr->updateorcreate_op($id, 'income', $formdata['income']);
+      //health
+      $clientopctrlr->updateorcreate_op($id, 'health', $formdata['health']);
+      //partner
+      $clientopctrlr->updateorcreate_opgenerated($id, 'partner', $formdata['partner']);
+      //about_me
+      $clientopctrlr->updateorcreate_opgenerated($id, 'about_me', $formdata['about_me']);
       if ($request->hasFile('image')) {
         $file = $request->file('image');
-                $this->storeImage($file, $id);
-       
+        $this->storeImage($file, $id);
+
       }
       //  return redirect()->back();
       return response()->json("ok");
@@ -685,7 +697,7 @@ class ClientController extends Controller
   //
   public function updatename(UpdateNameRequest $request, $lang)
   {
-   StoreClientRequest::$lang = $lang;
+    StoreClientRequest::$lang = $lang;
     $formdata = $request->all();
     // return  $formdata;
     // return redirect()->back()->with('success_message', $formdata);
@@ -699,7 +711,7 @@ class ClientController extends Controller
     } else {
       $id = Auth::guard('client')->user()->id;
       Client::find($id)->update([
-        'name' =>$formdata['name'],
+        'name' => $formdata['name'],
       ]);
       //  return redirect()->back();
       return response()->json("ok");
@@ -822,8 +834,8 @@ class ClientController extends Controller
         $strgCtrlr = new StorageController();
         $path = $strgCtrlr->path['clients'];
         Storage::delete("public/" . $path . '/' . $oldimagename);
- 
-        PointTrans::where('client_id', $id)->delete();        
+
+        PointTrans::where('client_id', $id)->delete();
         ClientOption::where('client_id', $id)->delete();
         Client::find($id)->delete();
         Auth::guard('client')->logout();
@@ -834,6 +846,26 @@ class ClientController extends Controller
     } else {
       return response()->json("error");
     }
+  }
+  public function destroybyadmin($id)
+  {
+    $item = Client::find($id);
+    if (!($item === null)) {
+      //delete image
+      $oldimagename = $item->image;
+      $strgCtrlr = new StorageController();
+      $path = $strgCtrlr->path['clients'];
+      Storage::delete("public/" . $path . '/' . $oldimagename);
+
+      PointTrans::where('client_id', $id)->delete();
+      ClientOption::where('client_id', $id)->delete();
+      Client::find($id)->delete();
+      //  Auth::guard('client')->logout();
+      return redirect()->back();
+    } else {
+      return redirect()->back();
+    }
+
   }
   public function logout(Request $request): RedirectResponse
   {
@@ -872,81 +904,81 @@ class ClientController extends Controller
     }
     return 1;
   }
-  public function deleteImagebyId( $id)
+  public function deleteImagebyId($id)
   {
     $imagemodel = Client::find($id);
     $strgCtrlr = new StorageController();
     $path = $strgCtrlr->path['clients'];
     $oldimage = $imagemodel->image;
-    $oldimagename = basename($oldimage);          
-      Client::find($id)->update([
-        "image" => null
-      ]);
-      Storage::delete("public/" . $path . '/' . $oldimagename);   
+    $oldimagename = basename($oldimage);
+    Client::find($id)->update([
+      "image" => null
+    ]);
+    Storage::delete("public/" . $path . '/' . $oldimagename);
     return 1;
   }
 
-  public function show_member($lang,$id)
-  {  
-      $propctrler = new PropertyController();
-      $client = (object) $propctrler->clientwithprop($id, $lang);    
-     // $propgroup = $propctrler->propgroup($lang);
-      $birthdateStr = (string) Carbon::create($client->client->birthdate)->format('d-m-Y');
-      Carbon::setLocale('ar');
-      $user_reg_date = $client->client->created_at->translatedFormat('l jS F Y - H:m');
+  public function show_member($lang, $id)
+  {
+    $propctrler = new PropertyController();
+    $client = (object) $propctrler->clientwithprop($id, $lang);
+    // $propgroup = $propctrler->propgroup($lang);
+    $birthdateStr = (string) Carbon::create($client->client->birthdate)->format('d-m-Y');
+    Carbon::setLocale('ar');
+    $user_reg_date = $client->client->created_at->translatedFormat('l jS F Y - H:m');
 
-      $sitedctrlr = new SiteDataController();
-      $transarr = $sitedctrlr->FillTransData($lang);
-      $defultlang = $transarr['langs']->first();
-     // $nowyear = Carbon::now()->format('Y');
-      $lastseen='-';
-      if($client->client->lastseen_at){
-        $lastseen=$client->client->lastseen_at>= now()->subMinutes(5)?'متواجد الان'
+    $sitedctrlr = new SiteDataController();
+    $transarr = $sitedctrlr->FillTransData($lang);
+    $defultlang = $transarr['langs']->first();
+    // $nowyear = Carbon::now()->format('Y');
+    $lastseen = '-';
+    if ($client->client->lastseen_at) {
+      $lastseen = $client->client->lastseen_at >= now()->subMinutes(5) ? 'متواجد الان'
         : Carbon::parse($client->client->lastseen_at)->diffForHumans();
-      }
- //get fave status if login
- $stateArr=[];
- if (Auth::guard('client')->check()) {
-  $authid = Auth::guard('client')->user()->id;
- $favectrlr=new FavoriteController();
- $stateArr= $favectrlr->getstate($authid, $client->client->id); 
-$visitctrlr=new VisitorController();
-Auth::guard('client')->user()->refresh();
-if(Auth::guard('client')->user()->is_hidden!=1){
-  $setvisit=$visitctrlr->set_visit($authid,$client->client->id);
-  $notifyctrlr=new NotificationController();
-  $data=[
-    'fromclient_id'=>$authid,
-    'type'=>'visit',
-    'side'=>'member',
-  ];
-  $notifyctrlr->store_member_notify($client->client->id,$data);  
- //Client::find($client->client->id)->notify(new MemberNotify($data));
- 
- //list of users
- //$clints=Client::where('gender','female')->get() ;
+    }
+    //get fave status if login
+    $stateArr = [];
+    if (Auth::guard('client')->check()) {
+      $authid = Auth::guard('client')->user()->id;
+      $favectrlr = new FavoriteController();
+      $stateArr = $favectrlr->getstate($authid, $client->client->id);
+      $visitctrlr = new VisitorController();
+      Auth::guard('client')->user()->refresh();
+      if (Auth::guard('client')->user()->is_hidden != 1) {
+        $setvisit = $visitctrlr->set_visit($authid, $client->client->id);
+        $notifyctrlr = new NotificationController();
+        $data = [
+          'fromclient_id' => $authid,
+          'type' => 'visit',
+          'side' => 'member',
+        ];
+        $notifyctrlr->store_member_notify($client->client->id, $data);
+        //Client::find($client->client->id)->notify(new MemberNotify($data));
+
+        //list of users
+        //$clints=Client::where('gender','female')->get() ;
 //  Notification::send( $clints, new MemberNotify($data)->via('database'));
-}
+      }
 
- }
+    }
 
-      return view(
-        "site.page.client-page",
-        [
-          "client" => $client,          
-          'lang' => $lang,
-          'defultlang' => $defultlang,
-          'birthdateStr' => $birthdateStr,
-          'user_reg_date' => $user_reg_date,
+    return view(
+      "site.page.client-page",
+      [
+        "client" => $client,
+        'lang' => $lang,
+        'defultlang' => $defultlang,
+        'birthdateStr' => $birthdateStr,
+        'user_reg_date' => $user_reg_date,
         //  'prop_group' => $propgroup,
-         // 'nowyear' => $nowyear,
-          'since_register'=>  $client->client->created_at->diffForHumans(),
-          'lastseen_at'=> $lastseen,
-          'stateArr'=>$stateArr,
-        ]
-      );
+        // 'nowyear' => $nowyear,
+        'since_register' => $client->client->created_at->diffForHumans(),
+        'lastseen_at' => $lastseen,
+        'stateArr' => $stateArr,
+      ]
+    );
 
-    
+
 
   }
 }

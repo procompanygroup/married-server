@@ -23,7 +23,7 @@ use App\Http\Controllers\Web\PostController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\LangPostController;
 use App\Http\Controllers\Web\MediaPostController;
-use App\Http\Controllers\Web\MailController;
+//use App\Http\Controllers\Web\MailController;
 use App\Http\Controllers\Web\ClientController;
 //use  App\Http\Controllers\Web\ClientAuthController;
 
@@ -269,6 +269,8 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
         Route::get('/pull/{id}', [ClientController::class, 'pullops']);
         Route::get('/allpull', [ClientController::class, 'allpullops']);
         Route::post('/updatespecial', [ClientController::class, 'updatespecial']);
+        Route::delete('/delete/{id}', [ClientController::class, 'destroybyadmin']);
+
         // Route::post('/upload', [TranslateController::class, 'uploadLargeFiles'])->name('post.upload');;
 
     });
@@ -455,7 +457,7 @@ Route::middleware(['auth:client', 'verified', 'code'])->group(function () {
         Route::prefix('subscribe')->group(function () {
             Route::get('/', [ClientPackageController::class, 'index']);
             Route::any('payment', [ClientPackageController::class, 'payment']);
-            Route::any('features', [ClientPackageController::class, 'features']);  
+            Route::any('features', [ClientPackageController::class, 'features']);
 
         });
         //payment
