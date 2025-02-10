@@ -17,13 +17,13 @@ class Code
     {
         $client = auth()->guard('client')->user();
 
-        if(auth()->guard('client')->check() && $client->code){
+        if (auth()->guard('client')->check() && $client->code) {
 
             // if(!$request->is('verify*')){       // route in web.php his url 'verify' ... 
-                                                // * is all functions in CodeController
+            // * is all functions in CodeController
 
-               return redirect()->route('verify.index');
-                                            
+            return redirect()->route('verify.index');
+
             // }
         }
 

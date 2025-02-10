@@ -13,24 +13,26 @@ class CountryController extends Controller
     /**
      * Display a listing of the resource.
      */
- 
+
     public function getAll()
-        {
-            $countries = Country::select('id','name_ar','code')->orderBy('name_ar')->get();
-            return  $countries;
-        }
-        
-        public function getCitiesbyCountryID($country_id)
-        {
-            $cities = City::where('country_id',$country_id)->select('id','name_ar')->orderBy('name_ar')->get();
-           return $cities;
-        }
+    {
+        $sycountries = Country::select('id', 'name_ar', 'code')->where('code', 'sy')->first();
+        $countries = Country::select('id', 'name_ar', 'code')->whereNot('code', 'sy')->orderBy('name_ar')->get();
+        $countries->prepend($sycountries);
+        return $countries;
+    }
 
-         public function getCities($country_id)
-        {
-            $cities =$this->getCitiesbyCountryID($country_id);
+    public function getCitiesbyCountryID($country_id)
+    {
+        $cities = City::where('country_id', $country_id)->select('id', 'name_ar')->orderBy('name_ar')->get();
+        return $cities;
+    }
 
-           return response()->json($cities) ;
-        }
-    
+    public function getCities($country_id)
+    {
+        $cities = $this->getCitiesbyCountryID($country_id);
+
+        return response()->json($cities);
+    }
+
 }

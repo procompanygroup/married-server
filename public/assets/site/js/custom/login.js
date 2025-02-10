@@ -1,39 +1,39 @@
-var valid=true;
+var valid = true;
 
-$(document).ready(function() {
-  
-  $("#email").focusout(function (e) {
-    if (!validatempty($(this))) {
+$(document).ready(function () {
+
+	$("#email").focusout(function (e) {
+		if (!validatempty($(this))) {
 			return false;
 		} else {
 
-		//	return true;
+			//	return true;
 		}
-		if (!validateinputemail($(this),emailmsg)) {
+		if (!validateinputemail($(this), emailmsg)) {
 			return false;
 		} else {
 			return true;
 		}
-	}); 
-  $("#password").focusout(function (e) {
+	});
+	$("#password").focusout(function (e) {
 		if (!validatempty($(this))) {
 			return false;
 		} else {
 			return true;
 		}
 	});
-  
-     
-   //register form 
-   $('.btn-submit').on('click', function (e) {
+
+
+	//register form 
+	$('.btn-submit').on('click', function (e) {
 		e.preventDefault();
-if( validatempty($("#email")) && validateinputemail($("#email"),emailmsg) && validatempty($("#password"))  ){
-    var formid = $(this).closest("form").attr('id');
-		sendform('#' + formid);
-}
-		
+		if (validatempty($("#email")) && validateinputemail($("#email"), emailmsg) && validatempty($("#password"))) {
+			var formid = $(this).closest("form").attr('id');
+			sendform('#' + formid);
+		}
+
 	});
- 
+
 	function ClearErrors() {
 		$("." + "invalid-feedback").html('').hide();
 		$('.is-invalid').removeClass('is-invalid');
@@ -55,13 +55,13 @@ if( validatempty($("#email")) && validateinputemail($("#email"),emailmsg) && val
 				if (data.length == 0) {
 					noteError();
 				} else if (data == "ok") {
-					noteSuccess(); 	
-          var url= window.location.origin;
-		  url=url+'?lang='+ lang;
-					$(location).attr('href',url); 
-				}else if(data == "verify"){
-					$(location).attr('href',verifurl); 
-					
+					noteSuccess();
+					var url = window.location.origin;
+					url = url + '?lang=' + lang;
+					$(location).attr('href', url);
+				} else if (data == "verify") {
+					$(location).attr('href', verifurl);
+
 				} else {
 					noteError();
 				}
@@ -70,29 +70,31 @@ if( validatempty($("#email")) && validateinputemail($("#email"),emailmsg) && val
 				var response = $.parseJSON(errorresult.responseText);
 				noteError();
 				$.each(response.errors, function (key, val) {
-				//	$("#" + "info-form-error").append('<li class="text-danger">' + val[0] + '</li>');
-				if(val[0]=='auth.failed'){
-					
-					$("#" + key + "-error").addClass('invalid-feedback').text(auth_failed).show();
-				}else{
-					$("#" + key + "-error").addClass('invalid-feedback').text(val[0]).show();
-				}
-				
+					//	$("#" + "info-form-error").append('<li class="text-danger">' + val[0] + '</li>');
+					if (val[0] == 'auth.failed') {
+
+						$("#" + key + "-error").addClass('invalid-feedback').text(auth_failed).show();
+					} else if (val[0] == 'messages.auth.inactive') {
+						$(location).attr('href', verifurl);
+					} else {
+						$("#" + key + "-error").addClass('invalid-feedback').text(val[0]).show();
+					}
+
 					$("#" + key).addClass('is-invalid');
 				});
 
-			}, finally: function () {		 
+			}, finally: function () {
 
 			}
 		});
 	}
 
-   //end register
-   
-  });
-  function noteSuccess() {
-  //  swal("تم   بنجاح");
-  }
-  function noteError() {
-    swal(fail_msg);
-  }
+	//end register
+
+});
+function noteSuccess() {
+	//  swal("تم   بنجاح");
+}
+function noteError() {
+	swal(fail_msg);
+}

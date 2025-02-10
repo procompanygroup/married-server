@@ -17,7 +17,7 @@ use App\Notifications\Code;
 class LoginClientRequest extends FormRequest
 {
 
-    
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -34,7 +34,7 @@ class LoginClientRequest extends FormRequest
     public function rules(): array
     {
         return [
-              'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'email'],
             // 'email' => ['required', 'string',],
             'password' => ['required', 'string'],
         ];
@@ -48,25 +48,29 @@ class LoginClientRequest extends FormRequest
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
-    
-                if (!Auth::guard('client')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-                    RateLimiter::hit($this->throttleKey());
 
-                    throw ValidationException::withMessages([
-                      'email' =>  trans('auth.failed'),
-                    //    'email' => __('messages.auth.fail') ,
-                    ]);
-                }
-                
+        if (!Auth::guard('client')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
 
-                // // insert code in data
-                // $client = Client::where('email', $this->input('email'))->first();
-                // $client->generateCode();          // from Client model
-   
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+                //    'email' => __('messages.auth.fail') ,
+            ]);
+        }
 
-                // // send mail
-                // $client->notify(new Code());
 
+        // الحصول على المستخدم بعد نجاح محاولة تسجيل الدخول
+        $client = Auth::guard('client')->user();
+
+        // التحقق من أن المستخدم نشط (is_active == 1)
+        if ($client->is_active != 1) {
+            // تسجيل الخروج إذا لم يكن المستخدم نشطًا
+            //  Auth::guard('client')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => __('messages.auth.inactive'), // رسالة خطأ للمستخدم غير النشط
+            ]);
+        }
 
         RateLimiter::clear($this->throttleKey());
     }
